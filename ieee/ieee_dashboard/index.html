@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IEEE MUST Student Branch - Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="../IEEE_MUST_Logo-nobg.png">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="images/ieeelogo.png" alt="IEEE MUST Logo" class="logo">
+                <h2>IEEE MUST</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="active">
+                    <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-calendar-alt"></i> Events</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-users"></i> Members</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-handshake"></i> Partners</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-chart-line"></i> Analytics</a>
+                </li>
+                <li>
+                    <a href="#"><i class="fas fa-cog"></i> Settings</a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navbar -->
+            <nav class="top-navbar">
+                <div class="toggle-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="navbar-right">
+                    <div class="theme-toggle">
+                        <input type="checkbox" id="theme-switch" class="theme-switch">
+                        <label for="theme-switch" class="switch-label">
+                            <i class="fas fa-sun"></i>
+                            <i class="fas fa-moon"></i>
+                            <span class="switch-ball"></span>
+                        </label>
+                    </div>
+                    <div class="notification">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count">3</span>
+                    </div>
+                    <div class="user-profile">
+                        <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="User Profile">
+                        <div class="user-dropdown">
+                            <span class="user-name">Admin User</span>
+                            <i class="fas fa-chevron-down"></i>
+                            <div class="dropdown-menu">
+                                <a href="#" id="profile-link"><i class="fas fa-user"></i> Profile</a>
+                                <a href="login.html"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <!-- Dashboard Overview Section -->
+                <section id="dashboard-section" class="content-section active">
+                    <h1>Dashboard Overview</h1>
+                    
+                    <!-- Stats Cards -->
+                    <div class="stats-cards">
+                        <div class="card members-card">
+                            <div class="card-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Total Members</h3>
+                                <h2>250</h2>
+                                <p><span class="positive">+12%</span> from last month</p>
+                            </div>
+                        </div>
+                        
+                        <div class="card events-card">
+                            <div class="card-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Events Held</h3>
+                                <h2>45</h2>
+                                <p><span class="positive">+5</span> this year</p>
+                            </div>
+                        </div>
+                        
+                        <div class="card partners-card">
+                            <div class="card-icon">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Partners</h3>
+                                <h2>18</h2>
+                                <p><span class="positive">+3</span> new partners</p>
+                            </div>
+                        </div>
+                        
+                        <div class="card founded-card">
+                            <div class="card-icon">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="card-info">
+                                <h3>Founded In</h3>
+                                <h2>2011</h2>
+                                <p><span class="neutral">12 years</span> of excellence</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Events Section -->
+                    <div class="recent-section">
+                        <div class="section-header">
+                            <h2>Recent Events</h2>
+                            <a href="#" class="view-all">View All</a>
+                        </div>
+                        <div class="events-list">
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <span class="day">15</span>
+                                    <span class="month">OCT</span>
+                                </div>
+                                <div class="event-details">
+                                    <h3>IEEE Day Celebration</h3>
+                                    <p>A global event celebrating IEEE members and their contributions.</p>
+                                    <div class="event-meta">
+                                        <span><i class="fas fa-map-marker-alt"></i> MUST Campus</span>
+                                        <span><i class="fas fa-users"></i> 120 Attendees</span>
+                                    </div>
+                                </div>
+                                <div class="event-status completed">
+                                    <span>Completed</span>
+                                </div>
+                            </div>
+                            
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <span class="day">22</span>
+                                    <span class="month">NOV</span>
+                                </div>
+                                <div class="event-details">
+                                    <h3>Technical Workshop: AI Fundamentals</h3>
+                                    <p>Introduction to artificial intelligence and machine learning concepts.</p>
+                                    <div class="event-meta">
+                                        <span><i class="fas fa-map-marker-alt"></i> Engineering Building</span>
+                                        <span><i class="fas fa-users"></i> 85 Attendees</span>
+                                    </div>
+                                </div>
+                                <div class="event-status upcoming">
+                                    <span>Upcoming</span>
+                                </div>
+                            </div>
+                            
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <span class="day">05</span>
+                                    <span class="month">DEC</span>
+                                </div>
+                                <div class="event-details">
+                                    <h3>End of Year Ceremony</h3>
+                                    <p>Celebrating achievements and recognizing outstanding members.</p>
+                                    <div class="event-meta">
+                                        <span><i class="fas fa-map-marker-alt"></i> Main Auditorium</span>
+                                        <span><i class="fas fa-users"></i> 200 Expected</span>
+                                    </div>
+                                </div>
+                                <div class="event-status planning">
+                                    <span>Planning</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Events Section -->
+                <section id="events-section" class="content-section">
+                    <h1>Events Management</h1>
+                    <div class="section-header">
+                        <h2>All Events</h2>
+                        <div class="section-actions">
+                            <button class="action-btn"><i class="fas fa-plus"></i> Add Event</button>
+                            <div class="filter-dropdown">
+                                <button class="filter-btn"><i class="fas fa-filter"></i> Filter</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="events-grid">
+                        <!-- Event cards will be dynamically added here -->
+                    </div>
+                </section>
+
+                <!-- Members Section -->
+                <section id="members-section" class="content-section">
+                    <h1>Members Management</h1>
+                    <div class="section-header">
+                        <h2>All Members</h2>
+                        <div class="section-actions">
+                            <button class="action-btn"><i class="fas fa-plus"></i> Add Member</button>
+                            <select class="filter-select">
+                                <option value="all">All Members</option>
+                                <option value="students">Students</option>
+                                <option value="faculty">Faculty</option>
+                                <option value="professionals">Professionals</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="members-grid">
+                        <!-- Member cards will be dynamically added here -->
+                    </div>
+                </section>
+
+                <!-- Partners Section -->
+                <section id="partners-section" class="content-section">
+                    <h1>Partners</h1>
+                    <div class="section-header">
+                        <h2>Our Partners</h2>
+                        <div class="section-actions">
+                            <button class="action-btn"><i class="fas fa-plus"></i> Add Partner</button>
+                        </div>
+                    </div>
+                    <div class="partners-grid">
+                        <!-- Partner cards will be dynamically added here -->
+                    </div>
+                </section>
+
+                <!-- Analytics Section -->
+                <section id="analytics-section" class="content-section">
+                    <h1>Analytics</h1>
+                    <div class="analytics-cards">
+                        <div class="analytics-card">
+                            <h3>Member Growth</h3>
+                            <div class="chart-container">
+                                <div class="placeholder-chart">
+                                    <i class="fas fa-chart-line"></i>
+                                    <p>Member growth chart will be displayed here</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="analytics-card">
+                            <h3>Event Attendance</h3>
+                            <div class="chart-container">
+                                <div class="placeholder-chart">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <p>Event attendance chart will be displayed here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settings-section" class="content-section">
+                    <h1>Settings</h1>
+                    <div class="settings-container">
+                        <aside class="settings-sidebar">
+                            <ul class="settings-menu">
+                                <li class="active" data-target="profile-settings">Profile Settings</li>
+                                <li data-target="notification-settings">Notifications</li>
+                                <li data-target="security-settings">Security</li>
+                            </ul>
+                        </aside>
+                        <div class="settings-content">
+                            <div id="profile-settings" class="settings-panel active">
+                                <!-- Profile settings content -->
+                            </div>
+                            <div id="notification-settings" class="settings-panel">
+                                <!-- Notification settings content -->
+                            </div>
+                            <div id="security-settings" class="settings-panel">
+                                <!-- Security settings content -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal" id="profile-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            
+            <div class="modal-tabs">
+                <button class="tab-btn active" data-tab="login">Login</button>
+                <button class="tab-btn" data-tab="signup">Sign Up</button>
+            </div>
+            
+            <!-- Login Form -->
+            <div class="tab-content active" id="login-tab">
+                <div class="auth-header">
+                    <img src="images/ieeelogo.png" alt="IEEE MUST Logo" class="auth-logo">
+                    <h2>IEEE MUST</h2>
+                    <p>Admin Dashboard Login</p>
+                </div>
+                
+                <form class="auth-form" id="login-form">
+                    <div class="form-group">
+                        <label for="login-email"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="login-email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password"><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
+                        <span class="password-toggle" onclick="togglePassword('login-password')">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="form-options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember" name="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    
+                    <button type="submit" class="auth-button">Login</button>
+                </form>
+            </div>
+            
+            <!-- Sign Up Form -->
+            <div class="tab-content" id="signup-tab">
+                <div class="auth-header">
+                    <img src="images/ieeelogo.png" alt="IEEE MUST Logo" class="auth-logo">
+                    <h2>IEEE MUST</h2>
+                    <p>Create Admin Account</p>
+                </div>
+                
+                <form class="auth-form" id="signup-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstname"><i class="fas fa-user"></i> First Name</label>
+                            <input type="text" id="firstname" name="firstname" placeholder="Enter first name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="lastname"><i class="fas fa-user"></i> Last Name</label>
+                            <input type="text" id="lastname" name="lastname" placeholder="Enter last name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-email"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="signup-email" name="email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="role"><i class="fas fa-user-tag"></i> Role</label>
+                        <select id="role" name="role" required>
+                            <option value="" disabled selected>Select your role</option>
+                            <option value="admin">Admin</option>
+                            <option value="moderator">Moderator</option>
+                            <option value="viewer">Viewer</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-password"><i class="fas fa-lock"></i> Password</label>
+                        <input type="password" id="signup-password" name="password" placeholder="Enter your password" required>
+                        <span class="password-toggle" onclick="togglePassword('signup-password')">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirm-password"><i class="fas fa-lock"></i> Confirm Password</label>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                        <span class="password-toggle" onclick="togglePassword('confirm-password')">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                    
+                    <div class="form-options">
+                        <div class="terms">
+                            <input type="checkbox" id="terms" name="terms" required>
+                            <label for="terms">I agree to the <a href="#">Terms & Conditions</a></label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="auth-button">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const icon = document.querySelector(`#${inputId} + .password-toggle i`);
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+# VS Code editor settings
+.vscode/
+
+# Node.js dependencies
+node_modules/
+
+# Windows thumbnail cache
+Thumbs.db
