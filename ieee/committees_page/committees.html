@@ -12,33 +12,46 @@
 </head>
 <body>
    <!-- ==========> navbar <========== -->
-   
    <nav class="main-head">
-     <div class="white-line"></div>
-     <div class="logo">
-         <svg class="logo2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="m100,0H0v100C0,44.77,44.77,0,100,0Z" fill="#F9F8F6"></path></svg>
-         <img class="logo-img" src="images/ieeebluelogo.png" alt="Logo">
-         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="m100,0H0v100C0,44.77,44.77,0,100,0Z" fill="#F9F8F6"></path></svg>
+    <div class="white-line"></div>
+   <div class="logo">
+      <svg class="logo2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="m100,0H0v100C0,44.77,44.77,0,100,0Z" fill="#F9F8F6"></path></svg>
+       <img class="logo-img" src="images/ieeebluelogo.png" alt="Logo">
+       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="m100,0H0v100C0,44.77,44.77,0,100,0Z" fill="#F9F8F6"></path></svg>
+   </div>
+   <div class="nav-container">
+     <div class="nav-links">
+      <a href="../home_page/index.html" class="active">Home</a>
+      <a href="../committees_page/committees.html">Committees</a>
+       <a href="../events/events.php">Events</a>
+       <a href="../EMBS Page/index.html" class="embs-btn">EMBS</a>
+       <a href="../Membership/index.html">Membership</a>
+       <a href="../AI assistant/ai.html" class="ask-ai-btn">Ask AI</a>
+       <a href="../About Us/index.html">About us</a>
+       <div class="theme-toggle-mobile">
+          <button id="theme-toggle-btn-mobile" class="theme-toggle-btn" aria-label="Toggle dark mode">
+            <i class="fas fa-sun light-icon"></i>
+            <i class="fas fa-moon dark-icon"></i>
+          </button>
+          <span>Switch to dark / light mode</span>
+        </div>
      </div>
-     <div class="nav-container">
-       <div class="nav-links">
-         <a href="../home_page/index.html">Home</a>
-         <a href="../committees_page/committees.html" class="active">Committees</a>
-         <a href="../events/events.php">Events</a>
-         <a href="../EMBS Page/index.html" class="embs-btn">EMBS</a>
-         <a href="../Membership/index.html">Membership</a>
-         <a href="../AI assistant/ai.html" class="ask-ai-btn">Ask AI</a>
-         <a href="../About Us/index.html">About us</a>
-     </div>
-     </div>
-     <div class="mobile-nav">
-         <button class="hamburger">
-             <span class="hamburger-bar top"></span>
-             <span class="hamburger-bar middle"></span>
-             <span class="hamburger-bar bottom"></span>
-         </button>
-     </div>
- </nav>
+   </div>
+   <div class="theme-toggle">
+     <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle dark mode">
+       <i class="fas fa-sun light-icon"></i>
+       <i class="fas fa-moon dark-icon"></i>
+     </button>
+   </div>
+   <div class="mobile-nav">
+       <button class="hamburger">
+            <span class="hamburger-bar top"></span>
+            <span class="hamburger-bar middle"></span>
+            <span class="hamburger-bar bottom"></span>
+       </button>
+   </div>
+  </nav>
+      <!---COMMITTEES-PAGE-->
     <section class="committees-page">
         <h1>Our Committees.</h1>
         <div class="committee-toggle">

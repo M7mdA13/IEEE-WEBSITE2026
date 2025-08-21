@@ -40,7 +40,7 @@ window.addEventListener('scroll', function() {
     } else {
       navContainer.classList.remove('scrolled');
     }
-  });
+});
 
 // Theme toggle functionality
 const themeToggleBtns = document.querySelectorAll('.theme-toggle-btn, .theme-toggle-mobile');

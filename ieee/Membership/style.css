@@ -261,104 +261,107 @@ ul {
     transform: translateY(-8px) rotate(-45deg);
   }
   
-  /* Responsive Navigation */
-  @media screen and (max-width: 768px) {
-    .mobile-nav {
-      display: block;
-    }
-  
-    .nav-container {
-      position: fixed;
-      top: 70px;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 0;
-      margin: 0;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border-radius: 0;
-      box-shadow: none;
-      z-index: 2000;
-      transform: translateX(100%);
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-  
-    .nav-container.active {
-      transform: translateX(0);
-    }
-    .nav-container .no-scroll {
-      overflow: hidden;
-    }
-  
-    .nav-links {
-      flex-direction: column;
-      gap: 10px;
-      width: 70%;
-      align-items: center;
-    }
-  
-    .nav-links a {
-      display: block;
-      padding: 1.2rem 0;
-      font-size: 1.2rem;
-      background: #fff;
-      border-radius: 20px;
-      border: 1.5px solid #e0eafc;
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-      margin-bottom: 0.5rem;
-      width: 100%;
-      text-align: center;
-    }
-  
-    .nav-links a:hover {
-      background: rgba(0, 59, 113, 0.1);
-    }
-  
-    body.dark-mode .nav-container {
-      background: rgba(45, 45, 45, 0.95);
-    }
-  
-    body.dark-mode .nav-links a {
-      background: #2d2d2d;
-      color: #ffffff;
-      border-color: #404040;
-    }
-  
-    body.dark-mode .nav-links a:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-  
-    .mobile-nav {
-      z-index: 2100;
-    }
-  
-    .white-line {
-      height: 20px;
-    }
-  
-    .logo {
-      width: 105px;
-      height: 60px;
-      margin-top: 15px;
-    }
-  
-    .logo-img {
-      width: 60px;
-      height: 60px;
-    }
-  
-    .logo > svg:last-of-type {
-      top: 5%;
-      left: 99.5%;
-      width: clamp(15px, 4vw, 25px);
-    }
+ /* Responsive Navigation */
+@media screen and (max-width: 768px) {
+  .mobile-nav {
+    display: block;
   }
-  
+
+  .nav-container {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0;
+    margin: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    box-shadow: none;
+    z-index: 2000;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nav-container.active {
+    transform: translateX(0);
+  }
+  .nav-container .no-scroll {
+    overflow: hidden;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    margin-top: 40px;
+    gap: 10px;
+    width: 80%;
+    align-items: center;
+  }
+
+  .nav-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    background: #fff;
+    border-radius: 20px;
+    border: 1.5px solid #e0eafc;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    margin-bottom: 0.5rem;
+    width: 100%;
+    min-width: 200px; /* Set a minimum width for consistency */
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  .nav-links a:hover {
+    background: rgba(0, 59, 113, 0.1);
+  }
+
+  body.dark-mode .nav-container {
+    background: rgba(45, 45, 45, 0.95);
+  }
+
+  body.dark-mode .nav-links a {
+    background: #2d2d2d;
+    color: #ffffff;
+    border-color: #404040;
+  }
+
+  body.dark-mode .nav-links a:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .mobile-nav {
+    z-index: 2100;
+  }
+
+  .white-line {
+    height: 20px;
+  }
+
+  .logo {
+    width: 105px;
+    height: 60px;
+    margin-top: 15px;
+  }
+
+  .logo-img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .logo > svg:last-of-type {
+    top: 5%;
+    left: 99.5%;
+    width: clamp(15px, 4vw, 25px);
+  }
+}
   /* Theme Toggle Button */
   .theme-toggle {
     display: flex;
@@ -622,14 +625,6 @@ ul {
     .logo svg,
     .logo > svg:last-of-type {
       width: clamp(12px, 5vw, 20px);
-    }
-  }
-  @keyframes navLinkGlow {
-    0%, 100% { 
-      text-shadow: 0 0 5px rgba(36, 240, 255, 0.3); 
-    }
-    50% { 
-      text-shadow: 0 0 15px rgba(36, 240, 255, 0.6); 
     }
   }
   

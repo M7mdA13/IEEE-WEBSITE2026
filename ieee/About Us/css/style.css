@@ -304,22 +304,27 @@ body::before {
 
   .nav-links {
     flex-direction: column;
+    margin-top: 50px;
     gap: 10px;
-    width: 70%;
+    width: 80%;
     align-items: center;
   }
 
   .nav-links a {
-    display: block;
-    padding: 1.2rem 0;
-    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 1rem;
+    font-size: 1rem;
     background: #fff;
     border-radius: 20px;
     border: 1.5px solid #e0eafc;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     margin-bottom: 0.5rem;
     width: 100%;
+    min-width: 200px; /* Set a minimum width for consistency */
     text-align: center;
+    box-sizing: border-box;
   }
 
   .nav-links a:hover {
@@ -361,6 +366,7 @@ body::before {
 
   .logo > svg:last-of-type {
     top: 5%;
+    left: 99.5%;
     width: clamp(15px, 4vw, 25px);
   }
 }
@@ -497,79 +503,7 @@ body.dark-mode .header-ieee-logo {
   filter: brightness(0) invert(1);
 }
 
-/* Dark mode wave background */
-body.dark-mode .wave-header-background {
-  background: #000000;
-}
 
-body.dark-mode .wave-canvas {
-  background: #000000;
-}
-
-body.dark-mode .ieee-info-section {
-  background:#000000;
-}
-
-body.dark-mode .font-montserrat {
-  color: #ffffff;
-}
-
-body.dark-mode .text-gray-700 {
-  color: #cccccc;
-}
-
-body.dark-mode .info-card {
-  background: rgba(45, 45, 45, 0.8);
-  border: 1px solid #404040;
-  color: #ffffff;
-}
-
-body.dark-mode .info-card:hover {
-  background: rgba(45, 45, 45, 0.9);
-  border-color: #00e6ff;
-}
-
-body.dark-mode .card-title {
-  color: #ffffff;
-}
-
-body.dark-mode .card-description {
-  color: #cccccc;
-}
-
-body.dark-mode .our-vision {
-  background:#000000;
-}
-
-body.dark-mode .our-vision-box {
-  background: rgba(45, 45, 45, 0.8);
-  border: 1px solid #404040;
-  color: #ffffff;
-}
-
-body.dark-mode .who-are-we {
-  background:#000000;
-}
-body.dark-mode .innovation-geeks {
-  background:#000000;
-}
-body.dark-mode .our-impact {
-  background:#000000;
-}
-body.dark-mode .our-partners {
-  background:#000000;
-}
-
-
-body.dark-mode .committee-card {
-  background: rgba(45, 45, 45, 0.8);
-  border: 1px solid #404040;
-}
-
-body.dark-mode .committee-card:hover {
-  background: rgba(45, 45, 45, 0.9);
-  border-color: #00e6ff;
-}
 
 /* Mobile responsive for theme toggle */
 @media screen and (max-width: 768px) {
@@ -638,7 +572,6 @@ body.dark-mode .committee-card:hover {
 .nav-links a:hover {
   transform: translateY(-2px);
 }
-
 
 /* footer */
 
@@ -821,7 +754,7 @@ main {
     flex: 1;
     max-width: 1200px;
     margin: 0 auto;
-    margin-top: 120px;
+    margin-top: 70px;
     padding: 0 20px;
     display: flex;
     flex-direction: column;
@@ -1197,7 +1130,7 @@ main {
   }
   
   .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
   }
   
@@ -1218,12 +1151,31 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0, 59, 113, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .social-icons a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
   }
   
   .social-icons a:hover {
-    transform: scale(1.2);
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 0 8px 15px rgba(0, 59, 113, 0.3);
+  }
+  
+  .social-icons a:hover::before {
+    left: 100%;
   }
   
   /* ******************** */

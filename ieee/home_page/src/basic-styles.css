@@ -1351,22 +1351,27 @@ html, body {
 
   .nav-links {
     flex-direction: column;
+    margin-top: 40px;
     gap: 10px;
-    width: 70%;
+    width: 80%;
     align-items: center;
   }
 
   .nav-links a {
-    display: block;
-    padding: 1.2rem 0;
-    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 5rem;
+    font-size: 1rem;
     background: #fff;
     border-radius: 20px;
     border: 1.5px solid #e0eafc;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
     margin-bottom: 0.5rem;
     width: 100%;
+    min-width: 200px; /* Set a minimum width for consistency */
     text-align: center;
+    box-sizing: border-box;
   }
 
   .nav-links a:hover {
@@ -1412,7 +1417,6 @@ html, body {
     width: clamp(15px, 4vw, 25px);
   }
 }
-
 /* Theme Toggle Button */
 .theme-toggle {
   display: flex;
