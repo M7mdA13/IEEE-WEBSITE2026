@@ -1,0 +1,668 @@
+/* ── Page ── */
+.committee-page {
+  background-color: var(--ieee-bg); /* #E8F2FD */
+  min-height: 100vh;
+  transition: background-color 0.35s ease;
+}
+
+/* ── Hero ── */
+.committee-hero {
+  background-color: var(--ieee-bg);
+  padding-top: 130px; /* Account for floating navbar */
+  transition: background-color 0.35s ease;
+}
+
+.committee-hero-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 24px 20px;
+}
+
+/* Back button */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: #90CAF9;
+  color: #ffffff;
+  border-radius: 70px;
+  padding: 8px 24px;
+  font-family: 'Krona One', sans-serif;
+  font-weight: 400;
+  font-size: 0.9rem;
+  text-decoration: none;
+  margin-bottom: 40px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.back-btn:hover {
+  background: #64B5F6;
+  transform: translateX(-4px);
+}
+
+/* Hero info row: logo left, text right */
+.hero-info-row {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+
+.hero-logo-wrap {
+  flex-shrink: 0;
+}
+
+.hero-logo-img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
+.hero-logo-icon {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4.5rem;
+  color: #42A5F5;
+}
+
+.hero-text-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hero-category {
+  font-family: 'Krona One', sans-serif;
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: #24F0FF; /* Figma Cyan */
+  letter-spacing: -0.01em;
+}
+
+.hero-name {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 800;
+  font-size: 3.2rem;
+  color: #004577; /* Figma Navy */
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.hero-tagline {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: #0098ED; /* Vibrant Blue */
+  margin: 4px 0 0;
+  letter-spacing: -0.02em;
+}
+
+/* Description paragraph */
+.hero-desc {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(0, 69, 119, 0.7);
+  max-width: 860px;
+  margin: 0;
+}
+
+/* Divider */
+.hero-divider {
+  width: 0; 
+  display: none; /* Removed based on Figma layout flow */
+}
+
+/* ── Content wrapper ── */
+.committee-content {
+  background-color: var(--ieee-bg);
+}
+
+.committee-content-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* ── Shared section ── */
+.cmt-section {
+  margin-bottom: 60px;
+  padding-bottom: 60px;
+  border-bottom: 1px solid rgba(0, 152, 237, 0.15); /* Separation Line */
+}
+
+.cmt-section:last-child {
+  border-bottom: none;
+}
+
+.cmt-section-title {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 800;
+  font-size: 2.2rem;
+  color: #004577;
+  text-align: center;
+  margin-bottom: 32px;
+  letter-spacing: normal;
+}
+
+/* ── Committee Goals grid ── */
+.cmt-goals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px 60px;
+}
+
+.cmt-goal-item {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 152, 237, 0.2);
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 6px 24px rgba(0, 69, 119, 0.04);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.cmt-goal-item::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(36, 240, 255, 0.1) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.cmt-goal-item:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 32px rgba(0, 152, 237, 0.12), 0 0 20px rgba(36, 240, 255, 0.2);
+  border-color: rgba(0, 152, 237, 0.5);
+}
+
+.cmt-goal-item:hover::before {
+  opacity: 1;
+}
+
+.cmt-goal-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #004577;
+  margin: 0 0 10px;
+  letter-spacing: normal;
+}
+
+.cmt-goal-desc {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: rgba(0, 69, 119, 0.75);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Roles ── */
+.cmt-subsection-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: #004577;
+  margin: 0 0 16px;
+  letter-spacing: normal;
+}
+
+.cmt-roles-list {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 152, 237, 0.2);
+  border-radius: 30px;
+  padding: 36px 36px 36px 48px;
+  box-shadow: 0 6px 24px rgba(0, 69, 119, 0.04);
+  list-style: disc;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.4s ease;
+}
+
+.cmt-roles-list:hover {
+  border-color: rgba(0, 152, 237, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 152, 237, 0.08);
+}
+
+.cmt-roles-list li {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  color: rgba(0, 69, 119, 0.75);
+  line-height: 1.6;
+}
+
+/* ── Activities ── */
+.cmt-activities-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.cmt-activity-card {
+  border: 1px solid rgba(0, 152, 237, 0.3);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 40px; /* High rounding from Figma */
+  padding: 32px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.cmt-activity-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.7), transparent);
+  transform: skewX(-20deg);
+  transition: none;
+}
+
+.cmt-activity-card:hover {
+  transform: translateY(-8px);
+  border-color: #0098ED;
+  box-shadow: 0 16px 40px rgba(0, 152, 237, 0.15), 0 0 20px rgba(36, 240, 255, 0.1);
+}
+
+.cmt-activity-card:hover::after {
+  animation: glass-sweep 0.7s ease-out forwards;
+}
+
+@keyframes glass-sweep {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+.cmt-activity-title {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #004577;
+  margin: 0 0 16px;
+  letter-spacing: normal;
+  line-height: 1.4;
+}
+
+.cmt-activity-desc {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: rgba(0, 69, 119, 0.7);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── Board ── */
+.cmt-board-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.cmt-board-card {
+  border: 1.5px dashed rgba(0, 152, 237, 0.5); /* Figma dashed outline */
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 40px;
+  padding: 40px 60px 40px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 40px;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+}
+
+.cmt-board-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 40px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(36, 240, 255, 0) 0%, rgba(36, 240, 255, 0.5) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.cmt-board-card:hover {
+  border-style: solid;
+  border-color: rgba(0, 152, 237, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 69, 119, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.5);
+  transform: scale(1.02);
+}
+
+.cmt-board-card:hover::after {
+  opacity: 1;
+}
+
+.cmt-board-info {
+  flex: 1;
+}
+
+.cmt-board-name {
+  font-family: 'Krona One', sans-serif;
+  font-weight: 400;
+  font-size: 1.25rem;
+  color: #004577;
+  margin: 0 0 6px;
+}
+
+.cmt-board-role {
+  display: block;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0098ED;
+  margin-bottom: 16px;
+}
+
+.cmt-board-bio {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: rgba(0, 69, 119, 0.7);
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+.cmt-board-photo-wrap {
+  flex-shrink: 0;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #E8F2FD;
+  box-shadow: 0 8px 32px rgba(0, 69, 119, 0.1);
+}
+
+.cmt-board-photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cmt-board-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 152, 237, 0.3);
+  font-size: 5rem;
+}
+
+/* ── Social links ── */
+.social-links {
+  display: flex;
+  gap: 12px;
+}
+
+.social-links a {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #004577;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.social-links a:hover {
+  opacity: 0.6;
+}
+
+/* ── Best Members ── */
+.cmt-members-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  padding-bottom: 20px;
+}
+
+.cmt-member-card {
+  border-radius: 40px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 69, 119, 0.08); /* Replaces border */
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
+}
+
+.cmt-member-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Gradient block mapping */
+.cmt-member-photo-area {
+  height: 180px;
+  background: linear-gradient(180deg, #004577 0%, #1D76D2 100%); /* Figma Navy gradient */
+  border-radius: 40px 40px 0 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.cmt-member-photo-img {
+  position: absolute;
+  bottom: -60px; /* Pull photo down to straddle the division line */
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ffffff;
+  border: 4px solid #ffffff; /* White inset border natively */
+}
+
+.cmt-member-photo-placeholder {
+  position: absolute;
+  bottom: -60px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #E8F2FD;
+  border: 4px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 152, 237, 0.5);
+  font-size: 3rem;
+}
+
+/* Card body shifted to respect overlapping photo */
+.cmt-member-body {
+  padding: 80px 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.cmt-member-name {
+  font-family: 'Krona One', sans-serif;
+  font-weight: 400;
+  font-size: 0.95rem;
+  color: #004577;
+  margin: 0;
+}
+
+/* Stars */
+.member-stars {
+  display: flex;
+  gap: 4px;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.member-stars .fas.fa-star {
+  color: #004577;
+}
+
+.member-stars .far.fa-star {
+  color: #E8F2FD;
+}
+
+.cmt-member-bio {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: rgba(0, 69, 119, 0.7);
+  line-height: 1.6;
+  flex: 1;
+  margin: 0 0 16px;
+}
+
+/* ── Not found ── */
+.committee-not-found {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: var(--ieee-text);
+  padding-top: 100px;
+}
+
+.committee-not-found a {
+  color: #0098ED;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hero-name { font-size: 2.2rem; }
+  .hero-info-row { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .cmt-goals-grid, .cmt-activities-grid, .cmt-members-grid { grid-template-columns: 1fr; }
+  .cmt-board-card { flex-direction: column-reverse; padding: 32px 24px; text-align: center; border-radius: 30px; }
+  .cmt-board-info { align-items: center; display: flex; flex-direction: column;}
+  .cmt-board-photo-wrap { width: 160px; height: 160px; }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .cmt-members-grid { grid-template-columns: repeat(2, 1fr); }
+  .cmt-activities-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── Dark Mode Overrides ── */
+body.dark-mode .committee-hero,
+body.dark-mode .committee-content {
+  background-color: var(--ieee-bg);
+}
+
+body.dark-mode .cmt-section {
+  border-bottom-color: rgba(36, 240, 255, 0.15);
+}
+
+body.dark-mode .cmt-goal-item,
+body.dark-mode .cmt-roles-list {
+  background: #0d2340;
+  border-color: rgba(36, 240, 255, 0.3);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .hero-name,
+body.dark-mode .cmt-section-title,
+body.dark-mode .cmt-board-name,
+body.dark-mode .cmt-member-name {
+  color: #ffffff;
+}
+
+body.dark-mode .hero-desc,
+body.dark-mode .cmt-goal-desc,
+body.dark-mode .cmt-roles-list li,
+body.dark-mode .cmt-activity-desc,
+body.dark-mode .cmt-board-bio,
+body.dark-mode .cmt-member-bio {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+body.dark-mode .cmt-goal-title,
+body.dark-mode .cmt-subsection-title,
+body.dark-mode .cmt-activity-title {
+  color: #90CAF9;
+}
+
+body.dark-mode .cmt-activity-card {
+  background: #0d2340;
+  border-color: rgba(36, 240, 255, 0.3);
+}
+
+body.dark-mode .cmt-board-card {
+  background: #0d2340;
+  border-color: rgba(0, 152, 237, 0.6);
+}
+
+body.dark-mode .cmt-board-photo-wrap {
+  background: #042749;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .cmt-board-photo-placeholder {
+  color: rgba(36, 240, 255, 0.3);
+}
+
+body.dark-mode .cmt-member-card {
+  background: #0d2340;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .cmt-member-photo-img,
+body.dark-mode .cmt-member-photo-placeholder {
+  border-color: #0d2340;
+}
+
+body.dark-mode .cmt-member-photo-placeholder {
+  background: #054377;
+  color: rgba(144, 202, 249, 0.5);
+}
+
+body.dark-mode .social-links a {
+  color: #90CAF9;
+}
+
+body.dark-mode .member-stars .fas.fa-star {
+  color: #90CAF9;
+}
+
+body.dark-mode .member-stars .far.fa-star {
+  color: rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .back-btn {
+  background: #004577;
+  color: #90CAF9;
+}
+
+body.dark-mode .back-btn:hover {
+  background: #055a9c;
+}
