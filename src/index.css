@@ -720,12 +720,12 @@ body.dark-mode .logo-img {
 
   .nav-container {
     position: fixed;
-    top: 80px;
+    top: 64px;
     left: 0;
     right: 0;
     bottom: 0;
     width: 100%;
-    height: calc(100vh - 80px);
+    height: calc(100vh - 64px);
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(20px) saturate(1.8);
     -webkit-backdrop-filter: blur(20px) saturate(1.8);
@@ -833,6 +833,7 @@ body.dark-mode .logo-img {
     left: 0;
     right: 0;
     width: 100%;
+    transform: none;
     margin: 0;
     padding: 0;
     border-radius: 0;
@@ -842,7 +843,7 @@ body.dark-mode .logo-img {
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    transform: none;
+    border: none;
     box-shadow: none;
     pointer-events: none;
   }
@@ -861,10 +862,12 @@ body.dark-mode .logo-img {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
-    padding: 0;
-    box-shadow: none;
-    border: none;
+    padding: 10px 20px 14px;
+    border-radius: 0 0 28px 28px;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 59, 113, 0.1);
+    border-top: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   }
 
   .logo a {
@@ -895,18 +898,17 @@ body.dark-mode .logo-img {
     display: none;
   }
 
-  /* ── Dark Mode Mobile Logo ── */
+  /* ── Dark Mode Mobile ── */
   body.dark-mode .nav-island {
     background: transparent !important;
     border: none !important;
   }
 
   body.dark-mode .logo {
-    background: transparent;
-    border: none;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
+    background: rgba(11, 17, 32, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-top: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
   /* Override background colors correctly for mobile */
@@ -937,8 +939,8 @@ body.dark-mode .logo-img {
 /* Small Tablets / Large Phones (768px and below) */
 @media screen and (max-width: 768px) {
   .nav-container {
-    top: 75px;
-    height: calc(100vh - 75px);
+    top: 64px;
+    height: calc(100vh - 64px);
   }
 
   .nav-links {
@@ -1203,18 +1205,10 @@ body.dark-mode {
   color: var(--ieee-text);
 }
 
-/* Full footer-style dark navbar */
-body.dark-mode .main-head {
-  background: #0b1620;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
+body.dark-mode .main-head,
 body.dark-mode .main-head.slidedown {
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: #0b1620;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
+  border-bottom: none;
 }
 
 body.dark-mode .white-line {

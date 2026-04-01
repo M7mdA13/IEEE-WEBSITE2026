@@ -1,4 +1,189 @@
+/* ── About page shell ─────────────────────────────────────────────── */
 .about-page {
-  min-height: calc(100vh - 80px);
-  padding: 80px 0 0;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #05090f; /* always space-dark */
+}
+
+/* ── Three.js canvas mount ────────────────────────────────────────── */
+.solar-system-mount {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Force canvas to fill mount */
+.solar-system-mount canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ── CSS2D Planet labels ──────────────────────────────────────────── */
+.planet-label {
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(5, 9, 15, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.planet-label.hovered {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(5, 9, 15, 0.75);
+}
+
+/* ── "Click a planet" hint ───────────────────────────────────────── */
+.solar-hint {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* ── Info panel ──────────────────────────────────────────────────── */
+.planet-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(380px, 88vw);
+  height: 100%;
+  background: rgba(8, 14, 26, 0.82);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  padding: 56px 36px 48px;
+  z-index: 50;
+  overflow-y: auto;
+}
+
+.panel-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.panel-close:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+.panel-accent-bar {
+  width: 36px;
+  height: 3px;
+  background: var(--panel-accent, #3b82f6);
+  border-radius: 2px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 12px var(--panel-accent, #3b82f6);
+}
+
+.panel-subtitle {
+  color: var(--panel-accent, #3b82f6);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+}
+
+.panel-title {
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 800;
+  margin: 0 0 24px;
+  line-height: 1.15;
+}
+
+.panel-body {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 14px;
+  line-height: 1.75;
+  margin: 0 0 40px;
+}
+
+.panel-stats {
+  display: flex;
+  gap: 28px;
+  margin-top: auto;
+}
+
+.panel-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .planet-panel {
+    top: auto;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    max-height: 55vh;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 32px 24px 40px;
+    border-radius: 20px 20px 0 0;
+  }
+
+  .panel-title {
+    font-size: 24px;
+  }
+
+  .solar-hint {
+    bottom: 24px;
+    font-size: 12px;
+  }
 }
