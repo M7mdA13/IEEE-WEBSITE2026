@@ -120,20 +120,22 @@ body {
   position: relative;
 }
 
-/* Decorative light-mode gradient — on a pseudo so it doesn't block transitions */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(135deg, #a7fcf0, #f0f9ff, #9acbf8);
-  z-index: -1;
-  pointer-events: none;
-  opacity: 1;
-  transition: opacity 0.35s ease;
-}
+/* Decorative light-mode gradient — DESKTOP ONLY */
+@media screen and (min-width: 992px) {
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, #9acbf8 0%, #f0f9ff 40%, #E8F2FD 100%);
+    z-index: -1;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.35s ease;
+  }
 
-body.dark-mode::before {
-  opacity: 0;
+  body.dark-mode::before {
+    opacity: 0;
+  }
 }
 
 /* Clip blurred gradients to avoid overflow */
@@ -474,6 +476,13 @@ body.dark-mode .nav-island {
   height: clamp(28px, 4vw, 42px);
   width: auto;
   object-fit: contain;
+  background: transparent;
+  border: none;
+}
+
+/* Invert PNG logo for dark mode to make it white */
+body.dark-mode .logo-img { 
+  filter: brightness(0) invert(1);
 }
 
 .logo svg {
@@ -764,6 +773,19 @@ body.dark-mode .nav-island {
     transition: all 0.3s ease;
   }
 
+  /* Hide the desktop glowing dot on mobile stacked cards */
+  .nav-links a::after {
+    display: none !important;
+  }
+
+  /* Active link highlight for mobile cards */
+  .nav-links a.active {
+    background: rgba(0, 152, 237, 0.08);
+    border-color: rgba(0, 152, 237, 0.3);
+    color: #0098ED;
+    font-weight: 600;
+  }
+
   .nav-links button.theme-toggle-mobile-btn {
     gap: 12px;
     cursor: pointer;
@@ -810,21 +832,23 @@ body.dark-mode .nav-island {
     top: 0;
     left: 0;
     right: 0;
-    margin: 0 auto;
-    width: -moz-fit-content;
-    width: fit-content;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border-radius: 0;
+    z-index: 2200;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 6px 16px;
-    border-radius: 0 0 20px 20px;
-    z-index: 2200;
-    justify-content: center;
-    background: #ffffff; /* Strip glass to break containing block */
+    background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    transform: none; /* Strip transform to break containing block */
-    box-shadow: 0 4px 12px rgba(0, 69, 119, 0.08); /* Replace physical boundary drop with light shadow */
+    transform: none;
+    box-shadow: none;
+    pointer-events: none;
+  }
+
+  .nav-island > * {
+    pointer-events: auto;
   }
 
   .nav-actions {
@@ -833,8 +857,20 @@ body.dark-mode .nav-island {
 
   .logo {
     position: relative;
-    left: 0;
-    transform: none;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    border: none;
+  }
+
+  .logo a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .mobile-nav.standalone-hamburger {
@@ -847,7 +883,8 @@ body.dark-mode .nav-island {
   }
 
   .logo-img {
-    height: clamp(30px, 5vw, 40px);
+    height: 40px;
+    width: auto;
   }
 
   .theme-toggle {
@@ -855,9 +892,7 @@ body.dark-mode .nav-island {
   }
 
   .logo>svg:last-of-type {
-    top: 8%;
-    left: 99.5%;
-    width: clamp(18px, 4vw, 28px);
+    display: none;
   }
 
   /* ── Dark Mode Mobile Logo ── */
@@ -867,12 +902,35 @@ body.dark-mode .nav-island {
   }
 
   body.dark-mode .logo {
-    background: rgba(13, 35, 64, 0.85);
-    border: 1px solid rgba(100, 160, 220, 0.2);
-    border-top: none;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    background: transparent;
+    border: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+  }
+
+  /* Override background colors correctly for mobile */
+  html, body {
+    background-color: #ffffff !important;
+  }
+
+  html.dark-mode, body.dark-mode {
+    background-color: #0b1120 !important;
+  }
+
+  /* Hide the hero sparkles gradients on mobile as they cause an off-center blue hue */
+  .sparkles-gradients {
+    display: none;
+  }
+
+  /* Perfectly center the hero content on mobile (removing desktop nav offset) */
+  .sparkles-hero {
+    padding-top: 0;
+  }
+
+  /* Optically correct the vertical center due to the heavy bottom text and mobile URL bars */
+  .hero-content {
+    transform: translateY(-6vh);
   }
 }
 
@@ -1163,9 +1221,7 @@ body.dark-mode .white-line {
   background-color: #162032;
 }
 
-body.dark-mode .logo {
-  background-color: #162032;
-}
+
 
 body.dark-mode .logo svg path {
   fill: #162032;
@@ -1219,9 +1275,7 @@ body.dark-mode .text-animate-sub {
   color: var(--ieee-text-soft);
 }
 
-body.dark-mode .logo-img {
-  filter: brightness(0) invert(1);
-}
+
 
 body.dark-mode .header-ieee-logo {
   filter: brightness(0) invert(1);
@@ -1672,6 +1726,10 @@ body.dark-mode .sparkles-mask {
 .logo-animate {
   animation: pop-in 800ms ease-out 120ms both;
   will-change: transform, opacity;
+}
+
+body.dark-mode .logo-animate {
+  filter: brightness(0) invert(1);
 }
 
 .text-animate-title {
