@@ -1,0 +1,81 @@
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.analytics-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.analytics-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: var(--primary-color);
+}
+
+.analytics-card h3 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.chart-wrapper {
+  width: 100%;
+  height: 320px;
+}
+
+/* Recharts Customizations */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: var(--border-color);
+}
+
+.recharts-text {
+  fill: var(--text-light);
+  font-family: var(--font-body);
+}
+
+.custom-tooltip {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: var(--shadow);
+}
+
+.custom-tooltip p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.custom-tooltip-label {
+  font-weight: 700;
+  margin-bottom: 4px !important;
+  color: var(--text-color);
+}
+
+.custom-tooltip-value {
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .chart-wrapper {
+    height: 280px;
+  }
+}
