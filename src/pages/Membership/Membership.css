@@ -1,0 +1,131 @@
+.membership-page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background-color: var(--ieee-bg);
+  text-align: center;
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+  margin-top: 60px;
+  transition: background-color 0.35s ease;
+}
+
+.membership-content {
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.membership-icon {
+  width: 120px;
+  height: auto;
+  margin-bottom: 0.5rem;
+}
+
+.membership-status {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ieee-text-soft);
+  margin: 0;
+  transition: color 0.25s ease;
+}
+
+.membership-message {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ieee-text-soft);
+  line-height: 1.5;
+  margin: 0 0 1rem 0;
+  max-width: 700px;
+  transition: color 0.25s ease;
+}
+
+.stay-tuned {
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--ieee-cyan);
+  margin: 1.5rem 0;
+}
+
+.notify-form {
+  display: flex;
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  border-radius: 50px;
+  border: 1px solid var(--ieee-cyan);
+  background-color: var(--ieee-bg-card);
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(27, 216, 244, 0.1);
+  transition: background-color 0.35s ease, border-color 0.35s ease;
+}
+
+.notify-input {
+  flex: 1;
+  padding: 1rem 1.5rem;
+  border: none;
+  font-size: 1rem;
+  color: var(--ieee-text-soft);
+  outline: none;
+  background: transparent;
+  font-weight: 600;
+  transition: color 0.25s ease;
+}
+
+.notify-input::placeholder {
+  color: var(--ieee-text-muted);
+  font-weight: 600;
+}
+
+.notify-button {
+  background-color: var(--ieee-cyan);
+  color: white;
+  border: none;
+  padding: 0 2rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.notify-button:hover {
+  background-color: var(--ieee-cyan-hover);
+}
+
+@media (max-width: 600px) {
+  .membership-status {
+    font-size: 1.25rem;
+  }
+
+  .membership-message {
+    font-size: 1rem;
+  }
+
+  .stay-tuned {
+    font-size: 2.8rem;
+  }
+
+  .notify-form {
+    flex-direction: column;
+    border-radius: 20px;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    gap: 10px;
+  }
+
+  .notify-input {
+    border-radius: 50px;
+    border: 1px solid var(--ieee-cyan);
+    background: var(--ieee-bg-card);
+  }
+
+  .notify-button {
+    padding: 1rem;
+    border-radius: 50px;
+  }
+}
