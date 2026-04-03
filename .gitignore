@@ -30,3 +30,15 @@ node_modules
 # Windows OS files
 Thumbs.db
 .DS_Store
+
+# Local project reports and notes (not for version control)
+PROJECT_REPORT.md
+*.report.md
+NOTES.md
+
+# Backend secrets (backend has its own .gitignore too)
+backend/.env
+backend/node_modules/
+
+# Dashboard git worktree (separate branch, not part of main)
+dashboard/
