@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import api from '../../api/index'
 
 const notifications = [
   { id: 1, text: 'New member joined: John Doe', time: '5m ago', icon: 'fa-user-plus', color: 'blue' },
@@ -13,6 +14,7 @@ function Navbar({ toggleTheme, theme, setIsSidebarOpen }) {
   const [profileImage, setProfileImage] = useState(() => {
     return localStorage.getItem('profileImage') || "https://randomuser.me/api/portraits/men/1.jpg"
   })
+  const user = JSON.parse(localStorage.getItem('user') || '{}')
   const dropdownRef = useRef(null)
   const notificationRef = useRef(null)
   const navigate = useNavigate()
@@ -38,8 +40,14 @@ function Navbar({ toggleTheme, theme, setIsSidebarOpen }) {
     }
   }, [])
 
-  const handleLogout = () => {
-    navigate('/login')
+  const handleLogout = async () => {
+    try {
+      await api.post('/admin/auth/logout')
+    } finally {
+      localStorage.removeItem('isLoggedIn')
+      localStorage.removeItem('user')
+      navigate('/login')
+    }
   }
 
   return (
@@ -98,7 +106,7 @@ function Navbar({ toggleTheme, theme, setIsSidebarOpen }) {
         <div className="user-profile" ref={dropdownRef}>
           <img src={profileImage} alt="User Profile" />
           <div className="user-dropdown" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-            <span className="user-name">Admin</span>
+            <span className="user-name">{user.name || 'Admin'}</span>
             <i className="fas fa-chevron-down"></i>
             <div className={`dropdown-menu ${isDropdownOpen ? 'show' : ''}`}>
               <a href="#" onClick={(e) => { e.preventDefault(); navigate('/dashboard/settings'); setIsDropdownOpen(false); }}>
