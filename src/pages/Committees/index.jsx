@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../api/public';
+import { committees as staticCommittees } from '../../data/committees';
 import './Committees.css';
 
 /* ── Animation variants ── */
@@ -82,8 +83,8 @@ const Committees = () => {
 
   useEffect(() => {
     api.get('/committees')
-      .then(({ data }) => setAll(data.data))
-      .catch(() => {})
+      .then(({ data }) => setAll(data.data?.length > 0 ? data.data : staticCommittees))
+      .catch(() => setAll(staticCommittees))
       .finally(() => setLoading(false));
   }, []);
 

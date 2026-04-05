@@ -2,6 +2,12 @@ import React, { useRef, useState, useEffect } from 'react';
 import './Events.css';
 import { CalendarIcon, LocationIcon } from '../../components/Icons';
 import api from '../../api/public';
+import { upcomingEvent, pastEvents } from '../../data/events';
+
+const staticFallback = [
+  { ...upcomingEvent, _id: upcomingEvent.id, status: 'upcoming' },
+  ...pastEvents.map(e => ({ ...e, _id: e.id, status: 'completed' })),
+];
 
 const formatDate = (dateStr) => {
   if (!dateStr) return '—';
@@ -84,8 +90,8 @@ const Events = () => {
 
   useEffect(() => {
     api.get('/events')
-      .then(({ data }) => setEvents(data.data))
-      .catch(() => setError('Failed to load events. Please try again later.'))
+      .then(({ data }) => setEvents(data.data?.length > 0 ? data.data : staticFallback))
+      .catch(() => setEvents(staticFallback))
       .finally(() => setLoading(false));
   }, []);
 
