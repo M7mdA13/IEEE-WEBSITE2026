@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getTechnical, getNonTechnical } from '../../data/committees';
+import api from '../../api/public';
 import './Committees.css';
 
 /* ── Animation variants ── */
@@ -77,7 +77,17 @@ const CommitteeCard = ({ committee }) => {
 /* ── Page ── */
 const Committees = () => {
   const [activeTab, setActiveTab] = useState('technical');
-  const list = activeTab === 'technical' ? getTechnical() : getNonTechnical();
+  const [all, setAll] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get('/committees')
+      .then(({ data }) => setAll(data.data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const list = all.filter(c => c.category === activeTab);
 
   const switchTab = (tab) => {
     if (tab === activeTab) return;
@@ -171,20 +181,30 @@ const Committees = () => {
         </motion.div>
 
         {/* Animated card grid */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            className="committees-grid"
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-            exit="exit"
-          >
-            {list.map((committee) => (
-              <CommitteeCard key={committee.slug} committee={committee} />
-            ))}
-          </motion.div>
-        </AnimatePresence>
+        {loading ? (
+          <p style={{ textAlign: 'center', opacity: 0.5, padding: '60px 0' }}>Loading committees...</p>
+        ) : (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              className="committees-grid"
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              exit="exit"
+            >
+              {list.length > 0 ? (
+                list.map((committee) => (
+                  <CommitteeCard key={committee._id} committee={committee} />
+                ))
+              ) : (
+                <p style={{ opacity: 0.5, gridColumn: '1 / -1', textAlign: 'center', padding: '40px 0' }}>
+                  No {activeTab} committees yet.
+                </p>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        )}
 
       </div>
     </div>
