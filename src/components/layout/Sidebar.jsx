@@ -3,8 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom'
 
 const menuItems = [
   { id: 'dashboard', icon: 'fa-tachometer-alt', label: 'Dashboard', path: '/dashboard' },
+  { id: 'committees', icon: 'fa-layer-group', label: 'Committees', path: '/dashboard/committees' },
   { id: 'events', icon: 'fa-calendar-alt', label: 'Events', path: '/dashboard/events' },
-  { id: 'members', icon: 'fa-users', label: 'Members', path: '/dashboard/members' },
+  { id: 'excom', icon: 'fa-users', label: 'ExCom', path: '/dashboard/members' },
   { id: 'partners', icon: 'fa-handshake', label: 'Partners', path: '/dashboard/partners' },
   { id: 'analytics', icon: 'fa-chart-line', label: 'Analytics', path: '/dashboard/analytics' },
   { id: 'settings', icon: 'fa-cog', label: 'Settings', path: '/dashboard/settings' }
