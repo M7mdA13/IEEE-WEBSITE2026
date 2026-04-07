@@ -2,8 +2,8 @@
  * Seed script — populates MongoDB with the current static data from src/data/
  * Run once: node backend/scripts/seed.js
  *
- * WARNING: This drops and repopulates Committee, Member, Event, Page,
- * RecruitmentStatus, and creates one default admin User.
+ * WARNING: This drops and repopulates Committee, Member, Event, ExCom, Partner,
+ * Page, RecruitmentStatus, and creates one default admin User.
  */
 
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
@@ -13,6 +13,8 @@ const bcrypt = require('bcryptjs');
 const Committee = require('../models/Committee');
 const Member = require('../models/Member');
 const Event = require('../models/Event');
+const ExCom = require('../models/ExCom');
+const Partner = require('../models/Partner');
 const Page = require('../models/Page');
 const RecruitmentStatus = require('../models/RecruitmentStatus');
 const User = require('../models/User');
@@ -268,6 +270,155 @@ const committees = [
   },
 ];
 
+// ── Events ────────────────────────────────────────────────────────────────────
+
+const events = [
+  {
+    title: 'IEEE MUST Tech Summit 2025',
+    description: 'Our flagship annual tech summit bringing together students, professionals, and industry leaders for a full day of talks, workshops, and networking. Topics this year span AI, cybersecurity, embedded systems, and the future of engineering education.',
+    date: new Date('2025-05-15T09:00:00'),
+    location: 'MUST University Main Auditorium, Giza',
+    image: null,
+    status: 'upcoming',
+    registrationLink: '#',
+    agendaLink: null,
+    recapLink: null,
+    attendanceCount: null,
+  },
+  {
+    title: 'AI Workshop: Hands-On Machine Learning',
+    description: 'A two-day intensive workshop covering the fundamentals of machine learning with Python and scikit-learn. Participants built and evaluated their first models by the end of day two.',
+    date: new Date('2024-11-20T10:00:00'),
+    location: 'IEEE MUST Lab Room 204',
+    image: null,
+    status: 'completed',
+    registrationLink: null,
+    agendaLink: null,
+    recapLink: '#',
+    attendanceCount: 47,
+  },
+  {
+    title: 'Cybersecurity CTF Challenge',
+    description: 'An eight-hour Capture the Flag competition designed for beginners and intermediate players alike. Teams of three competed across web exploitation, cryptography, reverse engineering, and OSINT categories.',
+    date: new Date('2024-10-05T14:00:00'),
+    location: 'MUST University Computer Lab B',
+    image: null,
+    status: 'completed',
+    registrationLink: null,
+    agendaLink: null,
+    recapLink: '#',
+    attendanceCount: 62,
+  },
+  {
+    title: 'Web Dev Bootcamp: React & Node.js',
+    description: 'A three-session bootcamp walking participants through building a full-stack web application from scratch. Covered React component architecture, REST API design, and MongoDB integration.',
+    date: new Date('2024-08-12T11:00:00'),
+    location: 'Online — Zoom',
+    image: null,
+    status: 'completed',
+    registrationLink: null,
+    agendaLink: null,
+    recapLink: '#',
+    attendanceCount: 83,
+  },
+  {
+    title: 'IEEE MUST Recruitment Drive 2024',
+    description: 'The official annual recruitment event for IEEE MUST Student Branch. New students learned about each committee, met current members, and submitted applications for the 2024–2025 academic year.',
+    date: new Date('2024-09-25T12:00:00'),
+    location: 'MUST University Engineering Faculty Hall',
+    image: null,
+    status: 'completed',
+    registrationLink: null,
+    agendaLink: null,
+    recapLink: null,
+    attendanceCount: 130,
+  },
+];
+
+// ── ExCom ─────────────────────────────────────────────────────────────────────
+
+const excom = [
+  {
+    name: 'Mahmoud Alsonbaty',
+    role: 'Chairman',
+    department: 'Executive Committee',
+    bio: 'Leading IEEE MUST Student Branch with a focus on technical excellence, community growth, and impactful student initiatives.',
+    photo: '/images/alsonbaty copy.png',
+    email: 'chairman@ieeemust.com',
+    linkedin: '#',
+    github: '#',
+    order: 1,
+    isActive: true,
+  },
+  {
+    name: 'Shahd Abdelaziz',
+    role: 'Vice Chair',
+    department: 'Executive Committee',
+    bio: 'Supporting branch operations and ensuring collaboration across all committees to deliver memorable experiences for every member.',
+    photo: '/images/shahd copy.png',
+    email: 'vicechair@ieeemust.com',
+    linkedin: '#',
+    github: '#',
+    order: 2,
+    isActive: true,
+  },
+  {
+    name: 'Mostafa Samir',
+    role: 'Treasurer',
+    department: 'Executive Committee',
+    bio: 'Managing the branch budget, sponsorships, and financial planning to keep IEEE MUST running smoothly throughout the year.',
+    photo: '/images/moustafa copy.png',
+    email: 'treasurer@ieeemust.com',
+    linkedin: '#',
+    github: '#',
+    order: 3,
+    isActive: true,
+  },
+  {
+    name: 'Karima Ayman',
+    role: 'Secretary',
+    department: 'Executive Committee',
+    bio: 'Keeping the branch organized — managing meeting minutes, internal communications, and official documentation for all activities.',
+    photo: '/images/karima copy.png',
+    email: 'secretary@ieeemust.com',
+    linkedin: '#',
+    github: '#',
+    order: 4,
+    isActive: true,
+  },
+  {
+    name: 'Mennatallah Mostafa',
+    role: 'Webmaster',
+    department: 'Executive Committee',
+    bio: 'Building and maintaining the IEEE MUST digital presence — from the website you are reading right now to internal tools and platforms.',
+    photo: '/images/Mennatallah copy.png',
+    email: 'webmaster@ieeemust.com',
+    linkedin: '#',
+    github: '#',
+    order: 5,
+    isActive: true,
+  },
+];
+
+// ── Partners ──────────────────────────────────────────────────────────────────
+
+const partners = [
+  { name: 'Partner 1',  logo: '/images/partner 1.png',  category: 'Industry',  order: 1,  isActive: true, website: null },
+  { name: 'Partner 2',  logo: '/images/partner 2.png',  category: 'Industry',  order: 2,  isActive: true, website: null },
+  { name: 'Partner 3',  logo: '/images/partner 3.png',  category: 'Industry',  order: 3,  isActive: true, website: null },
+  { name: 'Partner 4',  logo: '/images/partner 4.png',  category: 'Industry',  order: 4,  isActive: true, website: null },
+  { name: 'Partner 5',  logo: '/images/partner 5.webp', category: 'Industry',  order: 5,  isActive: true, website: null },
+  { name: 'Partner 6',  logo: '/images/partner 6.png',  category: 'Industry',  order: 6,  isActive: true, website: null },
+  { name: 'Partner 7',  logo: '/images/partner 7.png',  category: 'Technology', order: 7, isActive: true, website: null },
+  { name: 'Partner 8',  logo: '/images/partner 8.png',  category: 'Technology', order: 8, isActive: true, website: null },
+  { name: 'Partner 9',  logo: '/images/partner 9.png',  category: 'Technology', order: 9, isActive: true, website: null },
+  { name: 'Sponsor 1',  logo: '/images/logo1.png',      category: 'Sponsor',   order: 10, isActive: true, website: null },
+  { name: 'Sponsor 2',  logo: '/images/logo2.png',      category: 'Sponsor',   order: 11, isActive: true, website: null },
+  { name: 'Sponsor 3',  logo: '/images/logo3.png',      category: 'Sponsor',   order: 12, isActive: true, website: null },
+  { name: 'Sponsor 4',  logo: '/images/logo4.png',      category: 'Sponsor',   order: 13, isActive: true, website: null },
+  { name: 'Sponsor 5',  logo: '/images/logo5.png',      category: 'Sponsor',   order: 14, isActive: true, website: null },
+];
+
 const DEFAULT_ADMIN_EMAIL = 'adham@ieeemust.com';
 const DEFAULT_ADMIN_PASSWORD = 'mido2004'; // CHANGE THIS IMMEDIATELY AFTER FIRST LOGIN
 
@@ -282,6 +433,8 @@ async function seed() {
     Committee.deleteMany({}),
     Member.deleteMany({}),
     Event.deleteMany({}),
+    ExCom.deleteMany({}),
+    Partner.deleteMany({}),
     Page.deleteMany({}),
     RecruitmentStatus.deleteMany({}),
   ]);
@@ -307,6 +460,18 @@ async function seed() {
     await Member.insertMany(allMembers);
     console.log(`  Seeded: ${committee.name} (${allMembers.length} members)`);
   }
+
+  // Seed events
+  await Event.insertMany(events);
+  console.log(`Seeded ${events.length} events (1 upcoming, ${events.length - 1} completed)`);
+
+  // Seed ExCom
+  await ExCom.insertMany(excom);
+  console.log(`Seeded ${excom.length} ExCom members`);
+
+  // Seed partners
+  await Partner.insertMany(partners);
+  console.log(`Seeded ${partners.length} partners`);
 
   // Seed default pages (CMS content)
   await Page.insertMany([
