@@ -78,14 +78,12 @@ const CommitteeCard = ({ committee }) => {
 /* ── Page ── */
 const Committees = () => {
   const [activeTab, setActiveTab] = useState('technical');
-  const [all, setAll] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [all, setAll] = useState(staticCommittees);
 
   useEffect(() => {
     api.get('/committees')
-      .then(({ data }) => setAll(data.data?.length > 0 ? data.data : staticCommittees))
-      .catch(() => setAll(staticCommittees))
-      .finally(() => setLoading(false));
+      .then(({ data }) => { if (data.data?.length > 0) setAll(data.data); })
+      .catch(() => {});
   }, []);
 
   const list = all.filter(c => c.category === activeTab);
@@ -182,30 +180,20 @@ const Committees = () => {
         </motion.div>
 
         {/* Animated card grid */}
-        {loading ? (
-          <p style={{ textAlign: 'center', opacity: 0.5, padding: '60px 0' }}>Loading committees...</p>
-        ) : (
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              className="committees-grid"
-              variants={containerVariants}
-              initial="hidden"
-              animate="show"
-              exit="exit"
-            >
-              {list.length > 0 ? (
-                list.map((committee) => (
-                  <CommitteeCard key={committee._id} committee={committee} />
-                ))
-              ) : (
-                <p style={{ opacity: 0.5, gridColumn: '1 / -1', textAlign: 'center', padding: '40px 0' }}>
-                  No {activeTab} committees yet.
-                </p>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            className="committees-grid"
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            exit="exit"
+          >
+            {list.map((committee) => (
+              <CommitteeCard key={committee._id || committee.slug} committee={committee} />
+            ))}
+          </motion.div>
+        </AnimatePresence>
 
       </div>
     </div>

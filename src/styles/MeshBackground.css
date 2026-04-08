@@ -1,0 +1,77 @@
+/* ═══════════════════════════════════════════════════
+   MESH BACKGROUND
+   Provides the entire page background (base gradient
+   + drifting colour blobs). It's fixed full-viewport
+   at z-index:-1 so all page content sits above it.
+
+   Why this approach:
+     body { background-color } covers z-index:-1 children,
+     hiding the blobs. By making body transparent and
+     letting this element supply the background, the blobs
+     are always visible on every screen size.
+═══════════════════════════════════════════════════ */
+
+.mesh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+
+  background: var(--ieee-bg);
+  transition: background 0.35s ease;
+}
+
+/* ── Blobs disabled — clean flat background on all modes ── */
+.mesh-blob {
+  display: none;
+}
+
+/* ── Blob 1: cyan, top-left ── */
+.mesh-blob--1 {
+  width: 600px;
+  height: 600px;
+  background: #3DE0FC;
+  top: -160px;
+  left: -160px;
+  animation: blob-drift-1 42s ease-in-out infinite alternate;
+}
+
+/* ── Blob 2: green, bottom-right ── */
+.mesh-blob--2 {
+  width: 480px;
+  height: 480px;
+  background: #20E17D;
+  bottom: 5%;
+  right: -100px;
+  animation: blob-drift-2 36s ease-in-out infinite alternate;
+}
+
+/* ── Blob 3: blue, center ── */
+.mesh-blob--3 {
+  width: 420px;
+  height: 420px;
+  background: #42A5F5;
+  top: 40%;
+  left: 42%;
+  animation: blob-drift-3 48s ease-in-out infinite alternate;
+}
+
+@keyframes blob-drift-1 {
+  from { transform: translate(0,     0)     scale(1);    }
+  to   { transform: translate(100px, 140px) scale(1.2);  }
+}
+
+@keyframes blob-drift-2 {
+  from { transform: translate(0,     0)      scale(1.1);  }
+  to   { transform: translate(-80px, -120px) scale(0.88); }
+}
+
+@keyframes blob-drift-3 {
+  from { transform: translate(0,    0)     scale(1);    }
+  to   { transform: translate(60px, -100px) scale(1.15); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mesh-blob { animation: none; }
+}

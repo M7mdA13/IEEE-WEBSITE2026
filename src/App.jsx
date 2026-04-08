@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AskAIFAB from './components/AskAIFAB';
+import MeshBackground from './components/MeshBackground';
 import Home from './pages/Home';
 import Events from './pages/Events';
 import Membership from './pages/Membership';
@@ -95,6 +96,7 @@ const App = () => {
         </defs>
       </svg>
 
+      <MeshBackground />
       <ScrollToTop />
       <Navbar isDark={isDark} toggleTheme={toggleTheme} />
 

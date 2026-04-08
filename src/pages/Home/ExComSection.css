@@ -1,0 +1,270 @@
+.excom-full-section {
+  padding: 120px 0;
+  width: 100%;
+  background-color: transparent;
+  overflow-x: hidden;
+}
+
+.excom-title-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 100px;
+}
+
+.excom-main-title {
+  text-align: center;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 900;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+  color: var(--ieee-text);
+  margin-bottom: 14px;
+}
+
+.excom-title-underline {
+  height: 4px;
+  background: linear-gradient(90deg, var(--ieee-accent), var(--ieee-cyan));
+  border-radius: 2px;
+  /* width is animated by Framer Motion */
+}
+
+.excom-center-constraint {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.excom-vertical-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
+  width: 100%;
+}
+
+.excom-stagger-row {
+  display: flex;
+  width: 100%;
+}
+
+.align-to-left { justify-content: flex-start; }
+.align-to-right { justify-content: flex-end; }
+
+.excom-pill-wrapper {
+  display: flex;
+  align-items: flex-end;
+  width: 50%;
+  position: relative;
+}
+
+.align-to-right .excom-pill-wrapper {
+  flex-direction: row-reverse;
+}
+
+/* ── THE PERSON: 250px ── */
+.excom-person-frame {
+  width: 220px;
+  height: 250px;
+  flex-shrink: 0;
+  z-index: 10;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* overflow:hidden removed — transparent PNG cutouts need to breathe */
+}
+
+.excom-person-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: grayscale(100%);
+  transition: filter 0.4s ease, transform 0.4s ease;
+}
+
+.excom-pill-wrapper:hover .excom-person-img {
+  filter: grayscale(0%);
+  transform: translateY(-6px);
+}
+
+/* ── THE PILL: 170px ── */
+.excom-heavy-pill {
+  height: 170px;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  z-index: 5;
+  margin-left: -110px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Spotlight: cursor-following radial glow */
+.excom-heavy-pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.14) 0%, transparent 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit;
+  z-index: 0;
+}
+
+.excom-heavy-pill:hover::before {
+  opacity: 1;
+}
+
+/* keep children above the spotlight layer */
+.excom-info-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.align-to-right .excom-heavy-pill {
+  margin-left: 0;
+  margin-right: -110px;
+}
+
+.pill-grow-right {
+  border-radius: 0 100px 100px 0;
+  background: linear-gradient(120deg, #5db8f5 0%, #82C7FF 60%, #a8daff 100%);
+  padding: 0 40px 0 130px;
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.pill-grow-left {
+  border-radius: 100px 0 0 100px;
+  background: linear-gradient(240deg, #003b6b 0%, #004577 60%, #005a96 100%);
+  padding: 0 130px 0 40px;
+  text-align: right;
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.excom-pill-wrapper:hover .pill-grow-right {
+  box-shadow: 0 8px 32px rgba(130, 199, 255, 0.45);
+  transform: translateY(-4px);
+}
+
+.excom-pill-wrapper:hover .pill-grow-left {
+  box-shadow: 0 8px 32px rgba(0, 69, 119, 0.55);
+  transform: translateY(-4px);
+}
+
+.align-to-right .excom-info-content { align-items: flex-end; }
+
+.excom-name-bold {
+  color: #ffffff !important;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 1.6rem;
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.excom-role-subtitle {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin-bottom: 15px;
+}
+
+.excom-social-strip {
+  display: flex;
+  gap: 20px;
+}
+
+.excom-link-icon {
+  color: #ffffff !important;
+  font-size: 1.3rem;
+  text-decoration: none !important;
+  transition: transform 0.18s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.2s ease;
+  opacity: 0.9;
+  display: inline-block; /* required for transform to apply correctly */
+}
+
+.excom-link-icon:hover {
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════
+   RESPONSIVITY
+═══════════════════════════════════ */
+@media (max-width: 1024px) {
+  .excom-center-constraint { max-width: 90%; }
+}
+
+/* ── Tablet (769px – 960px): pill-wrapper too narrow at 50% ── */
+@media (max-width: 960px) and (min-width: 769px) {
+  .excom-pill-wrapper { width: 70%; }
+
+  .excom-person-frame { width: 180px; height: 210px; }
+
+  .pill-grow-right { padding: 0 28px 0 105px; }
+  .pill-grow-left  { padding: 0 105px 0 28px; }
+
+  .excom-heavy-pill {
+    height: 150px;
+    margin-left: -90px;
+  }
+
+  .align-to-right .excom-heavy-pill {
+    margin-left: 0;
+    margin-right: -90px;
+  }
+
+  .excom-name-bold    { font-size: 1.3rem; }
+  .excom-role-subtitle { font-size: 0.95rem; }
+  .excom-social-strip  { gap: 14px; }
+}
+
+@media (max-width: 768px) {
+  .excom-stagger-row { justify-content: center !important; }
+  .excom-pill-wrapper { width: 100%; max-width: 420px; }
+  .align-to-right .excom-pill-wrapper { flex-direction: row; }
+  
+  .excom-heavy-pill { 
+    height: 125px; 
+    margin-left: -90px !important; 
+    margin-right: 0 !important;
+    border-radius: 0 100px 100px 0 !important;
+    /* PUSHES TEXT AWAY FROM EDGES */
+    padding-left: 105px !important;
+    padding-right: 40px !important; 
+    text-align: left !important;
+  }
+  
+  .excom-person-frame { width: 170px; height: 190px; }
+  .excom-name-bold { font-size: 1.3rem; }
+  .excom-info-content { align-items: flex-start !important; }
+}
+
+/* SMALL MOBILE (480px and below) */
+@media (max-width: 480px) {
+  .excom-pill-wrapper { max-width: 340px; }
+  
+  .excom-heavy-pill {
+    height: 105px;
+    margin-left: -75px !important;
+    /* TIGHTENS PADDING SO TEXT REMAINS CENTERED BUT SAFE */
+    padding-left: 85px !important;
+    padding-right: 30px !important;
+  }
+  
+  .excom-person-frame { width: 130px; height: 155px; }
+  
+  .excom-name-bold { 
+    font-size: 1.05rem; 
+    letter-spacing: -0.2px; /* Tighten for long names */
+  }
+  
+  .excom-role-subtitle { 
+    font-size: 0.8rem; 
+    margin-bottom: 8px;
+  }
+
+  .excom-social-strip { gap: 12px; }
+  .excom-link-icon { font-size: 1.1rem; }
+}

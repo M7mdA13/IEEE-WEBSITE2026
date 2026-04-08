@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '../../api/public';
+import { getCommitteeBySlug } from '../../data/committees';
 import './Committee.css';
 
 const Stars = ({ count }) => (
@@ -34,39 +35,35 @@ const SocialLinks = ({ github, linkedin, email }) => (
 
 const Committee = () => {
   const { slug } = useParams();
-  const [committee, setCommittee] = useState(null);
-  const [board, setBoard] = useState([]);
-  const [featured, setFeatured] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
+  const getStatic = (s) => {
+    const staticCmt = getCommitteeBySlug(s);
+    if (!staticCmt) return null;
+    return {
+      committee: staticCmt,
+      board: (staticCmt.board || []).map((m, i) => ({ _id: `sb-${i}`, ...m })),
+      featured: (staticCmt.members || []).map((m, i) => ({ _id: `sm-${i}`, ...m })),
+    };
+  };
+
+  const initial = getStatic(slug);
+  const [committee, setCommittee] = useState(initial?.committee || null);
+  const [board, setBoard] = useState(initial?.board || []);
+  const [featured, setFeatured] = useState(initial?.featured || []);
+  const [notFound, setNotFound] = useState(!initial);
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const [cmtRes, membersRes] = await Promise.all([
-          api.get(`/committees/${slug}`),
-          api.get(`/members?committee=${slug}`),
-        ]);
-        setCommittee(cmtRes.data.data);
-        const members = membersRes.data.data;
+    api.get(`/committees/${slug}`)
+      .then(async (cmtRes) => {
+        const apiCmt = cmtRes.data.data;
+        if (!apiCmt) return;
+        const membersRes = await api.get(`/members?committee=${slug}`);
+        setCommittee(apiCmt);
+        const members = membersRes.data.data || [];
         setBoard(members.filter(m => m.roleType === 'head' || m.roleType === 'vice_head'));
         setFeatured(members.filter(m => m.roleType === 'featured'));
-      } catch (err) {
-        if (err.response?.status === 404) setNotFound(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
+      })
+      .catch(() => {});
   }, [slug]);
-
-  if (loading) {
-    return (
-      <div className="committee-not-found">
-        <p style={{ opacity: 0.5 }}>Loading...</p>
-      </div>
-    );
-  }
 
   if (notFound || !committee) {
     return (
@@ -241,46 +238,6 @@ const Committee = () => {
             </motion.section>
           )}
 
-          {/* Our Best Members */}
-          {featured.length > 0 && (
-            <motion.section
-              className="cmt-section"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.6 }}
-            >
-              <h2 className="cmt-section-title">Our Best Members</h2>
-              <div className="cmt-members-grid">
-                {featured.map((member, i) => (
-                  <motion.div
-                    key={member._id}
-                    className="cmt-member-card"
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1, duration: 0.5 }}
-                  >
-                    <div className="cmt-member-photo-area">
-                      {member.photo ? (
-                        <img src={member.photo} alt={member.name} className="cmt-member-photo-img" />
-                      ) : (
-                        <div className="cmt-member-photo-placeholder">
-                          <i className="fas fa-user"></i>
-                        </div>
-                      )}
-                    </div>
-                    <div className="cmt-member-body">
-                      <h4 className="cmt-member-name">{member.name}</h4>
-                      {member.stars && <Stars count={member.stars} />}
-                      {member.bio && <p className="cmt-member-bio">{member.bio}</p>}
-                      <SocialLinks github={member.github} linkedin={member.linkedin} email={member.email} />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.section>
-          )}
 
         </div>
       </div>

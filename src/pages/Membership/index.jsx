@@ -1,22 +1,55 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import './Membership.css';
 
 const Membership = () => {
   return (
     <div className="membership-page">
       <div className="membership-content">
-        <img src="/images/˙◠˙.svg" alt="Recruitment Status" className="membership-icon" />
+        <motion.img
+          src="/images/˙◠˙.svg"
+          alt="Recruitment Status"
+          className="membership-icon"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        />
 
-        <h2 className="membership-status">Recruitment is currently closed.</h2>
+        <motion.h2
+          className="membership-status"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          Recruitment is currently closed.
+        </motion.h2>
 
-        <p className="membership-message">
+        <motion.p
+          className="membership-message"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
           We're not accepting new members right now.<br />
           Recruitment happens online and on campus, and we announce everything on our social media.
-        </p>
+        </motion.p>
 
-        <h1 className="stay-tuned">Stay Tuned!</h1>
+        <motion.h1
+          className="stay-tuned"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          Stay Tuned!
+        </motion.h1>
 
-        <form className="notify-form" onSubmit={(e) => e.preventDefault()}>
+        <motion.form
+          className="notify-form"
+          onSubmit={(e) => e.preventDefault()}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
           <input
             type="email"
             placeholder="Please enter your email address"
@@ -26,7 +59,7 @@ const Membership = () => {
           <button type="submit" className="notify-button">
             Notify me
           </button>
-        </form>
+        </motion.form>
       </div>
     </div>
   );
