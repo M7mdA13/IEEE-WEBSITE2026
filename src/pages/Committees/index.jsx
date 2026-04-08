@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getTechnical, getNonTechnical } from '../../data/committees';
+import api from '../../api/public';
+import { committees as staticCommittees } from '../../data/committees';
 import './Committees.css';
 
 /* ── Animation variants ── */
@@ -77,7 +78,15 @@ const CommitteeCard = ({ committee }) => {
 /* ── Page ── */
 const Committees = () => {
   const [activeTab, setActiveTab] = useState('technical');
-  const list = activeTab === 'technical' ? getTechnical() : getNonTechnical();
+  const [all, setAll] = useState(staticCommittees);
+
+  useEffect(() => {
+    api.get('/committees')
+      .then(({ data }) => { if (data.data?.length > 0) setAll(data.data); })
+      .catch(() => {});
+  }, []);
+
+  const list = all.filter(c => c.category === activeTab);
 
   const switchTab = (tab) => {
     if (tab === activeTab) return;
@@ -181,7 +190,7 @@ const Committees = () => {
             exit="exit"
           >
             {list.map((committee) => (
-              <CommitteeCard key={committee.slug} committee={committee} />
+              <CommitteeCard key={committee._id || committee.slug} committee={committee} />
             ))}
           </motion.div>
         </AnimatePresence>

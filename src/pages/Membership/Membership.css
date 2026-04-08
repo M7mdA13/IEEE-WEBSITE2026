@@ -1,14 +1,12 @@
 .membership-page {
-  min-height: calc(100vh - 80px);
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4rem 2rem;
-  background-color: var(--ieee-bg);
+  padding: 120px 2rem 4rem; /* top: 120px clears the fixed navbar */
+  box-sizing: border-box;
   text-align: center;
   font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
-  margin-top: 60px;
-  transition: background-color 0.35s ease;
 }
 
 .membership-content {

@@ -102,6 +102,18 @@ h2, h3, h4, .section-title {
   border: 0 solid;
 }
 
+/* Make form elements inherit the site font — browsers don't do this by default */
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+html {
+  /* Permanent fallback — prevents white from ever showing through.
+     var(--ieee-bg) here reads :root = #E8F2FD (light mode always).
+     Dark mode is handled by .mesh-bg which covers everything. */
+  background-color: #E8F2FD;
+}
+
 html,
 body {
   line-height: 1.5;
@@ -112,7 +124,6 @@ body {
   font-variation-settings: normal;
   -webkit-tap-highlight-color: transparent;
   overflow-x: hidden;
-  background-color: var(--ieee-bg);
   color: var(--ieee-text);
   min-height: 100dvh;
   display: flex;
@@ -120,24 +131,20 @@ body {
   position: relative;
 }
 
-/* Decorative light-mode gradient — DESKTOP ONLY */
-@media screen and (min-width: 992px) {
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: radial-gradient(ellipse at 50% 0%, #9acbf8 0%, #f0f9ff 40%, #E8F2FD 100%);
-    z-index: -1;
-    pointer-events: none;
-    opacity: 1;
-    transition: opacity 0.35s ease;
-  }
-
-  body.dark-mode::before {
-    opacity: 0;
-  }
+body {
+  /* transparent so .mesh-bg (child of body) can provide the background
+     and correctly inherit dark-mode CSS variable overrides */
+  background-color: transparent;
 }
 
+
+/* All page content lives inside <main> — flex:1 makes it grow to fill
+   the viewport so the footer is always pinned to the bottom */
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 /* Clip blurred gradients to avoid overflow */
 
 
@@ -147,13 +154,11 @@ body {
   0% {
     opacity: 0;
     transform: scale(0.85);
-    filter: blur(4px);
   }
 
   100% {
     opacity: 1;
     transform: scale(1);
-    filter: blur(0);
   }
 }
 
@@ -171,7 +176,6 @@ body {
 
 .logo-animate {
   animation: pop-in 800ms ease-out 120ms both;
-  will-change: transform, opacity;
 }
 
 .text-animate-title {
@@ -911,14 +915,10 @@ body.dark-mode .logo-img {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
-  /* Override background colors correctly for mobile */
-  html, body {
-    background-color: #ffffff !important;
-  }
-
-  html.dark-mode, body.dark-mode {
-    background-color: #0b1120 !important;
-  }
+  /* Background now provided by .mesh-bg — keep body transparent on mobile too */
+  html { background-color: #E8F2FD !important; }
+  body { background-color: transparent !important; }
+  body.dark-mode { background-color: transparent !important; }
 
   /* Hide the hero sparkles gradients on mobile as they cause an off-center blue hue */
   .sparkles-gradients {
@@ -1363,13 +1363,11 @@ body.dark-mode .header-ieee-logo {
   0% {
     opacity: 0;
     transform: scale(0.85);
-    filter: blur(4px);
   }
 
   100% {
     opacity: 1;
     transform: scale(1);
-    filter: blur(0);
   }
 }
 
@@ -1802,13 +1800,11 @@ body.dark-mode .text-animate-sub {
   0% {
     opacity: 0;
     transform: scale(0.85);
-    filter: blur(4px);
   }
 
   100% {
     opacity: 1;
     transform: scale(1);
-    filter: blur(0);
   }
 }
 

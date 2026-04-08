@@ -1,0 +1,101 @@
+.partners-section {
+  padding: 80px 0;
+  overflow: hidden;
+}
+
+.partners-header {
+  text-align: center;
+  margin-bottom: 48px;
+  padding: 0 40px;
+}
+
+.partners-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  color: var(--ieee-text);
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.partners-subtitle {
+  font-size: 1rem;
+  color: var(--ieee-text-soft);
+  font-family: 'Montserrat', sans-serif;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* Marquee */
+.partners-marquee-wrapper {
+  width: 100%;
+  /* overflow: hidden removed — it was clipping logos that scale up on hover.
+     The mask-image handles horizontal edge fading without needing overflow:hidden. */
+  overflow: visible;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+}
+
+.partners-marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 56px;
+  width: max-content;
+  /* vertical padding gives hovered logos room to scale up without being cut */
+  padding: 20px 0;
+  animation: marquee-scroll 32s linear infinite;
+  /* play-state controlled inline via React */
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.partner-logo-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  flex-shrink: 0;
+  overflow: visible; /* let scaled logos breathe outside the slot bounds */
+}
+
+.partner-logo-slot img {
+  height: 100%;
+  max-width: 160px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.55;
+  transition: opacity 0.28s ease, filter 0.28s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: grayscale(0.2);
+}
+
+body.dark-mode .partner-logo-slot img {
+  filter: grayscale(1) brightness(2);
+  opacity: 0.45;
+}
+
+.partner-logo-slot--active img {
+  opacity: 1;
+  filter: none;
+  transform: scale(1.18) translateY(-4px);
+}
+
+body.dark-mode .partner-logo-slot--active img {
+  filter: grayscale(0) brightness(1.4);
+  opacity: 0.95;
+  transform: scale(1.18) translateY(-4px);
+}

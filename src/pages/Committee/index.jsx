@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import api from '../../api/public';
 import { getCommitteeBySlug } from '../../data/committees';
 import './Committee.css';
 
@@ -34,9 +35,37 @@ const SocialLinks = ({ github, linkedin, email }) => (
 
 const Committee = () => {
   const { slug } = useParams();
-  const committee = getCommitteeBySlug(slug);
+  const getStatic = (s) => {
+    const staticCmt = getCommitteeBySlug(s);
+    if (!staticCmt) return null;
+    return {
+      committee: staticCmt,
+      board: (staticCmt.board || []).map((m, i) => ({ _id: `sb-${i}`, ...m })),
+      featured: (staticCmt.members || []).map((m, i) => ({ _id: `sm-${i}`, ...m })),
+    };
+  };
 
-  if (!committee) {
+  const initial = getStatic(slug);
+  const [committee, setCommittee] = useState(initial?.committee || null);
+  const [board, setBoard] = useState(initial?.board || []);
+  const [featured, setFeatured] = useState(initial?.featured || []);
+  const [notFound, setNotFound] = useState(!initial);
+
+  useEffect(() => {
+    api.get(`/committees/${slug}`)
+      .then(async (cmtRes) => {
+        const apiCmt = cmtRes.data.data;
+        if (!apiCmt) return;
+        const membersRes = await api.get(`/members?committee=${slug}`);
+        setCommittee(apiCmt);
+        const members = membersRes.data.data || [];
+        setBoard(members.filter(m => m.roleType === 'head' || m.roleType === 'vice_head'));
+        setFeatured(members.filter(m => m.roleType === 'featured'));
+      })
+      .catch(() => {});
+  }, [slug]);
+
+  if (notFound || !committee) {
     return (
       <div className="committee-not-found">
         <h2>Committee not found.</h2>
@@ -141,108 +170,74 @@ const Committee = () => {
           </motion.section>
 
           {/* Key Activities */}
-          <motion.section 
-            className="cmt-section"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5 }}
-          >
-            <h2 className="cmt-section-title">Key Activities</h2>
-            <div className="cmt-activities-grid">
-              {committee.activities.map((activity, i) => (
-                <motion.div 
-                  key={i} 
-                  className="cmt-activity-card"
-                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.5, type: 'spring' }}
-                >
-                  <h4 className="cmt-activity-title">{activity.title}</h4>
-                  <p className="cmt-activity-desc">{activity.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.section>
+          {committee.activities && committee.activities.length > 0 && (
+            <motion.section
+              className="cmt-section"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5 }}
+            >
+              <h2 className="cmt-section-title">Key Activities</h2>
+              <div className="cmt-activities-grid">
+                {committee.activities.map((activity, i) => (
+                  <motion.div
+                    key={i}
+                    className="cmt-activity-card"
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1, duration: 0.5, type: 'spring' }}
+                  >
+                    <h4 className="cmt-activity-title">{activity.title}</h4>
+                    <p className="cmt-activity-desc">{activity.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.section>
+          )}
 
           {/* Committee's Board */}
-          <motion.section 
-            className="cmt-section"
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="cmt-section-title">Committee's Board</h2>
-            <div className="cmt-board-list">
-              {committee.board.map((member, i) => (
-                <motion.div 
-                  key={i} 
-                  className="cmt-board-card"
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.15, duration: 0.5 }}
-                >
-                  <div className="cmt-board-info">
-                    <h3 className="cmt-board-name">{member.name}</h3>
-                    <span className="cmt-board-role">{member.role}</span>
-                    <p className="cmt-board-bio">{member.bio}</p>
-                    <SocialLinks github={member.github} linkedin={member.linkedin} email={member.email} />
-                  </div>
-                  <div className="cmt-board-photo-wrap">
-                    {member.photo ? (
-                      <img src={`/images/${member.photo}`} alt={member.name} className="cmt-board-photo-img" />
-                    ) : (
-                      <div className="cmt-board-photo-placeholder">
-                        <i className="fas fa-user"></i>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.section>
+          {board.length > 0 && (
+            <motion.section
+              className="cmt-section"
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="cmt-section-title">Committee's Board</h2>
+              <div className="cmt-board-list">
+                {board.map((member, i) => (
+                  <motion.div
+                    key={member._id}
+                    className="cmt-board-card"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.15, duration: 0.5 }}
+                  >
+                    <div className="cmt-board-info">
+                      <h3 className="cmt-board-name">{member.name}</h3>
+                      <span className="cmt-board-role">{member.role}</span>
+                      {member.bio && <p className="cmt-board-bio">{member.bio}</p>}
+                      <SocialLinks github={member.github} linkedin={member.linkedin} email={member.email} />
+                    </div>
+                    <div className="cmt-board-photo-wrap">
+                      {member.photo ? (
+                        <img src={member.photo} alt={member.name} className="cmt-board-photo-img" />
+                      ) : (
+                        <div className="cmt-board-photo-placeholder">
+                          <i className="fas fa-user"></i>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.section>
+          )}
 
-          {/* Our Best Members */}
-          <motion.section 
-            className="cmt-section"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="cmt-section-title">Our Best Members</h2>
-            <div className="cmt-members-grid">
-              {committee.members.map((member, i) => (
-                <motion.div 
-                  key={i} 
-                  className="cmt-member-card"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.5 }}
-                >
-                  <div className="cmt-member-photo-area">
-                    {member.photo ? (
-                      <img src={`/images/${member.photo}`} alt={member.name} className="cmt-member-photo-img" />
-                    ) : (
-                      <div className="cmt-member-photo-placeholder">
-                        <i className="fas fa-user"></i>
-                      </div>
-                    )}
-                  </div>
-                  <div className="cmt-member-body">
-                    <h4 className="cmt-member-name">{member.name}</h4>
-                    <Stars count={member.stars} />
-                    <p className="cmt-member-bio">{member.bio}</p>
-                    <SocialLinks github={member.github} linkedin={member.linkedin} email={member.email} />
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.section>
 
         </div>
       </div>

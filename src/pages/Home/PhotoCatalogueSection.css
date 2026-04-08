@@ -1,0 +1,192 @@
+/* ═══════════════════════════════════════════
+   PHOTO CATALOGUE — Curved bowl fan, click to swap
+═══════════════════════════════════════════ */
+
+.catalogue-section {
+  padding: 90px 40px 120px;
+  overflow: hidden;
+}
+
+.catalogue-header {
+  text-align: center;
+  margin-bottom: 72px;
+}
+
+.catalogue-title {
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  color: var(--ieee-text);
+  margin-bottom: 12px;
+}
+
+.catalogue-subtitle {
+  font-size: 1rem;
+  color: var(--ieee-text-soft);
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* ── 3D Stage ── */
+.catalogue-stage {
+  position: relative;
+  height: 360px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  perspective: 1200px;
+  perspective-origin: 50% 30%;
+  transform-style: preserve-3d;
+}
+
+/* ── Frame ── */
+.catalogue-frame {
+  position: absolute;
+  width: 480px;
+  height: 300px;
+  border-radius: 16px;
+  overflow: hidden;
+  will-change: transform;
+  transform-style: preserve-3d;
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.28),
+    0 6px 20px rgba(0, 0, 0, 0.16);
+  transition: box-shadow 0.3s ease, opacity 0.45s ease;
+}
+
+body.dark-mode .catalogue-frame {
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.55),
+    0 6px 20px rgba(0, 0, 0, 0.38);
+}
+
+.catalogue-frame--side:hover .catalogue-overlay {
+  opacity: 0;
+}
+
+.catalogue-frame--center {
+  box-shadow:
+    0 40px 80px rgba(0, 0, 0, 0.35),
+    0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.catalogue-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ── Dim overlay on side frames ── */
+.catalogue-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.30);
+  border-radius: 16px;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+/* ── Hint ── */
+.catalogue-hint {
+  text-align: center;
+  margin-top: 32px;
+  font-size: 0.78rem;
+  color: var(--ieee-text-muted);
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ── Dot indicators (mobile only) ── */
+.catalogue-dots {
+  display: none;
+}
+
+/* ── Hint (desktop only) ── */
+@media (max-width: 768px) {
+  .catalogue-hint { display: none; }
+}
+
+/* ── Mobile carousel ── */
+@media (max-width: 768px) {
+  .catalogue-section {
+    padding: 60px 20px 72px;
+  }
+
+  /* Single-frame view: frames stacked, only center visible */
+  .catalogue-stage {
+    perspective: none;
+    height: 240px;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .catalogue-frame {
+    position: absolute;
+    width: calc(100% - 32px);
+    max-width: 420px;
+    height: 230px;
+    /* Let Framer Motion animate position freely but hide non-center via opacity */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.45s ease;
+    /* reset any 3D transform residuals */
+    transform: none;
+  }
+
+  .catalogue-frame--center {
+    opacity: 1;
+    pointer-events: auto;
+    /* Framer Motion animates to x:0, y:0, scale:1 for center slot — looks correct */
+  }
+
+  .catalogue-frame--side {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .catalogue-overlay { display: none; }
+
+  /* ── Dots visible on mobile ── */
+  .catalogue-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .catalogue-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ieee-border-strong);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.3s ease, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.3s ease;
+  }
+
+  .catalogue-dot--active {
+    background: var(--ieee-accent);
+    transform: scale(1.35);
+    width: 22px;
+    border-radius: 4px; /* active dot stretches into a pill */
+  }
+
+  /* Swipe hint text below dots */
+  .catalogue-section::after {
+    content: 'Swipe to browse';
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    font-size: 0.72rem;
+    color: var(--ieee-text-muted);
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+}

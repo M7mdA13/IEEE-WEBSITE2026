@@ -1,0 +1,226 @@
+/* ═══════════════════════════════════════════
+   IEEE LINKS — Split panel
+   Left: featured brand info
+   Right: colorful solid tiles (What We Provide style)
+═══════════════════════════════════════════ */
+
+.ieee-section {
+  padding: 90px 40px;
+}
+
+.ieee-inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 56px;
+  align-items: center;
+}
+
+/* ── Left feature panel ── */
+.ieee-feature {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ieee-feature-logo {
+  width: 80px;
+  height: auto;
+  object-fit: contain;
+}
+
+.ieee-feature-title {
+  font-size: clamp(1.3rem, 2vw, 1.8rem);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  color: var(--ieee-text);
+  line-height: 1.35;
+}
+
+.ieee-feature-title span {
+  color: var(--ieee-accent);
+}
+
+.ieee-feature-desc {
+  font-size: 0.93rem;
+  color: var(--ieee-text-soft);
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1.75;
+}
+
+.ieee-feature-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ieee-badge {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--ieee-border-strong);
+  font-size: 0.75rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  color: var(--ieee-text-soft);
+  background: var(--ieee-bg-elevated);
+}
+
+/* ── Right: 2-column colorful tile grid ── */
+.ieee-tiles-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+/* ── Individual tile ── */
+.ieee-tile {
+  position: relative;
+  background: var(--tile-color, #1565c0);
+  border-radius: 22px;
+  padding: 22px 22px 18px;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  /* Subtle top-left inner highlight */
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.15),
+    0 6px 20px rgba(0,0,0,0.2);
+  transition: box-shadow 0.25s ease;
+  min-height: 140px;
+}
+
+.ieee-tile:hover {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.22),
+    0 14px 36px rgba(0,0,0,0.32);
+}
+
+/* 5th tile spans both columns */
+.ieee-tile--wide {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  min-height: auto;
+}
+
+.ieee-tile--wide .ieee-tile-top {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.ieee-tile--wide .ieee-tile-desc {
+  flex: 1;
+}
+
+.ieee-tile--wide .ieee-tile-arrow {
+  margin-top: 0;
+  flex-shrink: 0;
+}
+
+/* ── Tile parts ── */
+.ieee-tile-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ieee-tile-title {
+  font-size: 0.97rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+.ieee-tile-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.9);
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.ieee-tile:hover .ieee-tile-icon {
+  background: rgba(255,255,255,0.28);
+}
+
+.ieee-tile-desc {
+  font-size: 0.78rem;
+  color: rgba(255,255,255,0.78);
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1.65;
+  flex: 1;
+}
+
+.ieee-tile-arrow {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.6);
+  font-weight: 700;
+  align-self: flex-end;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.ieee-tile:hover .ieee-tile-arrow {
+  color: rgba(255,255,255,1);
+  transform: translate(2px, -2px);
+}
+
+/* Decorative large circle in bg corner */
+.ieee-tile-decor {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  bottom: -30px;
+  right: -30px;
+  pointer-events: none;
+}
+
+.ieee-tile--wide .ieee-tile-decor {
+  right: 40px;
+  bottom: -40px;
+  width: 130px;
+  height: 130px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .ieee-inner {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
+@media (max-width: 560px) {
+  .ieee-section { padding: 60px 20px; }
+
+  .ieee-tiles-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ieee-tile--wide {
+    grid-column: span 1;
+    flex-direction: column;
+    min-height: 140px;
+  }
+
+  .ieee-tile--wide .ieee-tile-top {
+    flex-direction: row;
+    align-items: center;
+  }
+}
