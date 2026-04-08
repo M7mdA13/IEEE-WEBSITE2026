@@ -9,6 +9,7 @@ import MembersSection from '../components/dashboard/MembersSection'
 import PartnersSection from '../components/dashboard/PartnersSection'
 import AnalyticsSection from '../components/dashboard/AnalyticsSection'
 import SettingsSection from '../components/dashboard/SettingsSection'
+import WebsiteTeamSection from '../components/dashboard/WebsiteTeamSection'
 
 function Dashboard({ toggleTheme, theme }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -32,6 +33,7 @@ function Dashboard({ toggleTheme, theme }) {
             <Route path="partners" element={<PartnersSection />} />
             <Route path="analytics" element={<AnalyticsSection />} />
             <Route path="settings" element={<SettingsSection />} />
+            <Route path="website-team" element={<WebsiteTeamSection />} />
           </Routes>
         </div>
       </main>

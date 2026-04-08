@@ -7,6 +7,7 @@ const menuItems = [
   { id: 'events', icon: 'fa-calendar-alt', label: 'Events', path: '/dashboard/events' },
   { id: 'excom', icon: 'fa-users', label: 'ExCom', path: '/dashboard/members' },
   { id: 'partners', icon: 'fa-handshake', label: 'Partners', path: '/dashboard/partners' },
+  { id: 'website-team', icon: 'fa-laptop-code', label: 'Website Team', path: '/dashboard/website-team' },
   { id: 'analytics', icon: 'fa-chart-line', label: 'Analytics', path: '/dashboard/analytics' },
   { id: 'settings', icon: 'fa-cog', label: 'Settings', path: '/dashboard/settings' }
 ]
