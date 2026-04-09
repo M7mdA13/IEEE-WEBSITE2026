@@ -4,11 +4,11 @@ import api from '../../api/public';
 import './ExComSection.css';
 
 const staticExCom = [
-  { _id: 's1', name: 'Mennatallah Mostafa', role: 'Webmaster',   photo: '/images/Mennatallah copy.png', github: '#', linkedin: '#', email: '#' },
-  { _id: 's2', name: 'Mostafa Samir',       role: 'Treasurer',   photo: '/images/moustafa copy.png',    github: '#', linkedin: '#', email: '#' },
-  { _id: 's3', name: 'Karima Ayman',        role: 'Secretary',   photo: '/images/karima copy.png',      github: '#', linkedin: '#', email: '#' },
-  { _id: 's4', name: 'Mahmoud Alsonbaty',   role: 'Chairman',    photo: '/images/alsonbaty copy.png',   github: '#', linkedin: '#', email: '#' },
-  { _id: 's5', name: 'Shahd Abdelaziz',     role: 'Vice Chair',  photo: '/images/shahd copy.png',       github: '#', linkedin: '#', email: '#' },
+  { _id: 's1', name: 'Mennatallah Mostafa', role: 'Webmaster',  photo: '/images/Mennatallah copy.png' },
+  { _id: 's2', name: 'Mostafa Samir',       role: 'Treasurer',  photo: '/images/moustafa copy.png' },
+  { _id: 's3', name: 'Karima Ayman',        role: 'Secretary',  photo: '/images/karima copy.png' },
+  { _id: 's4', name: 'Mahmoud Alsonbaty',   role: 'Chairman',   photo: '/images/alsonbaty copy.png' },
+  { _id: 's5', name: 'Shahd Abdelaziz',     role: 'Vice Chair', photo: '/images/shahd copy.png' },
 ];
 
 /* Magnetic icon: slightly follows cursor within its bounding box */
@@ -72,10 +72,10 @@ const ExComCard = ({ member, index }) => {
   return (
     <motion.div
       className={`excom-stagger-row ${isLeft ? 'align-to-left' : 'align-to-right'}`}
-      initial={{ opacity: 0, x: isLeft ? -100 : 100 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, x: isLeft ? -80 : 80, scale: 0.96 }}
+      whileInView={{ opacity: 1, x: 0, scale: 1 }}
       viewport={{ once: true, margin: '-20px' }}
-      transition={{ duration: 0.7, ease: 'easeOut', delay: index * 0.12 }}
+      transition={{ type: 'spring', stiffness: 220, damping: 28, delay: index * 0.10 }}
     >
       <div className="excom-pill-wrapper">
         <div className="excom-person-frame">
@@ -87,9 +87,9 @@ const ExComCard = ({ member, index }) => {
             <h3 className="excom-name-bold">{member.name}</h3>
             <p className="excom-role-subtitle">{member.role}</p>
             <div className="excom-social-strip">
-              <MagneticIcon href={member.github}  icon="fab fa-github" />
-              <MagneticIcon href={member.linkedin} icon="fab fa-linkedin-in" />
-              <MagneticIcon href={member.email ? `mailto:${member.email}` : null} icon="fas fa-envelope" />
+              {member.github   && <MagneticIcon href={member.github}              icon="fab fa-github" />}
+              {member.linkedin && <MagneticIcon href={member.linkedin}            icon="fab fa-linkedin-in" />}
+              {member.email    && <MagneticIcon href={`mailto:${member.email}`}   icon="fas fa-envelope" />}
             </div>
           </div>
         </SpotlightPill>

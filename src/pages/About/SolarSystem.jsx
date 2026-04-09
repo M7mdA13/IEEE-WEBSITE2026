@@ -76,8 +76,8 @@ export default function SolarSystem({ onPlanetSelect }) {
     if (!el) return;
 
     const isMobile   = el.clientWidth < 768;
-    const orbitScale = isMobile ? 0.52 : 1.0;  // shrink orbits to fit mobile viewport
-    const sizeScale  = isMobile ? 1.55 : 1.0;  // bigger planets for easier tapping
+    const orbitScale = isMobile ? 0.65 : 1.0;  // shrink orbits to fit mobile viewport
+    const sizeScale  = isMobile ? 1.45 : 1.0;  // bigger planets for easier tapping
 
     // ── Renderers ──────────────────────────────────────────────────────────
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -99,7 +99,7 @@ export default function SolarSystem({ onPlanetSelect }) {
       isMobile ? 78 : 58, el.clientWidth / el.clientHeight, 0.1, 600
     );
     const defaultCamPos = isMobile
-      ? new THREE.Vector3(0, 18, 28)
+      ? new THREE.Vector3(0, 16, 26)
       : new THREE.Vector3(0, 20, 34);
     camera.position.copy(defaultCamPos);
     const lookTarget = new THREE.Vector3(0, 0, 0);
@@ -127,8 +127,11 @@ export default function SolarSystem({ onPlanetSelect }) {
     };
     const starsSmall = makeStars(10000, 450, 0.16);
     const starsBig   = makeStars(800,   400, 0.45);
-    scene.add(starsSmall);
-    scene.add(starsBig);
+    // Wrap in a group so mouse parallax doesn't fight the drift rotation
+    const starsGroup = new THREE.Group();
+    starsGroup.add(starsSmall);
+    starsGroup.add(starsBig);
+    scene.add(starsGroup);
 
     // ── Nebula cloud (additive sprite blobs) ─────────────────────────────
     const nebulaColors = [0x0a1a4a, 0x1a0a3a, 0x0a2a1a];
@@ -242,6 +245,119 @@ export default function SolarSystem({ onPlanetSelect }) {
 
     const planetMeshes = planetObjects.map(p => p.mesh);
 
+    // ── Asteroid belt (between Our Team and Our Impact orbits) ────────────
+    const beltCount = 280;
+    const beltInner = 13.5 * orbitScale;
+    const beltOuter = 15.0 * orbitScale;
+    const beltPos   = new Float32Array(beltCount * 3);
+    for (let i = 0; i < beltCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const r     = beltInner + Math.random() * (beltOuter - beltInner);
+      beltPos[i * 3]     = Math.cos(angle) * r;
+      beltPos[i * 3 + 1] = (Math.random() - 0.5) * 0.9;
+      beltPos[i * 3 + 2] = Math.sin(angle) * r;
+    }
+    const beltGeo = new THREE.BufferGeometry();
+    beltGeo.setAttribute('position', new THREE.BufferAttribute(beltPos, 3));
+    const asteroidBelt = new THREE.Points(beltGeo, new THREE.PointsMaterial({
+      color: 0x8899aa, size: 0.09, sizeAttenuation: true, transparent: true, opacity: 0.55,
+    }));
+    scene.add(asteroidBelt);
+
+    // ── Shooting stars ────────────────────────────────────────────────────
+    const spawnShootingStar = () => {
+      const theta  = Math.random() * Math.PI * 2;
+      const startX = Math.cos(theta) * (60 + Math.random() * 40);
+      const startY = 20 + Math.random() * 25;
+      const startZ = Math.sin(theta) * (60 + Math.random() * 40);
+      const dirX   = (Math.random() - 0.5) * 70;
+      const dirY   = -(12 + Math.random() * 18);
+      const dirZ   = (Math.random() - 0.5) * 70;
+      const tailLen = 0.14;
+
+      const pts = [new THREE.Vector3(startX, startY, startZ),
+                   new THREE.Vector3(startX + dirX * tailLen, startY + dirY * tailLen, startZ + dirZ * tailLen)];
+      const sGeo = new THREE.BufferGeometry().setFromPoints(pts);
+      const sMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 });
+      const line = new THREE.Line(sGeo, sMat);
+      scene.add(line);
+
+      const proxy = { t: 0 };
+      gsap.to(proxy, {
+        t: 1, duration: 0.5 + Math.random() * 0.4, ease: 'power1.in',
+        onUpdate: () => {
+          const p = sGeo.attributes.position.array;
+          p[0] = startX + dirX * proxy.t;
+          p[1] = startY + dirY * proxy.t;
+          p[2] = startZ + dirZ * proxy.t;
+          p[3] = startX + dirX * (proxy.t + tailLen);
+          p[4] = startY + dirY * (proxy.t + tailLen);
+          p[5] = startZ + dirZ * (proxy.t + tailLen);
+          sGeo.attributes.position.needsUpdate = true;
+          sMat.opacity = proxy.t < 0.65 ? 0.9 : 0.9 * (1 - (proxy.t - 0.65) / 0.35);
+        },
+        onComplete: () => { scene.remove(line); sGeo.dispose(); sMat.dispose(); },
+      });
+    };
+    let ssTimeout = null;
+    let ssCancelled = false;
+    const scheduleShootingStar = () => {
+      ssTimeout = setTimeout(() => {
+        if (!ssCancelled) { spawnShootingStar(); scheduleShootingStar(); }
+      }, 3000 + Math.random() * 5000);
+    };
+    scheduleShootingStar();
+
+    // ── Mouse parallax target for star group ──────────────────────────────
+    let starParallaxX = 0, starParallaxY = 0;
+    const onMouseMoveParallax = (e) => {
+      starParallaxX = (e.clientY / el.clientHeight - 0.5) * 0.05;
+      starParallaxY = (e.clientX / el.clientWidth  - 0.5) * 0.05;
+    };
+    el.addEventListener('mousemove', onMouseMoveParallax);
+
+    // ── Particle burst helper ─────────────────────────────────────────────
+    const spawnBurst = (position, color) => {
+      const count = 40;
+      const positions = new Float32Array(count * 3);
+      const geo = new THREE.BufferGeometry();
+      for (let i = 0; i < count; i++) {
+        positions[i * 3]     = position.x;
+        positions[i * 3 + 1] = position.y;
+        positions[i * 3 + 2] = position.z;
+      }
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      const mat = new THREE.PointsMaterial({ color, size: 0.18, sizeAttenuation: true, transparent: true, opacity: 1 });
+      const points = new THREE.Points(geo, mat);
+      scene.add(points);
+
+      // animate each particle outward
+      const velocities = Array.from({ length: count }, () => new THREE.Vector3(
+        (Math.random() - 0.5) * 3,
+        (Math.random() - 0.5) * 3,
+        (Math.random() - 0.5) * 3,
+      ));
+      const proxy = { t: 0 };
+      gsap.to(proxy, {
+        t: 1, duration: 0.9, ease: 'power2.out',
+        onUpdate: () => {
+          const pos = geo.attributes.position.array;
+          for (let i = 0; i < count; i++) {
+            pos[i * 3]     = position.x + velocities[i].x * proxy.t;
+            pos[i * 3 + 1] = position.y + velocities[i].y * proxy.t;
+            pos[i * 3 + 2] = position.z + velocities[i].z * proxy.t;
+          }
+          geo.attributes.position.needsUpdate = true;
+          mat.opacity = 1 - proxy.t;
+        },
+        onComplete: () => {
+          scene.remove(points);
+          geo.dispose();
+          mat.dispose();
+        },
+      });
+    };
+
     // ── Interaction ───────────────────────────────────────────────────────
     const raycaster = new THREE.Raycaster();
     const mouse     = new THREE.Vector2();
@@ -249,10 +365,9 @@ export default function SolarSystem({ onPlanetSelect }) {
     let   selected  = null;
     let   trackingActive = false;   // true while camera should follow selected planet
 
-    const pullBack     = isMobile ? 6   : 9;
-    const camRise      = isMobile ? -1  : 7;   // mobile: camera level/below planet so it appears high in frame
-    const zOffset      = isMobile ? 1   : 6;
-    const lookOffsetY  = isMobile ? -4  : 0;   // mobile: look well below planet → planet sits near top of viewport
+    // Desktop: pull back toward sun from planet, fixed elevation — no zOffset so it works at any orbit angle
+    const pullBack = 10;
+    const camRise  = 10;  // absolute Y height, not relative to planet
 
     const toMouse = (e) => {
       const r = renderer.domElement.getBoundingClientRect();
@@ -300,18 +415,45 @@ export default function SolarSystem({ onPlanetSelect }) {
         }
 
         selected = hit;
+        spawnBurst(hit.mesh.position.clone(), hit.data.color);
         trackingActive = false; // disable while GSAP animates
         gsap.to(hit, { currentSpeed: hit.data.speed * 0.08, duration: 0.6 });
 
-        const tp = hit.mesh.position;
+        const tp  = hit.mesh.position;
         const dir = tp.clone().normalize();
+
+        let tCamX, tCamY, tCamZ, tLookX, tLookY, tLookZ;
+
+        if (isMobile) {
+          // Mobile: pull back by half the planet's actual orbit distance so camera
+          // can never overshoot the sun. Fixed elevation + forward offset keeps it in frame.
+          // lookTarget aimed AT the planet → planet appears in center-upper portion above the card.
+          const orbitDist  = tp.length();           // actual scaled orbit radius
+          const pullDist   = orbitDist * 0.55;      // safe: always 45% between planet and sun
+          tCamX = tp.x - dir.x * pullDist;
+          tCamY = 11;                               // fixed comfortable elevation
+          tCamZ = tp.z - dir.z * pullDist + 7;     // push toward viewer
+          tLookX = tp.x;
+          tLookY = -1;                              // very slight downward tilt, planet in upper half
+          tLookZ = tp.z;
+        } else {
+          // Pull back toward sun from the planet, at a fixed absolute elevation.
+          // No zOffset — adding a fixed Z would break planets at negative-Z positions.
+          tCamX = tp.x - dir.x * pullBack;
+          tCamY = camRise;
+          tCamZ = tp.z - dir.z * pullBack;
+          tLookX = tp.x * 0.7;
+          tLookY = 0;
+          tLookZ = tp.z * 0.7;
+        }
+
         gsap.to(camera.position, {
-          x: tp.x - dir.x * pullBack, y: tp.y + camRise, z: tp.z - dir.z * pullBack + zOffset,
+          x: tCamX, y: tCamY, z: tCamZ,
           duration: 1.3, ease: 'power2.inOut',
           onComplete: () => { if (selected === hit) trackingActive = true; },
         });
         gsap.to(lookTarget, {
-          x: tp.x * 0.55, y: lookOffsetY, z: tp.z * 0.55,
+          x: tLookX, y: tLookY, z: tLookZ,
           duration: 1.3, ease: 'power2.inOut',
         });
         callbackRef.current(hit.data);
@@ -327,7 +469,7 @@ export default function SolarSystem({ onPlanetSelect }) {
           x: defaultCamPos.x, y: defaultCamPos.y, z: defaultCamPos.z,
           duration: 1.3, ease: 'power2.inOut',
         });
-        gsap.to(lookTarget, { x: 0, y: 0, z: 0, duration: 1.3, ease: 'power2.inOut' });
+        gsap.to(lookTarget, { x: 0, y: 0,  z: 0, duration: 1.3, ease: 'power2.inOut' });
         callbackRef.current(null);
       }
     };
@@ -343,9 +485,13 @@ export default function SolarSystem({ onPlanetSelect }) {
       animId = requestAnimationFrame(animate);
       const delta = clock.getDelta();
 
-      sun.rotation.y     += delta * 0.18;
+      sun.rotation.y        += delta * 0.18;
       starsSmall.rotation.y += delta * 0.003;
       starsBig.rotation.y   += delta * 0.005;
+      asteroidBelt.rotation.y -= delta * 0.04; // counter-rotate slowly
+      // Parallax: nudge the group toward cursor offset
+      starsGroup.rotation.x += (starParallaxX - starsGroup.rotation.x) * 0.04;
+      starsGroup.rotation.y += (starParallaxY - starsGroup.rotation.y) * 0.04;
 
       planetObjects.forEach(p => {
         p.angle += p.currentSpeed;
@@ -360,18 +506,31 @@ export default function SolarSystem({ onPlanetSelect }) {
 
       // Smoothly track the selected planet while it slowly orbits
       if (trackingActive && selected) {
-        const tp = selected.mesh.position;
+        const tp  = selected.mesh.position;
         const dir = tp.clone().normalize();
-        const tCamX = tp.x - dir.x * pullBack;
-        const tCamY = tp.y + camRise;
-        const tCamZ = tp.z - dir.z * pullBack + zOffset;
-        const lerpT = 1 - Math.pow(0.04, delta); // smooth, frame-rate independent
+        let tCamX, tCamY, tCamZ, tLookX, tLookY, tLookZ;
+
+        if (isMobile) {
+          const orbitDist = tp.length();
+          const pullDist  = orbitDist * 0.55;
+          tCamX = tp.x - dir.x * pullDist;
+          tCamY = 11;
+          tCamZ = tp.z - dir.z * pullDist + 7;
+          tLookX = tp.x; tLookY = -1; tLookZ = tp.z;
+        } else {
+          tCamX = tp.x - dir.x * pullBack;
+          tCamY = camRise;
+          tCamZ = tp.z - dir.z * pullBack;
+          tLookX = tp.x * 0.7; tLookY = 0; tLookZ = tp.z * 0.7;
+        }
+
+        const lerpT = 1 - Math.pow(0.04, delta);
         camera.position.x += (tCamX - camera.position.x) * lerpT;
         camera.position.y += (tCamY - camera.position.y) * lerpT;
         camera.position.z += (tCamZ - camera.position.z) * lerpT;
-        lookTarget.x += (tp.x * 0.55 - lookTarget.x) * lerpT;
-        lookTarget.y += (lookOffsetY  - lookTarget.y) * lerpT;
-        lookTarget.z += (tp.z * 0.55 - lookTarget.z) * lerpT;
+        lookTarget.x += (tLookX - lookTarget.x) * lerpT;
+        lookTarget.y += (tLookY - lookTarget.y) * lerpT;
+        lookTarget.z += (tLookZ - lookTarget.z) * lerpT;
       }
 
       camera.lookAt(lookTarget);
@@ -394,9 +553,12 @@ export default function SolarSystem({ onPlanetSelect }) {
     // ── Cleanup ───────────────────────────────────────────────────────────
     return () => {
       cancelAnimationFrame(animId);
+      ssCancelled = true;
+      clearTimeout(ssTimeout);
       window.removeEventListener('resize', onResize);
       renderer.domElement.removeEventListener('mousemove', onMouseMove);
       renderer.domElement.removeEventListener('click',     onClick);
+      el.removeEventListener('mousemove', onMouseMoveParallax);
       renderer.dispose();
       if (el.contains(renderer.domElement))      el.removeChild(renderer.domElement);
       if (el.contains(labelRenderer.domElement)) el.removeChild(labelRenderer.domElement);

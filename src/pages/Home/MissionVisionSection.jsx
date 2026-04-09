@@ -100,9 +100,7 @@ const MissionVisionSection = () => {
           <div className="mv-tri__content mv-tri__content--mission">
             <h2 className="mv-tri__heading mv-tri__heading--light">Our Mission</h2>
             <p className="mv-tri__body mv-tri__body--light">
-              Driving progress and adapting to change through structured
-              organization and flexibility. We are committed to moving
-              forward and overcoming obstacles together.
+              We exist to advance technology for the benefit of humanity. That means giving students access to real knowledge, real networks, and real opportunities — through technical workshops, mentorship programs, and a culture of continuous learning across every discipline.
             </p>
           </div>
 

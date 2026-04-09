@@ -1619,7 +1619,7 @@ body.dark-mode .header-ieee-logo {
   min-height: 100vh;
   width: 100%;
   background: transparent;
-  overflow: hidden;
+  overflow: visible; /* particles clipped by .sparkles-container; visible here lets hero-content parallax drift */
   position: relative;
   padding-top: 80px;
 }

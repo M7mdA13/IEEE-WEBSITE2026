@@ -89,7 +89,7 @@ const Committee = () => {
           </Link>
 
           <div className="hero-info-row">
-            <div className="hero-logo-wrap">
+            <motion.div layoutId={`cmt-icon-${slug}`} className="hero-logo-wrap">
               {committee.image ? (
                 <img src={committee.image} alt={committee.name} className="hero-logo-img" />
               ) : (
@@ -97,7 +97,7 @@ const Committee = () => {
                   <i className={`fas ${committee.icon}`}></i>
                 </div>
               )}
-            </div>
+            </motion.div>
             <div className="hero-text-wrap">
               <span className="hero-category">{categoryLabel}</span>
               <h1 className="hero-name">{committee.name}</h1>

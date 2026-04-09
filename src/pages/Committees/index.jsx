@@ -64,13 +64,13 @@ const CommitteeCard = ({ committee }) => {
         Learn more &rarr;
       </Link>
     </div>
-    <div className="cmt-card-icon">
+    <motion.div layoutId={`cmt-icon-${committee.slug}`} className="cmt-card-icon">
       {committee.image ? (
         <img src={committee.image} alt={committee.name} />
       ) : (
         <i className={`fas ${committee.icon}`}></i>
       )}
-    </div>
+    </motion.div>
   </motion.div>
   );
 };

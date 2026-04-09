@@ -34,6 +34,11 @@ const PageWrapper = ({ children }) => (
   </motion.div>
 );
 
+// Disable browser scroll restoration so it never pre-scrolls on reload
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
 const ScrollToTop = () => {
   const location = useLocation();
   useEffect(() => {
