@@ -1,25 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 router.post('/chat', async (req, res) => {
   try {
-    const { message, history } = req.body;
+    const { history, message } = req.body;
     
-    if (!process.env.GEMINI_API_KEY) {
-      return res.status(500).json({ success: false, message: 'AI API Key not configured on the server. Please tell the admins to add GEMINI_API_KEY.' });
+    if (!message) {
+      return res.status(400).json({ error: 'Message is required' });
     }
 
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-    const systemPrompt = `You are the official digital assistant for the IEEE MUST Student Branch (Misr University for Science and Technology). 
-Your primary job is to answer questions about the branch, IEEE, engineering, and student activities enthusiastically and concisely. Let your tone be welcoming, knowledgeable, and energetic!
-
-Key Branch Information to use as your knowledge base:
-- Founded: 2012
-- Active Members: ~200 members
-- We are one of Egypt's most active IEEE branches.
-- Mission: We exist to advance technology for the benefit of humanity. We give students access to real knowledge, real networks, and real opportunities through technical workshops, hackathons, and mentorship programs.
+    const systemPrompt = `You are the official digital assistant for the IEEE MUST (Misr University for Science and Technology) Student Branch. 
+You are enthusiastic, professional, and concise. Your goal is to help visitors understand who we are and what we do.
+We were founded in 2012, and currently have over 200 members.
+Context Rules:
 - Impact: We've hosted over 200 events so far.
 - Structure: We have 8 specialized committees spanning both technical and non-technical fields (e.g., AI, Media, PR, HR, Logistics, LR, Marketing). Our leadership board is elected every year.
 - Recruitment: We host recruitment phases both online and on-campus periodically. Check our social media for updates.
@@ -29,53 +22,59 @@ Key Branch Information to use as your knowledge base:
 
 Guidelines:
 1. Don't be overly verbose. Use formatting like bullet points or bolding if it helps readability.
-2. If asked about things completely unrelated to student life, engineering, IEEE, or technology, gently steer the conversation back or decline playfully.
-3. Don't invent facts about specific board members or events unless implicitly asked to talk generally.
+2. If asked something unrelated to IEEE, tech, or our branch, gently steer the conversation back.
+3. Don't invent fake events, member names, or deadlines. Say you don't have the current info and point them to our social media.
 4. Try to sign off with a friendly remark or a subtle call to action (e.g., "Ready to build the future with us?").`;
 
-    const model = genAI.getGenerativeModel({ 
-      model: 'gemini-1.5-flash-8b',
-      systemInstruction: systemPrompt 
-    });
+    // Map history to native Groq/OpenAI JSON format
+    let messages = [
+      { role: 'system', content: systemPrompt }
+    ];
 
-    let parsedHistory = Array.isArray(history) ? history.map(msg => ({
-      role: msg.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: msg.text }]
-    })) : [];
-
-    // Gemini requires the first message in history to be from a 'user'
-    if (parsedHistory.length > 0 && parsedHistory[0].role === 'model') {
-      parsedHistory.shift(); // remove the initial greeting message
+    if (Array.isArray(history)) {
+      history.forEach(msg => {
+        messages.push({
+          role: msg.role === 'assistant' ? 'assistant' : 'user',
+          content: msg.text
+        });
+      });
     }
 
-    const chat = model.startChat({
-        history: parsedHistory
+    // Append the latest user message
+    messages.push({
+      role: 'user',
+      content: message
     });
 
-    const MAX_RETRIES = 2;
-    let attempt = 0;
-    let success = false;
-    let text = "";
+    // Groq natively accepts standard HTTP requests with the exact same OpenAI schema
+    // We use native node fetch to bypass any npm install freezing issues
+    const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "llama-3.1-8b-instant",
+        messages: messages,
+        temperature: 0.6,
+        max_tokens: 512
+      })
+    });
 
-    while (attempt < MAX_RETRIES && !success) {
-      try {
-        const result = await chat.sendMessage(message);
-        text = result.response.text();
-        success = true;
-      } catch (err) {
-        attempt++;
-        if (attempt >= MAX_RETRIES || !err.message.includes('503')) {
-          throw err; // Stop if it's not a capacity issue or out of retries
-        }
-        console.warn(`[AI] Google API 503 high demand. Trying attempt ${attempt + 1}...`);
-        await new Promise(r => setTimeout(r, 1500)); // sleep 1.5s
-      }
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Groq API Failure:", data);
+      throw new Error(data.error?.message || "Failed to fetch from Groq API");
     }
-    
-    res.json({ success: true, reply: text });
+
+    const reply = data.choices[0]?.message?.content || "I'm having trouble connecting right now.";
+
+    res.json({ success: true, reply });
   } catch (error) {
     console.error('AI Route Error:', error);
-    res.status(500).json({ success: false, message: 'I encountered a small hiccup connecting to the mainframe! Please try again in a moment.' });
+    res.status(500).json({ error: 'Failed to process AI request' });
   }
 });
 
