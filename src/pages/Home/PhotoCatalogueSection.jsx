@@ -92,10 +92,10 @@ const PhotoCatalogueSection = () => {
   const rightIndex = (centerIndex + 1) % total;
 
   const getSlot = (photoIdx) => {
-    if (photoIdx === centerIndex) return SLOTS[1];
-    if (photoIdx === leftIndex)   return SLOTS[0];
-    if (photoIdx === rightIndex)  return SLOTS[2];
-    return SLOTS[1];
+    if (photoIdx === centerIndex) return { ...SLOTS[1], visible: true };
+    if (photoIdx === leftIndex)   return { ...SLOTS[0], visible: true };
+    if (photoIdx === rightIndex)  return { ...SLOTS[2], visible: true };
+    return { ...SLOTS[1], visible: false };
   };
 
   return (
@@ -140,6 +140,8 @@ const PhotoCatalogueSection = () => {
                 y: slot.y,
                 scale: slot.scale,
                 zIndex: slot.zIndex,
+                opacity: slot.visible ? 1 : 0,
+                pointerEvents: slot.visible ? 'auto' : 'none',
               }}
               transition={{ duration: 0.6, ease: EASE }}
               onClick={() => handleClick(i)}
