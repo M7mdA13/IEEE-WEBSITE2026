@@ -6,7 +6,7 @@ const suggestions = [
   "Benefits of joining?",
   "How to join?",
   "What is IEEE MUST SB?",
-  "What is EMBS?",
+  "What does IEEE do globally?",
   "IEEE MUST SB activities & events"
 ];
 
@@ -16,6 +16,7 @@ const AIAssistant = () => {
   ]);
   const [inputStr, setInputStr] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [hasStartedChat, setHasStartedChat] = useState(false);
   
   const messagesEndRef = useRef(null);
 
@@ -36,6 +37,7 @@ const AIAssistant = () => {
     setMessages(newHistory);
     setInputStr('');
     setIsLoading(true);
+    setHasStartedChat(true);
 
     try {
       const response = await api.post('/ai/chat', {
@@ -76,41 +78,41 @@ const AIAssistant = () => {
   return (
     <div className="ai-assistant-page">
       <div className="ai-content-wrapper">
-        <div className="ai-header">
-          <img
-            src="/images/robot-assistant.svg"
-            alt="Robot Assistant"
-            className="robot-icon"
-            width="80"
-            height="80"
-            style={{ objectFit: 'contain', minHeight: '80px' }}
-          />
-          <h1 className="greeting-text">IEEE MUST AI</h1>
-        </div>
+        {!hasStartedChat ? (
+          <>
+            <img
+              src="/images/robot-assistant.svg"
+              alt="Robot Assistant"
+              className="robot-icon"
+              width="140"
+              height="140"
+              style={{ objectFit: 'contain', minHeight: '140px', marginBottom: '5px' }}
+            />
+            <h1 className="greeting-text">Hello! How can I help?</h1>
 
-        <div className="chat-container">
-          <div className="chat-log">
-            {messages.map((msg, idx) => (
-              <div key={idx} className={`chat-bubble-wrapper ${msg.role}`}>
-                <div className="chat-bubble">
-                  {formatText(msg.text)}
-                </div>
-              </div>
-            ))}
-            {isLoading && (
-              <div className="chat-bubble-wrapper assistant">
-                <div className="chat-bubble typing">
-                  <div className="dot"></div>
-                  <div className="dot"></div>
-                  <div className="dot"></div>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
+            <div className="search-container start-screen-search">
+              <input
+                type="text"
+                placeholder="Ask anything..."
+                className="search-input"
+                value={inputStr}
+                onChange={(e) => setInputStr(e.target.value)}
+                onKeyDown={onKeyDown}
+                disabled={isLoading}
+              />
+              <button 
+                className="send-btn" 
+                onClick={() => handleSend(inputStr)}
+                disabled={isLoading}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </div>
 
-          {messages.length === 1 && (
-            <div className="suggestions-container">
+            <div className="suggestions-container-start">
               {suggestions.map((text, idx) => (
                 <button 
                   key={idx} 
@@ -122,30 +124,66 @@ const AIAssistant = () => {
                 </button>
               ))}
             </div>
-          )}
+          </>
+        ) : (
+          <>
+            <div className="ai-header">
+              <img
+                src="/images/robot-assistant.svg"
+                alt="Robot Assistant"
+                className="robot-icon"
+                width="80"
+                height="80"
+                style={{ objectFit: 'contain', minHeight: '80px' }}
+              />
+              <h1 className="greeting-text-small">IEEE MUST AI</h1>
+            </div>
 
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Ask anything..."
-              className="search-input"
-              value={inputStr}
-              onChange={(e) => setInputStr(e.target.value)}
-              onKeyDown={onKeyDown}
-              disabled={isLoading}
-            />
-            <button 
-              className="send-btn" 
-              onClick={() => handleSend(inputStr)}
-              disabled={isLoading}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-              </svg>
-            </button>
-          </div>
-        </div>
+            <div className="chat-container">
+              <div className="chat-log">
+                {messages.map((msg, idx) => (
+                  <div key={idx} className={`chat-bubble-wrapper ${msg.role}`}>
+                    <div className="chat-bubble">
+                      {formatText(msg.text)}
+                    </div>
+                  </div>
+                ))}
+                {isLoading && (
+                  <div className="chat-bubble-wrapper assistant">
+                    <div className="chat-bubble typing">
+                      <div className="dot"></div>
+                      <div className="dot"></div>
+                      <div className="dot"></div>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+
+              <div className="search-container chat-box-search">
+                <input
+                  type="text"
+                  placeholder="Ask anything..."
+                  className="search-input"
+                  value={inputStr}
+                  onChange={(e) => setInputStr(e.target.value)}
+                  onKeyDown={onKeyDown}
+                  disabled={isLoading}
+                />
+                <button 
+                  className="send-btn" 
+                  onClick={() => handleSend(inputStr)}
+                  disabled={isLoading}
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
