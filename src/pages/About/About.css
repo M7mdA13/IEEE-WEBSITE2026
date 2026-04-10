@@ -390,7 +390,7 @@
 
 /* Tier 1: larger card */
 .website-tier:first-child .website-team-card {
-  width: 180px;
+  width: 220px;
 }
 
 /* Tier 2 & 3: standard cards */
@@ -404,7 +404,7 @@
   border-radius: 18px;
   padding: 20px 14px 16px;
   text-align: center;
-  width: 155px;
+  width: 190px;
   transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s, background 0.35s;
 }
 
@@ -415,8 +415,8 @@
 }
 
 .website-team-photo {
-  width: 80px;
-  height: 80px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
   overflow: hidden;
   border: 2.5px solid var(--ieee-border);
@@ -512,20 +512,21 @@
   .about-timeline-section { padding: 60px 16px 0; }
 
   .about-website-team { padding: 60px 16px 48px; }
-  .website-team-card { width: 140px; }
-  .website-tier:first-child .website-team-card { width: 160px; }
+  .website-team-card { width: 160px; }
+  .website-tier:first-child .website-team-card { width: 190px; }
   .about-section-header h2 { font-size: 1.6rem; }
 }
 
 @media (max-width: 480px) {
   .about-solar-heading h1 { font-size: 1.4rem; }
   .website-tier-row { gap: 8px; }
-  .website-team-card { width: 120px; padding: 14px 8px 12px; }
-  .website-tier:first-child .website-team-card { width: 140px; }
-  .website-team-photo { width: 64px; height: 64px; }
+  .website-team-card { width: 140px; padding: 14px 8px 12px; }
+  .website-tier:first-child .website-team-card { width: 165px; }
+  .website-team-photo { width: 100px; height: 100px; }
 }
 
 @media (max-width: 360px) {
-  .website-team-card { width: 105px; padding: 12px 6px 10px; }
-  .website-tier:first-child .website-team-card { width: 120px; }
+  .website-team-card { width: 120px; padding: 12px 6px 10px; }
+  .website-tier:first-child .website-team-card { width: 145px; }
+  .website-team-photo { width: 88px; height: 88px; }
 }
