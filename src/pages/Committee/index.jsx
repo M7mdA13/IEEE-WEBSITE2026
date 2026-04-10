@@ -15,20 +15,20 @@ const Stars = ({ count }) => (
 
 const SocialLinks = ({ github, linkedin, email }) => (
   <div className="social-links">
-    {github && (
-      <a href={github} aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+    {github && github !== '#' && (
+      <motion.a href={github} aria-label="GitHub" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.1, y: -2 }}>
         <i className="fab fa-github"></i>
-      </a>
+      </motion.a>
     )}
-    {linkedin && (
-      <a href={linkedin} aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+    {linkedin && linkedin !== '#' && (
+      <motion.a href={linkedin} aria-label="LinkedIn" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.1, y: -2 }}>
         <i className="fab fa-linkedin"></i>
-      </a>
+      </motion.a>
     )}
-    {email && (
-      <a href={`mailto:${email === '#' ? '' : email}`} aria-label="Email">
+    {email && email !== '#' && (
+      <motion.a href={`mailto:${email}`} aria-label="Email" whileHover={{ scale: 1.1, y: -2 }}>
         <i className="fas fa-envelope"></i>
-      </a>
+      </motion.a>
     )}
   </div>
 );
@@ -41,15 +41,14 @@ const Committee = () => {
     return {
       committee: staticCmt,
       board: (staticCmt.board || []).map((m, i) => ({ _id: `sb-${i}`, ...m })),
-      featured: (staticCmt.members || []).map((m, i) => ({ _id: `sm-${i}`, ...m })),
     };
   };
 
   const initial = getStatic(slug);
   const [committee, setCommittee] = useState(initial?.committee || null);
   const [board, setBoard] = useState(initial?.board || []);
-  const [featured, setFeatured] = useState(initial?.featured || []);
   const [notFound, setNotFound] = useState(!initial);
+  const [dataReady, setDataReady] = useState(false);
 
   useEffect(() => {
     api.get(`/committees/${slug}`)
@@ -60,9 +59,9 @@ const Committee = () => {
         setCommittee(apiCmt);
         const members = membersRes.data.data || [];
         setBoard(members.filter(m => m.roleType === 'head' || m.roleType === 'vice_head'));
-        setFeatured(members.filter(m => m.roleType === 'featured'));
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setDataReady(true));
   }, [slug]);
 
   if (notFound || !committee) {
@@ -77,7 +76,7 @@ const Committee = () => {
   const categoryLabel = committee.category === 'technical' ? 'Technical' : 'Non Technical';
 
   return (
-    <div className="committee-page">
+    <div className="committee-page" style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.35s ease' }}>
 
       {/* ── Hero ── */}
       <div className="committee-hero">
@@ -89,7 +88,7 @@ const Committee = () => {
           </Link>
 
           <div className="hero-info-row">
-            <div className="hero-logo-wrap">
+            <motion.div layoutId={`cmt-icon-${slug}`} className="hero-logo-wrap">
               {committee.image ? (
                 <img src={committee.image} alt={committee.name} className="hero-logo-img" />
               ) : (
@@ -97,7 +96,7 @@ const Committee = () => {
                   <i className={`fas ${committee.icon}`}></i>
                 </div>
               )}
-            </div>
+            </motion.div>
             <div className="hero-text-wrap">
               <span className="hero-category">{categoryLabel}</span>
               <h1 className="hero-name">{committee.name}</h1>
@@ -143,31 +142,6 @@ const Committee = () => {
               </div>
             </motion.section>
           )}
-
-          {/* Roles and Responsibilities */}
-          <motion.section 
-            className="cmt-section"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="cmt-section-title">Roles and Responsibilities</h2>
-            <h3 className="cmt-subsection-title">All members</h3>
-            <ul className="cmt-roles-list">
-              {committee.roles.map((role, i) => (
-                <motion.li 
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.4 }}
-                >
-                  {role}
-                </motion.li>
-              ))}
-            </ul>
-          </motion.section>
 
           {/* Key Activities */}
           {committee.activities && committee.activities.length > 0 && (

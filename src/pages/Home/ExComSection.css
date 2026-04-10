@@ -69,19 +69,28 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  /* overflow:hidden removed — transparent PNG cutouts need to breathe */
+  background: transparent;
+  /* Filter applied here (not on img) so transparent PNG areas don't composite against black */
+  filter: grayscale(100%);
+  transition: filter 0.4s ease;
+}
+
+.excom-pill-wrapper:hover .excom-person-frame {
+  filter: grayscale(0%);
 }
 
 .excom-person-img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: grayscale(100%);
-  transition: filter 0.4s ease, transform 0.4s ease;
+  object-position: bottom;
+  background: transparent;
+  transition: transform 0.4s ease;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 .excom-pill-wrapper:hover .excom-person-img {
-  filter: grayscale(0%);
   transform: translateY(-6px);
 }
 
@@ -119,6 +128,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
+  min-width: 0; /* allows flex shrink so long names don't overflow the pill */
   display: flex;
   flex-direction: column;
 }
@@ -162,6 +172,9 @@
   font-size: 1.6rem;
   line-height: 1.1;
   margin-bottom: 4px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 
 .excom-role-subtitle {
@@ -267,4 +280,94 @@
 
   .excom-social-strip { gap: 12px; }
   .excom-link-icon { font-size: 1.1rem; }
+}
+
+/* ═══════════════════════════════════
+   BIO EXPANSION
+═══════════════════════════════════ */
+.excom-item-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /* No overflow:hidden here — it clips the pill glow/shadow on hover.
+     Bio panel has its own overflow:hidden for the height animation. */
+}
+
+/* Whole pill-wrapper is clickable when bio exists */
+.excom-pill-wrapper--has-bio {
+  cursor: pointer;
+}
+
+.excom-pill-wrapper--has-bio:focus-visible {
+  outline: 2px solid var(--ieee-accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* Hint sits outside the pill — no clipping, no layout pressure on the name */
+.excom-bio-hint {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ieee-text-muted);
+  margin: 6px 0 0;
+  pointer-events: none;
+}
+
+.excom-bio-hint--left  { padding-left: 110px; text-align: left; }
+.excom-bio-hint--right { padding-right: 110px; text-align: right; }
+
+@media (max-width: 768px) {
+  .excom-bio-hint--left, .excom-bio-hint--right { padding-left: 80px; padding-right: 0; text-align: left; }
+}
+@media (max-width: 480px) {
+  .excom-bio-hint--left, .excom-bio-hint--right { padding-left: 55px; }
+}
+
+/* Bio panel — slides in below the pill row.
+   Left panels indent by photo visible width (220 - 110 overlap = 110px)
+   so the text visually lines up under the pill, not the photo. */
+.excom-bio-panel {
+  width: 50%;
+  overflow: hidden;
+}
+
+.excom-bio-panel--left {
+  align-self: flex-start;
+  padding-left: 110px;
+}
+
+.excom-bio-panel--right {
+  align-self: flex-end;
+  padding-right: 110px;
+}
+
+.excom-bio-text {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ieee-text-soft);
+  line-height: 1.65;
+  padding: 14px 20px 6px;
+  border-left: 3px solid var(--ieee-accent);
+  margin: 0;
+}
+
+.excom-bio-panel--right .excom-bio-text {
+  border-left: none;
+  border-right: 3px solid var(--ieee-accent);
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  /* Photo 170px, pill overlap 90px → pill starts at 80px */
+  .excom-bio-panel { width: 100%; padding-left: 80px !important; padding-right: 0 !important; }
+  .excom-bio-panel--right .excom-bio-text { border-right: none; border-left: 3px solid var(--ieee-accent); text-align: left; }
+}
+
+@media (max-width: 480px) {
+  /* Photo 130px, pill overlap 75px → pill starts at 55px */
+  .excom-bio-panel { padding-left: 55px !important; }
 }

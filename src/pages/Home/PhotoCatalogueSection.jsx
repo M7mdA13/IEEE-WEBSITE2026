@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import './PhotoCatalogueSection.css';
 
-const photos = [
+import api from '../../api/public';
+
+const DEFAULT_PHOTOS = [
   { src: '/images/group pic 1.jpg', alt: 'IEEE MUST SB event'    },
   { src: '/images/group pic 2.jpg', alt: 'IEEE MUST SB team'     },
   { src: '/images/group pic 3.jpg', alt: 'IEEE MUST SB activity' },
@@ -19,67 +21,76 @@ const AUTO_ROTATE_MS = 5000;
 const SWIPE_THRESHOLD = 40;
 
 const PhotoCatalogueSection = () => {
+  const [photos, setPhotos] = useState(DEFAULT_PHOTOS);
   const [centerIndex, setCenterIndex] = useState(1);
   const [hovered, setHovered] = useState(false);
+  const [dataReady, setDataReady] = useState(false);
+
   const total = photos.length;
-  const timerRef   = useRef(null);
+  const timerRef    = useRef(null);
   const touchStartX = useRef(null);
 
-  /* ── Auto-rotate: pauses when hovered ── */
+  useEffect(() => {
+    api.get('/gallery')
+      .then(({ data }) => {
+        if (data.data && data.data.length >= 3) {
+          setPhotos(data.data);
+          setCenterIndex(1);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setDataReady(true));
+  }, []);
+
+  /* ── Auto-rotate ── */
   useEffect(() => {
     if (hovered) return;
-    const id = setInterval(() => {
-      setCenterIndex(prev => (prev + 1) % total);
-    }, AUTO_ROTATE_MS);
+    const id = setInterval(() => setCenterIndex(prev => (prev + 1) % total), AUTO_ROTATE_MS);
     timerRef.current = id;
     return () => clearInterval(id);
   }, [hovered, total]);
 
-  // helper used by click/swipe to reset the timer
-  const startTimer = () => {
+  const resetTimer = () => {
     clearInterval(timerRef.current);
-    const id = setInterval(() => {
-      setCenterIndex(prev => (prev + 1) % total);
-    }, AUTO_ROTATE_MS);
+    const id = setInterval(() => setCenterIndex(prev => (prev + 1) % total), AUTO_ROTATE_MS);
     timerRef.current = id;
   };
 
   /* ── Touch swipe ── */
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
+  const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
   const handleTouchEnd = (e) => {
     if (touchStartX.current === null) return;
     const dx = e.changedTouches[0].clientX - touchStartX.current;
     if (Math.abs(dx) > SWIPE_THRESHOLD) {
-      const direction = dx > 0 ? -1 : 1; // swipe right = previous, swipe left = next
-      setCenterIndex(prev => (prev + direction + total) % total);
-      startTimer(); // reset timer on manual swipe
+      const dir = dx > 0 ? -1 : 1;
+      setCenterIndex(prev => (prev + dir + total) % total);
+      resetTimer();
     }
     touchStartX.current = null;
-  };
-
-  /* ── Click on side photo (desktop) ── */
-  const handleClick = (photoIdx) => {
-    if (photoIdx !== centerIndex) {
-      setCenterIndex(photoIdx);
-      startTimer();
-    }
   };
 
   const leftIndex  = (centerIndex - 1 + total) % total;
   const rightIndex = (centerIndex + 1) % total;
 
-  const getSlot = (photoIdx) => {
-    if (photoIdx === centerIndex) return SLOTS[1];
-    if (photoIdx === leftIndex)   return SLOTS[0];
-    if (photoIdx === rightIndex)  return SLOTS[2];
-    return SLOTS[1];
+  // 3 stable slots — never remount, only their content cross-fades
+  const slots = [
+    { key: 'left',   photoIdx: leftIndex,   config: SLOTS[0], isCenter: false },
+    { key: 'center', photoIdx: centerIndex, config: SLOTS[1], isCenter: true  },
+    { key: 'right',  photoIdx: rightIndex,  config: SLOTS[2], isCenter: false },
+  ];
+
+  const navigate = (dir) => {
+    setCenterIndex(prev => (prev + dir + total) % total);
+    resetTimer();
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'ArrowLeft')  { navigate(-1); }
+    if (e.key === 'ArrowRight') { navigate(1);  }
   };
 
   return (
-    <section className="catalogue-section">
+    <section className="catalogue-section" onKeyDown={handleKeyDown} tabIndex={-1} style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.4s ease' }}>
       <motion.div
         className="catalogue-header"
         initial={{ opacity: 0, y: 24 }}
@@ -93,7 +104,7 @@ const PhotoCatalogueSection = () => {
         </p>
       </motion.div>
 
-      {/* ── 3D fan stage (desktop) ── */}
+      {/* ── 3D fan stage ── */}
       <motion.div
         className="catalogue-stage"
         initial={{ opacity: 0 }}
@@ -105,48 +116,56 @@ const PhotoCatalogueSection = () => {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {photos.map((photo, i) => {
-          const slot = getSlot(i);
-          const isCenter = i === centerIndex;
-
+        {slots.map(({ key, photoIdx, config, isCenter }) => {
+          const photo = photos[photoIdx];
           return (
             <motion.div
-              key={photo.src}
+              key={key}
               className={`catalogue-frame ${isCenter ? 'catalogue-frame--center' : 'catalogue-frame--side'}`}
-              animate={{
-                rotateY: slot.rotateY,
-                rotateZ: slot.rotateZ,
-                x: slot.x,
-                y: slot.y,
-                scale: slot.scale,
-                zIndex: slot.zIndex,
-              }}
+              animate={{ rotateY: config.rotateY, rotateZ: config.rotateZ, x: config.x, y: config.y, scale: config.scale, zIndex: config.zIndex }}
               transition={{ duration: 0.6, ease: EASE }}
-              onClick={() => handleClick(i)}
+              onClick={() => { if (!isCenter) { setCenterIndex(photoIdx); resetTimer(); } }}
               style={{ cursor: isCenter ? 'default' : 'pointer' }}
             >
-              <img
-                src={photo.src}
-                alt={photo.alt}
-                className="catalogue-img"
-                draggable={false}
-              />
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={photo?.src}
+                  src={photo?.src}
+                  alt={photo?.alt}
+                  className="catalogue-img"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  draggable={false}
+                />
+              </AnimatePresence>
               {!isCenter && <div className="catalogue-overlay" />}
             </motion.div>
           );
         })}
       </motion.div>
 
-      {/* ── Dot indicators (mobile only) ── */}
-      <div className="catalogue-dots">
-        {photos.map((_, i) => (
-          <button
-            key={i}
-            className={`catalogue-dot ${i === centerIndex ? 'catalogue-dot--active' : ''}`}
-            onClick={() => { setCenterIndex(i); startTimer(); }}
-            aria-label={`Go to photo ${i + 1}`}
-          />
-        ))}
+      {/* ── Controls ── */}
+      <div className="catalogue-controls">
+        <button className="catalogue-arrow" onClick={() => navigate(-1)} aria-label="Previous">
+          <i className="fas fa-chevron-left" />
+        </button>
+
+        <div className="catalogue-dots">
+          {photos.map((_, i) => (
+            <button
+              key={i}
+              className={`catalogue-dot ${i === centerIndex ? 'catalogue-dot--active' : ''}`}
+              onClick={() => { setCenterIndex(i); resetTimer(); }}
+              aria-label={`Go to photo ${i + 1}`}
+            />
+          ))}
+        </div>
+
+        <button className="catalogue-arrow" onClick={() => navigate(1)} aria-label="Next">
+          <i className="fas fa-chevron-right" />
+        </button>
       </div>
 
       <motion.p

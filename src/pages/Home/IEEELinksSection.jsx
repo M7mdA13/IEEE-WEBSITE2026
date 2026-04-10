@@ -53,10 +53,9 @@ const IEEELinksSection = () => (
         transition={{ duration: 0.65, ease: 'easeOut' }}
       >
         <img
-          src="/images/LOGO IEEE Blue.png"
+          src="https://upload.wikimedia.org/wikipedia/commons/2/21/IEEE_logo.svg"
           alt="IEEE"
           className="ieee-feature-logo"
-          onError={(e) => { e.target.style.display = 'none'; }}
         />
         <h2 className="ieee-feature-title">
           <span>I</span>nstitute of <span>E</span>lectrical and{' '}

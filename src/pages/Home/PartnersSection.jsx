@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import api from '../../api/public';
 import './PartnersSection.css';
 
-const logos = [
+const staticLogos = [
   '/images/partner 1.png',
   '/images/partner 2.png',
   '/images/partner 3.png',
@@ -19,13 +20,34 @@ const logos = [
   '/images/logo5.png',
 ];
 
+// CSS animation hit-testing is visual-only — DOM positions don't move with the animation.
+// On real mobile devices touch events fire at DOM positions, not visual positions,
+// so tapping logo #5 visually hits logo #1 in the DOM. Fix: use a static scrollable
+// row on touch devices where hit-testing must be accurate.
+const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
 const PartnersSection = () => {
-  /* Track which logo slot is hovered so we can pause the marquee */
-  const [pausedIdx, setPausedIdx] = useState(null);
-  const isPaused = pausedIdx !== null;
+  const [logos, setLogos] = useState(staticLogos);
+  const [activeSrc, setActiveSrc] = useState(null);
+  const [dataReady, setDataReady] = useState(false);
+
+  useEffect(() => {
+    api.get('/partners')
+      .then(({ data }) => {
+        const imgs = (data.data || []).map(p => p.logo).filter(Boolean);
+        if (imgs.length > 0) {
+          setActiveSrc(null);
+          setLogos(imgs);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setDataReady(true));
+  }, []);
+
+  const doubled = [...logos, ...logos];
 
   return (
-    <section className="partners-section">
+    <section className="partners-section" style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.4s ease' }}>
       <motion.div
         className="partners-header"
         initial={{ opacity: 0, y: 20 }}
@@ -46,24 +68,43 @@ const PartnersSection = () => {
         viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        <div
-          className="partners-marquee-track"
-          style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
-        >
-          {[...logos, ...logos].map((src, i) => {
-            const isHovered = pausedIdx === i;
-            return (
+        {isTouchDevice ? (
+          /* Mobile: static scrollable row — DOM positions match visual positions */
+          <>
+            <div className="partners-scroll-track">
+              {logos.map((src) => (
+                <div
+                  key={src}
+                  className={`partner-logo-slot ${activeSrc === src ? 'partner-logo-slot--active' : ''}`}
+                  onTouchStart={() => setActiveSrc(src)}
+                  onTouchEnd={() => setActiveSrc(null)}
+                >
+                  <img src={src} alt="partner logo" draggable={false} />
+                </div>
+              ))}
+            </div>
+            <p className="partners-scroll-hint">
+              <i className="fas fa-hand-point-left" /> swipe to see all partners
+            </p>
+          </>
+        ) : (
+          /* Desktop: CSS marquee animation — fine because mouse events track visually */
+          <div
+            className="partners-marquee-track"
+            style={{ animationPlayState: activeSrc ? 'paused' : 'running' }}
+          >
+            {doubled.map((src, i) => (
               <div
                 key={i}
-                className={`partner-logo-slot ${isHovered ? 'partner-logo-slot--active' : ''}`}
-                onMouseEnter={() => setPausedIdx(i)}
-                onMouseLeave={() => setPausedIdx(null)}
+                className={`partner-logo-slot ${activeSrc === src ? 'partner-logo-slot--active' : ''}`}
+                onMouseEnter={() => setActiveSrc(src)}
+                onMouseLeave={() => setActiveSrc(null)}
               >
                 <img src={src} alt="partner logo" draggable={false} />
               </div>
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        )}
       </motion.div>
     </section>
   );

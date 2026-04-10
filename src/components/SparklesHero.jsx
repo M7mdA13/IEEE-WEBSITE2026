@@ -1,8 +1,13 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { loadFull } from 'tsparticles';
 
 const SparklesHero = ({ isDark }) => {
+  const sectionRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] });
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -120]);
+
   const [init, setInit] = useState(false);
 
   // Delayed isDark so particles switch color only after fading out
@@ -73,8 +78,8 @@ const SparklesHero = ({ isDark }) => {
   }), [particleColor]);
 
   return (
-    <section className="sparkles-hero relative">
-      <div className="hero-content" style={{ pointerEvents: 'none' }}>
+    <section ref={sectionRef} className="sparkles-hero relative">
+      <motion.div className="hero-content" style={{ pointerEvents: 'none', y: contentY }}>
         <div className="header-ieee-logo">
           <img className="logo-animate" src="/images/IEEE-MUST.png" alt="IEEE MUST logo" />
         </div>
@@ -82,7 +87,7 @@ const SparklesHero = ({ isDark }) => {
           <h1 className="text-animate-title">IEEE MUST</h1>
           <span className="text-animate-sub">Student Branch</span>
         </div>
-      </div>
+      </motion.div>
 
       <div className={`sparkles-container${fading ? ' fading' : ''}`}>
         <div className="sparkles-gradients">

@@ -82,21 +82,17 @@ const EventCard = ({ event, index }) => {
           <div className="event-card-actions">
             {isUpcoming ? (
               <>
-                {event.registrationLink && (
+                {event.registrationLink && event.registrationLink !== '#' && (
                   <a href={event.registrationLink} target="_blank" rel="noopener noreferrer" className="btn-primary">Register Now !</a>
                 )}
-                {event.agendaLink && (
+                {event.agendaLink && event.agendaLink !== '#' && (
                   <a href={event.agendaLink} target="_blank" rel="noopener noreferrer" className="btn-primary">Agenda</a>
                 )}
-                {!event.registrationLink && !event.agendaLink && (
+                {(!event.registrationLink || event.registrationLink === '#') && (!event.agendaLink || event.agendaLink === '#') && (
                   <button className="btn-primary" disabled>Coming Soon</button>
                 )}
               </>
-            ) : (
-              event.recapLink
-                ? <a href={event.recapLink} target="_blank" rel="noopener noreferrer" className="btn-primary">Recap</a>
-                : <button className="btn-primary" disabled>Recap</button>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
@@ -107,6 +103,7 @@ const EventCard = ({ event, index }) => {
 const Events = () => {
   const [events, setEvents] = useState(staticFallback);
   const [mobileTab, setMobileTab] = useState('upcoming');
+  const [dataReady, setDataReady] = useState(false);
   const dirRef = useRef(1); // 1 = left (upcoming→past), -1 = right (past→upcoming)
 
   const switchTab = useCallback((tab) => {
@@ -129,7 +126,8 @@ const Events = () => {
   useEffect(() => {
     api.get('/events')
       .then(({ data }) => { if (data.data?.length > 0) setEvents(data.data); })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setDataReady(true));
   }, []);
 
   const upcoming = events.filter(e => e.status === 'upcoming' || e.status === 'planning');
@@ -140,6 +138,7 @@ const Events = () => {
       className="events-page-container"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
+      style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.35s ease' }}
     >
       <div className="events-page">
 

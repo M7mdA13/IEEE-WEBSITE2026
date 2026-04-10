@@ -59,18 +59,18 @@ const CommitteeCard = ({ committee }) => {
     >
     <div className="cmt-card-body">
       <h3 className="cmt-card-title">{committee.name}</h3>
-      <p className="cmt-card-desc">{committee.shortDesc}</p>
+      <p className="cmt-card-desc">{committee.tagline}</p>
       <Link to={`/committees/${committee.slug}`} className="cmt-learn-btn">
         Learn more &rarr;
       </Link>
     </div>
-    <div className="cmt-card-icon">
+    <motion.div layoutId={`cmt-icon-${committee.slug}`} className="cmt-card-icon">
       {committee.image ? (
         <img src={committee.image} alt={committee.name} />
       ) : (
         <i className={`fas ${committee.icon}`}></i>
       )}
-    </div>
+    </motion.div>
   </motion.div>
   );
 };
@@ -79,11 +79,13 @@ const CommitteeCard = ({ committee }) => {
 const Committees = () => {
   const [activeTab, setActiveTab] = useState('technical');
   const [all, setAll] = useState(staticCommittees);
+  const [dataReady, setDataReady] = useState(false);
 
   useEffect(() => {
     api.get('/committees')
       .then(({ data }) => { if (data.data?.length > 0) setAll(data.data); })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setDataReady(true));
   }, []);
 
   const list = all.filter(c => c.category === activeTab);
@@ -188,6 +190,7 @@ const Committees = () => {
             initial="hidden"
             animate="show"
             exit="exit"
+            style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.35s ease' }}
           >
             {list.map((committee) => (
               <CommitteeCard key={committee._id || committee.slug} committee={committee} />

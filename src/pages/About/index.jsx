@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SolarSystem from './SolarSystem';
 import api from '../../api/public';
@@ -18,8 +18,8 @@ const PLANET_CONTENT = {
   },
   team: {
     title: 'Our Team',
-    body: 'Our leadership board is elected every year from within our member base. Each committee is led by passionate students who volunteer their time to build something meaningful — from technical content to logistics, marketing, and beyond. Behind every event is a team of dedicated people.',
-    stats: [{ label: 'Committees', value: '8' }, { label: 'Board Members', value: '12+' }, { label: 'Volunteers', value: '100+' }],
+    body: 'Our leadership board is elected every year from within our member base. Each committee is led by passionate students who volunteer their time to build something meaningful — from technical content to media, marketing, and beyond. Behind every event is a team of dedicated people.',
+    stats: [{ label: 'Committees', value: '8' }, { label: 'Board Members', value: '16+' }, { label: 'Volunteers', value: '100+' }],
   },
   impact: {
     title: 'Our Impact',
@@ -27,6 +27,16 @@ const PLANET_CONTENT = {
     stats: [{ label: 'Events Held', value: '200+' }, { label: 'Members', value: '400+' }, { label: 'Alumni', value: 'Global' }],
   },
 };
+
+/* ── Timeline milestones ─────────────────────────────────────── */
+const TIMELINE = [
+  { year: '2012', title: 'Branch Founded',      desc: 'IEEE MUST Student Branch established at Misr University for Science and Technology with a small group of passionate students.' },
+  { year: '2015', title: 'First Hackathon',      desc: 'Hosted our first 24-hour hackathon, attracting over 80 student participants from across the university.' },
+  { year: '2017', title: 'Eight Committees',     desc: 'Expanded into 8 specialized technical and non-technical committees, covering everything from AI to media.' },
+  { year: '2019', title: '200+ Members',         desc: 'Crossed 200 active members and launched the mentorship program connecting students with industry professionals.' },
+  { year: '2022', title: 'National Recognition', desc: 'Recognized among Egypt\'s most active IEEE branches for event volume, quality, and community impact.' },
+  { year: '2024', title: 'New Website',          desc: 'Launched a fully redesigned website, built entirely by our in-house engineering and design team.' },
+];
 
 /* ── Website Team (pyramid tiers) ───────────────────────────── */
 const TIERS = [
@@ -68,6 +78,8 @@ function membersToTiers(members) {
     .map(t => ({ label: TIER_LABELS[t], members: groups[t] }));
 }
 
+const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
 /* ── Page ─────────────────────────────────────────────────────── */
 const About = () => {
   const [selected, setSelected] = useState(null);
@@ -95,7 +107,6 @@ const About = () => {
           transition={{ duration: 0.7 }}
         >
           <h1>About <span>IEEE MUST</span></h1>
-          <p>Click a planet to explore our story</p>
         </motion.div>
 
         <SolarSystem onPlanetSelect={setSelected} />
@@ -113,7 +124,10 @@ const About = () => {
               <div className="about-panel-accent" style={{ background: panelColor }} />
               <button
                 className="about-panel-close"
-                onClick={() => setSelected(null)}
+                onClick={() => {
+                  setSelected(null);
+                  document.dispatchEvent(new CustomEvent('reset-orbit'));
+                }}
                 aria-label="Close"
               >
                 <i className="fas fa-times" />
@@ -142,10 +156,47 @@ const About = () => {
               exit={{ opacity: 0 }}
               transition={{ delay: 1 }}
             >
-              <i className="fas fa-hand-pointer" /> Click a planet to explore
+              <i className={isTouch ? 'fas fa-hand' : 'fas fa-hand-pointer'} />
+              {isTouch ? 'Tap' : 'Click'} a planet to explore
             </motion.p>
           )}
         </AnimatePresence>
+      </section>
+
+      {/* ── Timeline ── */}
+      <section className="about-timeline-section">
+        <div className="about-website-inner">
+          <motion.div
+            className="about-section-header"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2>Our Journey</h2>
+            <p>Over a decade of building, learning, and growing.</p>
+          </motion.div>
+
+          <div className="about-timeline">
+            {TIMELINE.map((item, i) => (
+              <motion.div
+                key={i}
+                className={`about-timeline-item ${i % 2 === 0 ? 'tl-left' : 'tl-right'}`}
+                initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.5, delay: 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
+              >
+                <div className="about-timeline-card">
+                  <span className="about-timeline-year">{item.year}</span>
+                  <h4 className="about-timeline-title">{item.title}</h4>
+                  <p className="about-timeline-desc">{item.desc}</p>
+                </div>
+                <div className="about-timeline-dot" />
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* ── Website Team ── */}
