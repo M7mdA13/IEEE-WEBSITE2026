@@ -15,20 +15,20 @@ const Stars = ({ count }) => (
 
 const SocialLinks = ({ github, linkedin, email }) => (
   <div className="social-links">
-    {github && (
-      <a href={github} aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+    {github && github !== '#' && (
+      <motion.a href={github} aria-label="GitHub" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.1, y: -2 }}>
         <i className="fab fa-github"></i>
-      </a>
+      </motion.a>
     )}
-    {linkedin && (
-      <a href={linkedin} aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
+    {linkedin && linkedin !== '#' && (
+      <motion.a href={linkedin} aria-label="LinkedIn" target="_blank" rel="noopener noreferrer" whileHover={{ scale: 1.1, y: -2 }}>
         <i className="fab fa-linkedin"></i>
-      </a>
+      </motion.a>
     )}
-    {email && (
-      <a href={`mailto:${email}`} aria-label="Email">
+    {email && email !== '#' && (
+      <motion.a href={`mailto:${email}`} aria-label="Email" whileHover={{ scale: 1.1, y: -2 }}>
         <i className="fas fa-envelope"></i>
-      </a>
+      </motion.a>
     )}
   </div>
 );

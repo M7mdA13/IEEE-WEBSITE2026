@@ -1,10 +1,10 @@
 .ai-assistant-page {
- height: 110vh;
+  /* Let it fill available space without aggressive 110vh */
+  min-height: calc(100vh - 80px);
+  padding-top: 100px; /* clear nav */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
   background-color: var(--ieee-bg);
   color: var(--ieee-text);
   font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -13,44 +13,171 @@
 
 .ai-content-wrapper {
   max-width: 800px;
-  width: 100%;
-  text-align: center;
+  width: 90%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 25px;
+  gap: 15px;
+  padding-bottom: 40px;
+  flex: 1;
+}
+
+.ai-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .robot-icon {
-  width: 140px;
-  height: auto;
   margin-bottom: 5px;
 }
 
 .greeting-text {
-  font-size: 3rem;
+  font-size: 2.2rem;
   font-weight: 800;
-  color: var(--ieee-cyan);
-  margin: 0 0 15px;
+  color: var(--ieee-accent);
+  margin: 0;
   line-height: 1.2;
 }
 
-.search-container {
+/* Chat Layout structure */
+.chat-container {
   width: 100%;
-  max-width: 550px;
+  display: flex;
+  flex-direction: column;
+  background: var(--ieee-bg-elevated);
+  border: 1px solid var(--ieee-border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--ieee-shadow);
+  height: 60vh;
+  min-height: 400px;
+  max-height: 700px;
+}
+
+/* Make chat log scrollable */
+.chat-log {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Scrollbar skinning */
+.chat-log::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-log::-webkit-scrollbar-thumb {
+  background: var(--ieee-border-strong);
+  border-radius: 4px;
+}
+
+/* Chat bubble flex wrapper */
+.chat-bubble-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.chat-bubble-wrapper.user {
+  justify-content: flex-end;
+}
+
+.chat-bubble-wrapper.assistant {
+  justify-content: flex-start;
+}
+
+/* The Bubble itself */
+.chat-bubble {
+  max-width: 75%;
+  padding: 12px 18px;
+  border-radius: 20px;
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 500;
+  word-wrap: break-word;
+}
+
+.chat-bubble-wrapper.user .chat-bubble {
+  background: var(--ieee-accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-bubble-wrapper.assistant .chat-bubble {
+  background: var(--ieee-bg-card);
+  color: var(--ieee-text);
+  border: 1px solid var(--ieee-border);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+/* Typing Indicator Dots */
+.chat-bubble.typing {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 14px 18px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--ieee-text-muted);
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.dot:nth-child(1) { animation-delay: -0.32s; }
+.dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+/* Suggestion Pills */
+.suggestions-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 24px;
+  border-top: 1px solid var(--ieee-border);
+  background: var(--ieee-bg-elevated);
+}
+
+.suggestion-pill {
+  background: var(--ieee-bg-card);
+  border: 1.5px solid var(--ieee-accent);
+  color: var(--ieee-text);
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.suggestion-pill:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.suggestion-pill:hover:not(:disabled) {
+  background: var(--ieee-accent);
+  color: white;
+}
+
+/* Input Area */
+.search-container {
   display: flex;
   align-items: center;
   background: var(--ieee-bg-card);
-  border: 1.5px solid var(--ieee-cyan);
-  border-radius: 50px;
-  padding: 6px 6px 6px 25px;
-  margin-bottom: 25px;
-  transition: background-color 0.35s ease, border-color 0.35s ease,
-              box-shadow 0.2s ease;
-}
-
-.search-container:focus-within {
-  box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.2);
+  border-top: 1px solid var(--ieee-border);
+  padding: 16px 20px;
 }
 
 .search-input {
@@ -58,24 +185,22 @@
   border: none;
   background: transparent;
   outline: none;
-  font-size: 1.15rem;
+  font-size: 1rem;
   font-weight: 500;
-  color: var(--ieee-text-soft);
+  color: var(--ieee-text);
   padding: 10px 0;
-  transition: color 0.25s ease;
 }
 
 .search-input::placeholder {
   color: var(--ieee-text-muted);
-  opacity: 1;
 }
 
 .send-btn {
-  background: var(--ieee-cyan);
+  background: var(--ieee-accent);
   border: none;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,60 +211,38 @@
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-.send-btn:hover {
+.send-btn:disabled {
+  background: var(--ieee-border-strong);
+  cursor: not-allowed;
+}
+
+.send-btn:hover:not(:disabled) {
   transform: scale(1.05);
-  background: var(--ieee-cyan-hover);
+  background: var(--ieee-accent-hover);
 }
 
 .send-btn svg {
-  width: 22px;
-  height: 22px;
-}
-
-.suggestions-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  max-width: 650px;
-}
-
-.suggestion-pill {
-  background: transparent;
-  border: 1.5px solid var(--ieee-cyan);
-  color: var(--ieee-text);
-  padding: 12px 24px;
-  border-radius: 30px;
-  font-size: 1.05rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease,
-              border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.suggestion-pill:hover {
-  background: var(--ieee-cyan);
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 210, 255, 0.3);
+  width: 20px;
+  height: 20px;
+  margin-left: -2px; /* optical alignment for the icon */
 }
 
 @media (max-width: 768px) {
   .ai-assistant-page {
-    margin-top: 20px;
-    padding: 40px 15px;
+    padding-top: 80px;
   }
 
-  .greeting-text {
-    font-size: 2.2rem;
+  .chat-container {
+    height: 65vh;
   }
 
-  .search-container {
-    padding: 5px 5px 5px 20px;
+  .chat-bubble {
+    max-width: 85%;
+    font-size: 0.95rem;
   }
 
   .suggestion-pill {
-    padding: 10px 20px;
-    font-size: 0.95rem;
+    padding: 8px 12px;
+    font-size: 0.85rem;
   }
 }

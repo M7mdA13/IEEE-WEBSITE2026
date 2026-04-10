@@ -82,13 +82,13 @@ const EventCard = ({ event, index }) => {
           <div className="event-card-actions">
             {isUpcoming ? (
               <>
-                {event.registrationLink && (
+                {event.registrationLink && event.registrationLink !== '#' && (
                   <a href={event.registrationLink} target="_blank" rel="noopener noreferrer" className="btn-primary">Register Now !</a>
                 )}
-                {event.agendaLink && (
+                {event.agendaLink && event.agendaLink !== '#' && (
                   <a href={event.agendaLink} target="_blank" rel="noopener noreferrer" className="btn-primary">Agenda</a>
                 )}
-                {!event.registrationLink && !event.agendaLink && (
+                {(!event.registrationLink || event.registrationLink === '#') && (!event.agendaLink || event.agendaLink === '#') && (
                   <button className="btn-primary" disabled>Coming Soon</button>
                 )}
               </>

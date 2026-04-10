@@ -474,8 +474,25 @@ export default function SolarSystem({ onPlanetSelect }) {
       }
     };
 
+    const onResetOrbit = () => {
+      trackingActive = false;
+      if (selected) {
+        gsap.to(selected, { currentSpeed: selected.data.speed, duration: 0.8 });
+        selected.mesh.material.emissiveIntensity = selected.data.emissiveBase;
+        selected.labelObj.element.classList.remove('hovered');
+        selected = null;
+      }
+      gsap.to(camera.position, {
+        x: defaultCamPos.x, y: defaultCamPos.y, z: defaultCamPos.z,
+        duration: 1.3, ease: 'power2.inOut',
+      });
+      gsap.to(lookTarget, { x: 0, y: 0,  z: 0, duration: 1.3, ease: 'power2.inOut' });
+      callbackRef.current(null);
+    };
+
     renderer.domElement.addEventListener('mousemove', onMouseMove);
     renderer.domElement.addEventListener('click',     onClick);
+    document.addEventListener('reset-orbit', onResetOrbit);
 
     // ── Animation loop ────────────────────────────────────────────────────
     let animId;
@@ -558,6 +575,7 @@ export default function SolarSystem({ onPlanetSelect }) {
       window.removeEventListener('resize', onResize);
       renderer.domElement.removeEventListener('mousemove', onMouseMove);
       renderer.domElement.removeEventListener('click',     onClick);
+      document.removeEventListener('reset-orbit', onResetOrbit);
       el.removeEventListener('mousemove', onMouseMoveParallax);
       renderer.dispose();
       if (el.contains(renderer.domElement))      el.removeChild(renderer.domElement);

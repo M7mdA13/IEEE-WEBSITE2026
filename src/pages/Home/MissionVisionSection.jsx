@@ -113,7 +113,7 @@ const MissionVisionSection = () => {
           initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.75, ease: [0.25, 0.46, 0.45, 0.94], delay: 0.15 }}
+          transition={{ duration: 0.75, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           <svg viewBox="0 0 200 174" preserveAspectRatio="none" className="mv-tri__svg">
             <path d={VISION_PATH} className="mv-tri__fill--vision" vectorEffect="non-scaling-stroke" />

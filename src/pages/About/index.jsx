@@ -122,7 +122,10 @@ const About = () => {
               <div className="about-panel-accent" style={{ background: panelColor }} />
               <button
                 className="about-panel-close"
-                onClick={() => setSelected(null)}
+                onClick={() => {
+                  setSelected(null);
+                  document.dispatchEvent(new CustomEvent('reset-orbit'));
+                }}
                 aria-label="Close"
               >
                 <i className="fas fa-times" />

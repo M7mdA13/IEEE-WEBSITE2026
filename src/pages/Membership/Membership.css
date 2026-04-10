@@ -45,7 +45,7 @@
 .stay-tuned {
   font-size: 3.5rem;
   font-weight: 800;
-  color: var(--ieee-cyan);
+  color: var(--ieee-accent);
   margin: 1.5rem 0;
 }
 
@@ -67,7 +67,7 @@
 .notify-success {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--ieee-cyan);
+  color: var(--ieee-accent);
   margin: 0;
 }
 
@@ -84,7 +84,7 @@
   max-width: 500px;
   position: relative;
   border-radius: 50px;
-  border: 1px solid var(--ieee-cyan);
+  border: 1px solid var(--ieee-accent);
   background-color: var(--ieee-bg-card);
   overflow: hidden;
   box-shadow: 0 4px 15px rgba(27, 216, 244, 0.1);
@@ -109,7 +109,7 @@
 }
 
 .notify-button {
-  background-color: var(--ieee-cyan);
+  background-color: var(--ieee-accent);
   color: white;
   border: none;
   padding: 0 2rem;
@@ -120,7 +120,7 @@
 }
 
 .notify-button:hover {
-  background-color: var(--ieee-cyan-hover);
+  background-color: var(--ieee-accent-hover);
 }
 
 @media (max-width: 600px) {
@@ -147,7 +147,7 @@
 
   .notify-input {
     border-radius: 50px;
-    border: 1px solid var(--ieee-cyan);
+    border: 1px solid var(--ieee-accent);
     background: var(--ieee-bg-card);
   }
 
