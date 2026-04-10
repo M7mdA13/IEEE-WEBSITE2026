@@ -34,7 +34,7 @@ Guidelines:
 4. Try to sign off with a friendly remark or a subtle call to action (e.g., "Ready to build the future with us?").`;
 
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.0-flash',
       systemInstruction: systemPrompt 
     });
 
@@ -52,8 +52,25 @@ Guidelines:
         history: parsedHistory
     });
 
-    const result = await chat.sendMessage(message);
-    const text = result.response.text();
+    const MAX_RETRIES = 2;
+    let attempt = 0;
+    let success = false;
+    let text = "";
+
+    while (attempt < MAX_RETRIES && !success) {
+      try {
+        const result = await chat.sendMessage(message);
+        text = result.response.text();
+        success = true;
+      } catch (err) {
+        attempt++;
+        if (attempt >= MAX_RETRIES || !err.message.includes('503')) {
+          throw err; // Stop if it's not a capacity issue or out of retries
+        }
+        console.warn(`[AI] Google API 503 high demand. Trying attempt ${attempt + 1}...`);
+        await new Promise(r => setTimeout(r, 1500)); // sleep 1.5s
+      }
+    }
     
     res.json({ success: true, reply: text });
   } catch (error) {
