@@ -9,26 +9,46 @@ router.post('/chat', async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
+    // Fetch Live Names from DB dynamically!
+    const ExCom = require('../../models/ExCom');
+    const Member = require('../../models/Member');
+    
+    // Non-blocking parallel queries to the DB
+    const [excoms, heads] = await Promise.all([
+      ExCom.find({ isActive: true }).lean(),
+      Member.find({ roleType: 'head', isActive: true }).populate('committee').lean()
+    ]);
+
+    // Helper functions to safely pull a name if it exists AND isn't placeholder data
+    const getExcom = (matcher, exclude = null) => {
+      const p = excoms.find(e => matcher.test(e.role.toLowerCase()) && (!exclude || !exclude.test(e.role.toLowerCase())));
+      return (p && !p.name.includes("Firstname")) ? `${p.name} - ` : "";
+    };
+    const getHead = (matcher) => {
+      const p = heads.find(h => h.committee?.slug && matcher.test(h.committee.slug.toLowerCase()));
+      return (p && !p.name.includes("Firstname")) ? `${p.name} - ` : "";
+    };
+
     const systemPrompt = `You are the official digital assistant for the IEEE MUST (Misr University for Science and Technology) Student Branch. 
 You are enthusiastic, professional, and concise. Your goal is to help visitors understand who we are and what we do.
 We were founded in 2012, and currently have over 200 members.
 Context Rules:
 - Impact: We've hosted over 200 events so far.
 - Committees: We have 8 specialized committees:
-  * AI: Explores artificial intelligence, machine learning, and data science.
-  * Web Dev: Builds websites, web apps, and modern digital platforms.
-  * Embedded Systems: Works on microcontrollers, robotics, and hardware electronics.
-  * Cybersecurity: Focuses on network security, ethical hacking, and data protection.
-  * Multimedia: Handles video editing, photography, graphic design, and visual content.
-  * PR (Public Relations): Manages external communications, sponsorships, and partnerships.
-  * HR (Human Resources): Handles member recruitment, team evaluations, and internal wellness.
-  * Marketing: Promotes events, manages social media channels, and builds the brand.
+  * AI: ${getHead(/ai/)}Explores artificial intelligence, machine learning, and data science.
+  * Web Dev: ${getHead(/web/)}Builds websites, web apps, and modern digital platforms.
+  * Embedded Systems: ${getHead(/embed/)}Works on microcontrollers, robotics, and hardware electronics.
+  * Cybersecurity: ${getHead(/cyber/)}Focuses on network security, ethical hacking, and data protection.
+  * Multimedia: ${getHead(/multi/)}Handles video editing, photography, graphic design, and visual content.
+  * PR (Public Relations): ${getHead(/pr/)}Manages external communications, sponsorships, and partnerships.
+  * HR (Human Resources): ${getHead(/hr/)}Handles member recruitment, team evaluations, and internal wellness.
+  * Marketing: ${getHead(/market/)}Promotes events, manages social media channels, and builds the brand.
 - Executive Committee (ExCom): Our leadership board is elected every year and consists of 5 core roles:
-  * Chair: The main leader and representative of the branch.
-  * Vice Chair: Supports the Chair and manages internal operations.
-  * Secretary: Handles all official documentation, meeting minutes, and records.
-  * Treasurer: Manages funds, budget, and financial planning.
-  * Webmaster: Develops and maintains the branch website.
+  * Chair: ${getExcom(/chair|president/, /vice/)}The main leader and representative of the branch.
+  * Vice Chair: ${getExcom(/vice/)}Supports the Chair and manages internal operations.
+  * Secretary: ${getExcom(/secr/)}Handles all official documentation, meeting minutes, and records.
+  * Treasurer: ${getExcom(/treas/)}Manages funds, budget, and financial tracking.
+  * Webmaster: ${getExcom(/web/)}Develops and maintains the branch website.
 - Recruitment: We host recruitment phases both online and on-campus periodically. Check our social media for updates.
 - What is IEEE?: It's the Institute of Electrical and Electronics Engineers, the world's largest technical professional non-profit organization dedicated to advancing technology for the benefit of humanity.
 - IEEE SAC: The Student Activities Committee, a global IEEE group that oversees, empowers, and supports student branches like ours around the world.
