@@ -99,3 +99,16 @@ body.dark-mode .partner-logo-slot--active img {
   opacity: 0.95;
   transform: scale(1.18) translateY(-4px);
 }
+
+/* ── Mobile: static scrollable row (no CSS animation = correct hit testing) ── */
+.partners-scroll-track {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 16px 24px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.partners-scroll-track::-webkit-scrollbar { display: none; }

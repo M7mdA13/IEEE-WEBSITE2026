@@ -103,6 +103,7 @@ const EventCard = ({ event, index }) => {
 const Events = () => {
   const [events, setEvents] = useState(staticFallback);
   const [mobileTab, setMobileTab] = useState('upcoming');
+  const [dataReady, setDataReady] = useState(false);
   const dirRef = useRef(1); // 1 = left (upcoming→past), -1 = right (past→upcoming)
 
   const switchTab = useCallback((tab) => {
@@ -125,7 +126,8 @@ const Events = () => {
   useEffect(() => {
     api.get('/events')
       .then(({ data }) => { if (data.data?.length > 0) setEvents(data.data); })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setDataReady(true));
   }, []);
 
   const upcoming = events.filter(e => e.status === 'upcoming' || e.status === 'planning');
@@ -136,6 +138,7 @@ const Events = () => {
       className="events-page-container"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
+      style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.35s ease' }}
     >
       <div className="events-page">
 

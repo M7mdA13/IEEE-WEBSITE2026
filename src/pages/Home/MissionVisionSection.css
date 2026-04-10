@@ -165,22 +165,51 @@ body.dark-mode .mv-tri__icon--vision { filter: brightness(0) invert(1); }
   .mv-wrapper { height: 180vw; }
   .mv-tri { width: 100%; left: 0; right: 0; }
 
-  /* Both panels centered, narrower to stay within the triangle's slanted edges */
+  /* Both use 88% width; mission uses shape-outside to follow triangle */
   .mv-tri__content {
-    width: 60%;
+    width: 88%;
     gap: 1.2vw;
-    padding: 0 2vw;
+    padding: 0;
   }
 
-  /* Mission points DOWN — widest at top, text safe near top: 8% */
-  .mv-tri__content--mission { top: 8%; }
-
-  /* Vision points UP — widest at bottom, text safe near bottom: 10% */
+  .mv-tri__content--mission { top: 6%; }
   .mv-tri__content--vision { bottom: 10%; }
 
-  /* Smaller type so the long mission text fits comfortably */
-  .mv-tri__heading { font-size: 4.8vw; }
-  .mv-tri__body { font-size: 2.5vw; line-height: 1.55; }
+  .mv-tri__heading { font-size: 5vw; }
+
+  /* Mission body text flows in a downward-triangle shape using CSS shape-outside.
+     Two zero-width floats with diagonal shape-outside polygons push each line
+     progressively narrower as the text descends, matching the triangle's edges. */
+  .mv-tri__content--mission .mv-tri__body {
+    width: 100%;
+    display: block;
+    font-size: 2.8vw;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .mv-tri__content--mission .mv-tri__body::before {
+    content: '';
+    float: left;
+    width: 50%;
+    height: 260px;
+    shape-outside: polygon(0 0, 0 100%, 100% 100%);
+  }
+
+  .mv-tri__content--mission .mv-tri__body::after {
+    content: '';
+    float: right;
+    width: 50%;
+    height: 260px;
+    shape-outside: polygon(100% 0, 0 100%, 100% 100%);
+  }
+
+  /* Vision body keeps simple centered layout */
+  .mv-tri__content--vision .mv-tri__body {
+    width: 68%;
+    font-size: 2.8vw;
+    line-height: 1.55;
+  }
 
   .mv-tri__icon { width: 11vw; height: 11vw; }
   .mv-tri__icon--mission { bottom: 8%; }

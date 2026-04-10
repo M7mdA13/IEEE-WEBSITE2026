@@ -20,6 +20,12 @@ const staticLogos = [
   '/images/logo5.png',
 ];
 
+// CSS animation hit-testing is visual-only — DOM positions don't move with the animation.
+// On real mobile devices touch events fire at DOM positions, not visual positions,
+// so tapping logo #5 visually hits logo #1 in the DOM. Fix: use a static scrollable
+// row on touch devices where hit-testing must be accurate.
+const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
 const PartnersSection = () => {
   const [logos, setLogos] = useState(staticLogos);
   const [activeSrc, setActiveSrc] = useState(null);
@@ -62,23 +68,38 @@ const PartnersSection = () => {
         viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        <div
-          className="partners-marquee-track"
-          style={{ animationPlayState: activeSrc ? 'paused' : 'running' }}
-        >
-          {doubled.map((src, i) => (
-            <div
-              key={i}
-              className={`partner-logo-slot ${activeSrc === src ? 'partner-logo-slot--active' : ''}`}
-              onMouseEnter={() => setActiveSrc(src)}
-              onMouseLeave={() => setActiveSrc(null)}
-              onTouchStart={(e) => { e.stopPropagation(); setActiveSrc(src); }}
-              onTouchEnd={() => setActiveSrc(null)}
-            >
-              <img src={src} alt="partner logo" draggable={false} />
-            </div>
-          ))}
-        </div>
+        {isTouchDevice ? (
+          /* Mobile: static scrollable row — DOM positions match visual positions */
+          <div className="partners-scroll-track">
+            {logos.map((src) => (
+              <div
+                key={src}
+                className={`partner-logo-slot ${activeSrc === src ? 'partner-logo-slot--active' : ''}`}
+                onTouchStart={() => setActiveSrc(src)}
+                onTouchEnd={() => setActiveSrc(null)}
+              >
+                <img src={src} alt="partner logo" draggable={false} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* Desktop: CSS marquee animation — fine because mouse events track visually */
+          <div
+            className="partners-marquee-track"
+            style={{ animationPlayState: activeSrc ? 'paused' : 'running' }}
+          >
+            {doubled.map((src, i) => (
+              <div
+                key={i}
+                className={`partner-logo-slot ${activeSrc === src ? 'partner-logo-slot--active' : ''}`}
+                onMouseEnter={() => setActiveSrc(src)}
+                onMouseLeave={() => setActiveSrc(null)}
+              >
+                <img src={src} alt="partner logo" draggable={false} />
+              </div>
+            ))}
+          </div>
+        )}
       </motion.div>
     </section>
   );

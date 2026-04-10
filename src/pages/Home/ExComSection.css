@@ -296,22 +296,20 @@
   border-radius: 4px;
 }
 
-/* Chevron cue — anchored to pill-wrapper (position:relative) so it sits
-   outside the pill's overflow:hidden boundary */
-.excom-bio-cue {
-  position: absolute;
-  bottom: 8px;
-  right: 12px;
-  font-size: 0.65rem;
-  color: rgba(255, 255, 255, 0.6);
-  transition: transform 0.3s ease, color 0.2s;
+/* Inline hint text inside the pill info-content — flows naturally, never clipped */
+.excom-bio-hint {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 6px;
+  transition: color 0.2s;
   pointer-events: none;
-  z-index: 20;
 }
 
-.excom-pill-wrapper--has-bio:hover .excom-bio-cue { color: rgba(255,255,255,1); }
-
-.excom-bio-cue--open { transform: rotate(180deg); }
+.excom-pill-wrapper--has-bio:hover .excom-bio-hint { color: rgba(255, 255, 255, 0.85); }
 
 /* Bio panel — slides in below the pill row.
    Left panels indent by photo visible width (220 - 110 overlap = 110px)
@@ -349,6 +347,12 @@
 }
 
 @media (max-width: 768px) {
-  .excom-bio-panel { width: 100%; padding-left: 0 !important; padding-right: 0 !important; }
+  /* Photo 170px, pill overlap 90px → pill starts at 80px */
+  .excom-bio-panel { width: 100%; padding-left: 80px !important; padding-right: 0 !important; }
   .excom-bio-panel--right .excom-bio-text { border-right: none; border-left: 3px solid var(--ieee-accent); text-align: left; }
+}
+
+@media (max-width: 480px) {
+  /* Photo 130px, pill overlap 75px → pill starts at 55px */
+  .excom-bio-panel { padding-left: 55px !important; }
 }

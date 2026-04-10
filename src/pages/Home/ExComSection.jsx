@@ -101,14 +101,13 @@ const ExComCard = ({ member, index }) => {
                 {member.linkedin && <MagneticIcon href={member.linkedin}          icon="fab fa-linkedin-in" ariaLabel={`${member.name}'s LinkedIn`} />}
                 {member.email    && <MagneticIcon href={`mailto:${member.email}`} icon="fas fa-envelope"    ariaLabel={`Email ${member.name}`} />}
               </div>
+              {member.bio && (
+                <span className="excom-bio-hint" aria-hidden="true">
+                  {bioOpen ? '— close' : '— know more'}
+                </span>
+              )}
             </div>
           </SpotlightPill>
-
-          {member.bio && (
-            <span className={`excom-bio-cue ${bioOpen ? 'excom-bio-cue--open' : ''}`} aria-hidden="true">
-              <i className="fas fa-chevron-down" />
-            </span>
-          )}
         </div>
       </motion.div>
 

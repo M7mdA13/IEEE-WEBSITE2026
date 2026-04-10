@@ -48,6 +48,7 @@ const Committee = () => {
   const [committee, setCommittee] = useState(initial?.committee || null);
   const [board, setBoard] = useState(initial?.board || []);
   const [notFound, setNotFound] = useState(!initial);
+  const [dataReady, setDataReady] = useState(false);
 
   useEffect(() => {
     api.get(`/committees/${slug}`)
@@ -59,7 +60,8 @@ const Committee = () => {
         const members = membersRes.data.data || [];
         setBoard(members.filter(m => m.roleType === 'head' || m.roleType === 'vice_head'));
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setDataReady(true));
   }, [slug]);
 
   if (notFound || !committee) {
@@ -74,7 +76,7 @@ const Committee = () => {
   const categoryLabel = committee.category === 'technical' ? 'Technical' : 'Non Technical';
 
   return (
-    <div className="committee-page">
+    <div className="committee-page" style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.35s ease' }}>
 
       {/* ── Hero ── */}
       <div className="committee-hero">
