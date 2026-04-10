@@ -14,7 +14,6 @@ const eventSchema = new mongoose.Schema(
     },
     registrationLink: { type: String, trim: true },
     agendaLink: { type: String, trim: true },
-    recapLink: { type: String, trim: true },
     attendanceCount: { type: Number, min: 0 },
   },
   { timestamps: true }

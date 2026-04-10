@@ -11,5 +11,7 @@ router.use('/events', require('./events.routes'));
 router.use('/pages', require('./pages.routes'));
 router.use('/recruitment', require('./recruitment.routes'));
 router.use('/partners', require('./partners.routes'));
+router.use('/website-team', require('./websiteTeam.routes'));
+router.use('/mailing-list', require('./mailingList.routes'));
 
 module.exports = router;

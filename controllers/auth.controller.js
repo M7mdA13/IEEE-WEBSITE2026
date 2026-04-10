@@ -81,3 +81,34 @@ exports.me = async (req, res, next) => {
     next(err);
   }
 };
+
+// PATCH /api/admin/auth/me  — update name, email, and/or password
+exports.updateMe = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const { name, email, currentPassword, newPassword } = req.body;
+
+    if (name) user.name = name.trim();
+    if (email) user.email = email.toLowerCase().trim();
+
+    if (newPassword) {
+      if (!currentPassword) {
+        return res.status(400).json({ success: false, message: 'Current password is required to set a new one' });
+      }
+      const isMatch = await user.matchPassword(currentPassword);
+      if (!isMatch) {
+        return res.status(401).json({ success: false, message: 'Current password is incorrect' });
+      }
+      user.passwordHash = await User.hashPassword(newPassword);
+    }
+
+    await user.save();
+    res.json({ success: true, user: user.toJSON() });
+  } catch (err) {
+    next(err);
+  }
+};
