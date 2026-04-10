@@ -59,7 +59,7 @@ const CommitteeCard = ({ committee }) => {
     >
     <div className="cmt-card-body">
       <h3 className="cmt-card-title">{committee.name}</h3>
-      <p className="cmt-card-desc">{committee.shortDesc}</p>
+      <p className="cmt-card-desc">{committee.tagline}</p>
       <Link to={`/committees/${committee.slug}`} className="cmt-learn-btn">
         Learn more &rarr;
       </Link>
