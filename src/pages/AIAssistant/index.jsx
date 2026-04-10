@@ -11,17 +11,21 @@ const suggestions = [
 ];
 
 const AIAssistant = () => {
-  const [messages, setMessages] = useState([
-    { role: 'assistant', text: "Hello! I'm the IEEE MUST digital assistant. How can I help you today?" }
-  ]);
+  const initialMessages = [
+    { role: 'assistant', text: "Hello! I'm the IEEE MUST digital assistant. How can I help you today?" },
+    { role: 'assistant', text: "**Quick Links**:\n[Home](/) | [About](/about) | [Membership](/membership) | [Events](/events) | [Committees](/committees)\n\n**Socials**:\n[Facebook](https://www.facebook.com/IEEEMUST.egy) | [Instagram](https://www.instagram.com/ieeemust/) | [LinkedIn](https://www.linkedin.com/company/mustieeesb/) | [TikTok](https://www.tiktok.com/@ieee.must.sb)" }
+  ];
+
+  const [messages, setMessages] = useState(initialMessages);
   const [inputStr, setInputStr] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasStartedChat, setHasStartedChat] = useState(false);
-  
-  const messagesEndRef = useRef(null);
+  const chatLogRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatLogRef.current) {
+      chatLogRef.current.scrollTop = chatLogRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
@@ -65,14 +69,44 @@ const AIAssistant = () => {
     }
   };
 
-  // Convert URLs or simple markdown bold in the bot output (optional tiny parser)
+  // Advanced Custom Regex Markdown Parser for **bold** and [links](urls)
   const formatText = (text) => {
-    return text.split('\n').map((line, i) => (
-      <React.Fragment key={i}>
-        {line}
-        <br />
-      </React.Fragment>
-    ));
+    return text.split('\n').map((line, i) => {
+      // Split by bold (**text**) or markdown links ([text](url))
+      const parts = line.split(/(\*\*.*?\*\*|\[.*?\]\(.*?\))/g).map((part, j) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          return <strong key={j} style={{ color: '#0096ED' }}>{part.slice(2, -2)}</strong>;
+        }
+        
+        const linkMatch = part.match(/\[(.*?)\]\((.*?)\)/);
+        if (linkMatch) {
+          return (
+            <a 
+              key={j} 
+              href={linkMatch[2]} 
+              target={linkMatch[2].startsWith('http') ? '_blank' : '_self'} 
+              rel="noopener noreferrer" 
+              style={{ color: '#24F0FF', textDecoration: 'underline', fontWeight: 'bold' }}
+            >
+              {linkMatch[1]}
+            </a>
+          );
+        }
+        
+        return part;
+      });
+
+      return (
+        <span key={i} style={{ display: 'block', minHeight: '1.2em' }}>
+          {parts}
+        </span>
+      );
+    });
+  };
+
+  const handleResetChat = () => {
+    setMessages(initialMessages);
+    setHasStartedChat(false);
   };
 
   return (
@@ -127,7 +161,7 @@ const AIAssistant = () => {
           </>
         ) : (
           <>
-            <div className="ai-header">
+            <div className="ai-header" style={{ position: 'relative', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
               <img
                 src="/images/robot-assistant.svg"
                 alt="Robot Assistant"
@@ -137,10 +171,36 @@ const AIAssistant = () => {
                 style={{ objectFit: 'contain', minHeight: '80px' }}
               />
               <h1 className="greeting-text-small">IEEE MUST AI</h1>
+              
+              {/* Reset Chat Button */}
+              <button 
+                onClick={handleResetChat}
+                style={{
+                  position: 'absolute',
+                  right: '0',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'transparent',
+                  border: '1px solid rgba(0, 152, 237, 0.4)',
+                  color: '#90CAF9',
+                  padding: '6px 12px',
+                  borderRadius: '20px',
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(0, 152, 237, 0.1)'; e.currentTarget.style.borderColor = '#0098ED'; }}
+                onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'rgba(0, 152, 237, 0.4)'; }}
+              >
+                <i className="fas fa-undo"></i> Reset
+              </button>
             </div>
 
             <div className="chat-container">
-              <div className="chat-log">
+              <div className="chat-log" ref={chatLogRef}>
                 {messages.map((msg, idx) => (
                   <div key={idx} className={`chat-bubble-wrapper ${msg.role}`}>
                     <div className="chat-bubble">
@@ -157,7 +217,6 @@ const AIAssistant = () => {
                     </div>
                   </div>
                 )}
-                <div ref={messagesEndRef} />
               </div>
 
               <div className="search-container chat-box-search">
