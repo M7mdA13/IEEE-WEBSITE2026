@@ -10,5 +10,6 @@ router.use('/partners', require('./partners.routes'));
 router.use('/mailing-list', require('./mailingList.routes'));
 router.use('/website-team', require('./websiteTeam.routes'));
 router.use('/gallery', require('./gallery.routes'));
+router.use('/ai', require('./ai.routes'));
 
 module.exports = router;
