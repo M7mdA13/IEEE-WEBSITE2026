@@ -7,9 +7,11 @@ import CommitteesSection from '../components/dashboard/CommitteesSection'
 import EventsSection from '../components/dashboard/EventsSection'
 import MembersSection from '../components/dashboard/MembersSection'
 import PartnersSection from '../components/dashboard/PartnersSection'
+import RecruitmentSection from '../components/dashboard/RecruitmentSection'
 import AnalyticsSection from '../components/dashboard/AnalyticsSection'
 import SettingsSection from '../components/dashboard/SettingsSection'
 import WebsiteTeamSection from '../components/dashboard/WebsiteTeamSection'
+import MailingListSection from '../components/dashboard/MailingListSection'
 
 function Dashboard({ toggleTheme, theme }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -31,9 +33,11 @@ function Dashboard({ toggleTheme, theme }) {
             <Route path="events" element={<EventsSection />} />
             <Route path="members" element={<MembersSection />} />
             <Route path="partners" element={<PartnersSection />} />
+            <Route path="recruitment" element={<RecruitmentSection />} />
             <Route path="analytics" element={<AnalyticsSection />} />
             <Route path="settings" element={<SettingsSection />} />
             <Route path="website-team" element={<WebsiteTeamSection />} />
+            <Route path="mailing-list" element={<MailingListSection />} />
           </Routes>
         </div>
       </main>

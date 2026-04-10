@@ -7,7 +7,7 @@ function MembersSection() {
   const [error, setError] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingId, setEditingId] = useState(null)
-  const [form, setForm] = useState({ name: '', role: '', department: '', email: '', photo: '' })
+  const [form, setForm] = useState({ name: '', role: '', department: '', bio: '', email: '', linkedin: '', github: '', photo: '', order: 0, isActive: true })
   const [saving, setSaving] = useState(false)
   const fileInputRef = useRef(null)
 
@@ -28,10 +28,15 @@ function MembersSection() {
   const openModal = (member = null) => {
     if (member) {
       setEditingId(member._id)
-      setForm({ name: member.name, role: member.role, department: member.department || '', email: member.email || '', photo: member.photo || '' })
+      setForm({
+        name: member.name, role: member.role, department: member.department || '',
+        bio: member.bio || '', email: member.email || '', linkedin: member.linkedin || '',
+        github: member.github || '', photo: member.photo || '',
+        order: member.order ?? 0, isActive: member.isActive ?? true,
+      })
     } else {
       setEditingId(null)
-      setForm({ name: '', role: '', department: '', email: '', photo: '' })
+      setForm({ name: '', role: '', department: '', bio: '', email: '', linkedin: '', github: '', photo: '', order: 0, isActive: true })
     }
     setIsModalOpen(true)
   }
@@ -39,8 +44,8 @@ function MembersSection() {
   const closeModal = () => { setIsModalOpen(false); setEditingId(null) }
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
+    const { name, value, type, checked } = e.target
+    setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
   }
 
   const handleAvatarUpload = (e) => {
@@ -147,8 +152,32 @@ function MembersSection() {
                 </div>
               </div>
               <div className="form-group">
+                <label><i className="fas fa-align-left"></i> Bio (optional)</label>
+                <textarea name="bio" value={form.bio} onChange={handleInputChange} placeholder="Short bio..." style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-color)', minHeight: '80px', resize: 'vertical' }} />
+              </div>
+              <div className="form-group">
                 <label><i className="fas fa-envelope"></i> Email Address</label>
                 <input type="email" name="email" value={form.email} onChange={handleInputChange} placeholder="name@ieee.org" />
+              </div>
+              <div className="form-group">
+                <label><i className="fab fa-linkedin"></i> LinkedIn URL (optional)</label>
+                <input type="url" name="linkedin" value={form.linkedin} onChange={handleInputChange} placeholder="https://linkedin.com/in/..." />
+              </div>
+              <div className="form-group">
+                <label><i className="fab fa-github"></i> GitHub URL (optional)</label>
+                <input type="url" name="github" value={form.github} onChange={handleInputChange} placeholder="https://github.com/..." />
+              </div>
+              <div className="form-row" style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label><i className="fas fa-sort-numeric-up"></i> Display Order</label>
+                  <input type="number" name="order" value={form.order} onChange={handleInputChange} min="0" />
+                </div>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '28px' }}>
+                    <input type="checkbox" name="isActive" id="isActive" checked={form.isActive} onChange={handleInputChange} />
+                    <label htmlFor="isActive" style={{ margin: 0 }}>Active (visible on website)</label>
+                  </div>
+                </div>
               </div>
               <div className="form-group">
                 <label><i className="fas fa-camera"></i> Photo</label>

@@ -1,8 +1,8 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import api from '../../api/index'
 
 const settingsTabs = [
   { id: 'profile-settings', label: 'Profile Settings' },
-  { id: 'notification-settings', label: 'Notifications' },
   { id: 'security-settings', label: 'Security' }
 ]
 
@@ -13,24 +13,108 @@ function SettingsSection() {
   })
   const fileInputRef = useRef(null)
 
-  const handleImageUpload = () => {
-    fileInputRef.current.click()
-  }
+  // Profile state
+  const [profileForm, setProfileForm] = useState({ name: '', email: '' })
+  const [profileLoading, setProfileLoading] = useState(true)
+  const [profileSaving, setProfileSaving] = useState(false)
+  const [profileMsg, setProfileMsg] = useState({ text: '', isError: false })
+
+  // Password state
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
+  const [passwordSaving, setPasswordSaving] = useState(false)
+  const [passwordMsg, setPasswordMsg] = useState({ text: '', isError: false })
+  const [showPasswords, setShowPasswords] = useState({ current: false, new: false, confirm: false })
+
+  useEffect(() => {
+    api.get('/admin/auth/me')
+      .then(({ data }) => {
+        setProfileForm({ name: data.user.name, email: data.user.email })
+      })
+      .catch(() => {
+        const stored = JSON.parse(localStorage.getItem('user') || '{}')
+        setProfileForm({ name: stored.name || '', email: stored.email || '' })
+      })
+      .finally(() => setProfileLoading(false))
+  }, [])
+
+  const handleImageUpload = () => fileInputRef.current.click()
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
     if (file) {
       const reader = new FileReader()
       reader.onloadend = () => {
-        const base64String = reader.result
-        setProfileImage(base64String)
-        localStorage.setItem('profileImage', base64String)
-        // Dispatch custom event for real-time Navbar update
-        window.dispatchEvent(new CustomEvent('profileImageUpdate', { detail: base64String }))
+        const base64 = reader.result
+        setProfileImage(base64)
+        localStorage.setItem('profileImage', base64)
+        window.dispatchEvent(new CustomEvent('profileImageUpdate', { detail: base64 }))
       }
       reader.readAsDataURL(file)
     }
   }
+
+  const handleProfileChange = (e) => {
+    const { name, value } = e.target
+    setProfileForm(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleProfileSubmit = async (e) => {
+    e.preventDefault()
+    setProfileSaving(true)
+    setProfileMsg({ text: '', isError: false })
+    try {
+      const { data } = await api.patch('/admin/auth/me', {
+        name: profileForm.name,
+        email: profileForm.email,
+      })
+      const stored = JSON.parse(localStorage.getItem('user') || '{}')
+      localStorage.setItem('user', JSON.stringify({ ...stored, ...data.user }))
+      window.dispatchEvent(new Event('storage'))
+      setProfileMsg({ text: 'Profile updated successfully.', isError: false })
+    } catch (err) {
+      setProfileMsg({ text: err.response?.data?.message || 'Failed to save changes.', isError: true })
+    } finally {
+      setProfileSaving(false)
+    }
+  }
+
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target
+    setPasswordForm(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault()
+    setPasswordMsg({ text: '', isError: false })
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      setPasswordMsg({ text: 'New passwords do not match.', isError: true })
+      return
+    }
+    if (passwordForm.newPassword.length < 8) {
+      setPasswordMsg({ text: 'New password must be at least 8 characters.', isError: true })
+      return
+    }
+    setPasswordSaving(true)
+    try {
+      await api.patch('/admin/auth/me', {
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword,
+      })
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
+      setPasswordMsg({ text: 'Password changed successfully.', isError: false })
+    } catch (err) {
+      setPasswordMsg({ text: err.response?.data?.message || 'Failed to change password.', isError: true })
+    } finally {
+      setPasswordSaving(false)
+    }
+  }
+
+  const toggleShow = (field) => setShowPasswords(prev => ({ ...prev, [field]: !prev[field] }))
+
+  const msgStyle = (isError) => ({
+    padding: '10px 14px', borderRadius: '8px', marginBottom: '16px', fontSize: '0.9rem',
+    background: isError ? 'var(--danger-color)' : 'var(--success-color)', color: '#fff',
+  })
 
   return (
     <section className="content-section active">
@@ -39,7 +123,7 @@ function SettingsSection() {
         <aside className="settings-sidebar">
           <ul className="settings-menu">
             {settingsTabs.map(tab => (
-              <li 
+              <li
                 key={tab.id}
                 className={activeTab === tab.id ? 'active' : ''}
                 onClick={() => setActiveTab(tab.id)}
@@ -50,44 +134,75 @@ function SettingsSection() {
           </ul>
         </aside>
         <div className="settings-content">
+
+          {/* ── Profile Settings ── */}
           <div id="profile-settings" className={`settings-panel ${activeTab === 'profile-settings' ? 'active' : ''}`}>
             <h2>Profile Settings</h2>
-            <form className="settings-form" onSubmit={(e) => e.preventDefault()}>
-              <div className="profile-upload">
-                <img src={profileImage} alt="Profile" />
-                <button type="button" className="upload-btn" onClick={handleImageUpload}>
-                  Upload New Photo
-                </button>
-                <input 
-                  type="file" 
-                  ref={fileInputRef} 
-                  onChange={handleImageChange} 
-                  accept="image/*" 
-                  style={{ display: 'none' }} 
-                />
-              </div>
-              <div className="form-group">
-                <label>Full Name</label>
-                <input type="text" defaultValue="Admin User" />
-              </div>
-              <div className="form-group">
-                <label>Email</label>
-                <input type="email" defaultValue="admin@ieee-must.edu" />
-              </div>
+            {profileLoading ? (
+              <p style={{ color: 'var(--text-light)' }}>Loading...</p>
+            ) : (
+              <form className="settings-form" onSubmit={handleProfileSubmit}>
+                <div className="profile-upload">
+                  <img src={profileImage} alt="Profile" />
+                  <button type="button" className="upload-btn" onClick={handleImageUpload}>
+                    Upload New Photo
+                  </button>
+                  <input type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" style={{ display: 'none' }} />
+                </div>
+                {profileMsg.text && <div style={msgStyle(profileMsg.isError)}>{profileMsg.text}</div>}
+                <div className="form-group">
+                  <label>Full Name</label>
+                  <input type="text" name="name" value={profileForm.name} onChange={handleProfileChange} required />
+                </div>
+                <div className="form-group">
+                  <label>Email</label>
+                  <input type="email" name="email" value={profileForm.email} onChange={handleProfileChange} required />
+                </div>
+                <div className="form-actions">
+                  <button type="submit" className="btn-save" disabled={profileSaving}>
+                    {profileSaving ? 'Saving...' : 'Save Changes'}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+
+          {/* ── Security / Change Password ── */}
+          <div id="security-settings" className={`settings-panel ${activeTab === 'security-settings' ? 'active' : ''}`}>
+            <h2>Change Password</h2>
+            <form className="settings-form" onSubmit={handlePasswordSubmit}>
+              {passwordMsg.text && <div style={msgStyle(passwordMsg.isError)}>{passwordMsg.text}</div>}
+              {[
+                { id: 'current', name: 'currentPassword', label: 'Current Password' },
+                { id: 'new',     name: 'newPassword',     label: 'New Password' },
+                { id: 'confirm', name: 'confirmPassword', label: 'Confirm New Password' },
+              ].map(({ id, name, label }) => (
+                <div className="form-group" key={id} style={{ position: 'relative' }}>
+                  <label>{label}</label>
+                  <input
+                    type={showPasswords[id] ? 'text' : 'password'}
+                    name={name}
+                    value={passwordForm[name]}
+                    onChange={handlePasswordChange}
+                    required
+                    style={{ paddingRight: '42px' }}
+                  />
+                  <span
+                    onClick={() => toggleShow(id)}
+                    style={{ position: 'absolute', right: '12px', top: '38px', cursor: 'pointer', color: 'var(--text-light)' }}
+                  >
+                    <i className={`fas ${showPasswords[id] ? 'fa-eye-slash' : 'fa-eye'}`} />
+                  </span>
+                </div>
+              ))}
               <div className="form-actions">
-                <button type="submit" className="btn-save">Save Changes</button>
-                <button type="button" className="btn-cancel">Cancel</button>
+                <button type="submit" className="btn-save" disabled={passwordSaving}>
+                  {passwordSaving ? 'Changing...' : 'Change Password'}
+                </button>
               </div>
             </form>
           </div>
-          <div id="notification-settings" className={`settings-panel ${activeTab === 'notification-settings' ? 'active' : ''}`}>
-            <h2>Notification Settings</h2>
-            <p style={{ color: 'var(--text-light)' }}>Notification preferences will be available here.</p>
-          </div>
-          <div id="security-settings" className={`settings-panel ${activeTab === 'security-settings' ? 'active' : ''}`}>
-            <h2>Security Settings</h2>
-            <p style={{ color: 'var(--text-light)' }}>Security options will be available here.</p>
-          </div>
+
         </div>
       </div>
     </section>

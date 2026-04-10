@@ -7,7 +7,7 @@ function EventsSection() {
   const [error, setError] = useState('')
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingId, setEditingId] = useState(null)
-  const [form, setForm] = useState({ title: '', date: '', location: '', attendanceCount: '', description: '', status: 'upcoming', image: '' })
+  const [form, setForm] = useState({ title: '', date: '', location: '', attendanceCount: '', description: '', status: 'upcoming', image: '', registrationLink: '', agendaLink: '' })
   const [saving, setSaving] = useState(false)
   const fileInputRef = useRef(null)
 
@@ -36,10 +36,12 @@ function EventsSection() {
         description: event.description || '',
         status: event.status,
         image: event.image || '',
+        registrationLink: event.registrationLink || '',
+        agendaLink: event.agendaLink || '',
       })
     } else {
       setEditingId(null)
-      setForm({ title: '', date: '', location: '', attendanceCount: '', description: '', status: 'upcoming', image: '' })
+      setForm({ title: '', date: '', location: '', attendanceCount: '', description: '', status: 'upcoming', image: '', registrationLink: '', agendaLink: '' })
     }
     setIsModalOpen(true)
   }
@@ -179,6 +181,14 @@ function EventsSection() {
               <div className="form-group">
                 <label><i className="fas fa-align-left"></i> Description</label>
                 <textarea name="description" value={form.description} onChange={handleInputChange} placeholder="Enter event description..." style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-color)', minHeight: '100px' }}></textarea>
+              </div>
+              <div className="form-group">
+                <label><i className="fas fa-link"></i> Registration Link (optional)</label>
+                <input type="url" name="registrationLink" value={form.registrationLink} onChange={handleInputChange} placeholder="https://forms.gle/..." />
+              </div>
+              <div className="form-group">
+                <label><i className="fas fa-list-alt"></i> Agenda Link (optional)</label>
+                <input type="url" name="agendaLink" value={form.agendaLink} onChange={handleInputChange} placeholder="https://..." />
               </div>
               <div className="form-group">
                 <label><i className="fas fa-image"></i> Event Poster (URL or upload)</label>

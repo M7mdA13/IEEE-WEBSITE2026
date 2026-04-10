@@ -2,22 +2,26 @@ import { useState, useEffect } from 'react'
 import api from '../../api/index'
 
 function DashboardOverview() {
-  const [stats, setStats] = useState({ members: '—', events: '—', partners: '—' })
+  const [stats, setStats] = useState({ members: '—', events: '—', partners: '—', committees: '—', websiteTeam: '—' })
   const [recentEvents, setRecentEvents] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [membersRes, eventsRes, partnersRes] = await Promise.all([
+        const [membersRes, eventsRes, partnersRes, committeesRes, websiteTeamRes] = await Promise.all([
           api.get('/admin/excom'),
           api.get('/admin/events'),
           api.get('/admin/partners'),
+          api.get('/admin/committees'),
+          api.get('/admin/website-team'),
         ])
         setStats({
           members: membersRes.data.data.length,
           events: eventsRes.data.data.length,
           partners: partnersRes.data.data.length,
+          committees: committeesRes.data.data.length,
+          websiteTeam: websiteTeamRes.data.data.length,
         })
         // Show 3 most recent events
         setRecentEvents(eventsRes.data.data.slice(0, 3))
@@ -32,9 +36,10 @@ function DashboardOverview() {
 
   const statsCards = [
     { id: 'members', icon: 'fa-users', title: 'ExCom Members', value: stats.members, cardClass: 'members-card' },
+    { id: 'committees', icon: 'fa-sitemap', title: 'Committees', value: stats.committees, cardClass: 'partners-card' },
     { id: 'events', icon: 'fa-calendar-alt', title: 'Total Events', value: stats.events, cardClass: 'events-card' },
-    { id: 'partners', icon: 'fa-handshake', title: 'Partners', value: stats.partners, cardClass: 'partners-card' },
-    { id: 'founded', icon: 'fa-flag', title: 'Founded In', value: '2011', cardClass: 'founded-card', changeClass: 'neutral' },
+    { id: 'partners', icon: 'fa-handshake', title: 'Partners', value: stats.partners, cardClass: 'founded-card' },
+    { id: 'websiteTeam', icon: 'fa-laptop-code', title: 'Website Team', value: stats.websiteTeam, cardClass: 'members-card' },
   ]
 
   const statusClass = (status) => {

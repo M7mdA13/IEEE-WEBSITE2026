@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
 const menuItems = [
-  { id: 'dashboard', icon: 'fa-tachometer-alt', label: 'Dashboard', path: '/dashboard' },
+  { id: 'overview', icon: 'fa-tachometer-alt', label: 'Dashboard', path: '/dashboard/overview' },
   { id: 'committees', icon: 'fa-layer-group', label: 'Committees', path: '/dashboard/committees' },
   { id: 'events', icon: 'fa-calendar-alt', label: 'Events', path: '/dashboard/events' },
   { id: 'excom', icon: 'fa-users', label: 'ExCom', path: '/dashboard/members' },
   { id: 'partners', icon: 'fa-handshake', label: 'Partners', path: '/dashboard/partners' },
   { id: 'website-team', icon: 'fa-laptop-code', label: 'Website Team', path: '/dashboard/website-team' },
+  { id: 'recruitment', icon: 'fa-door-open', label: 'Recruitment', path: '/dashboard/recruitment' },
+  { id: 'mailing-list', icon: 'fa-envelope-open-text', label: 'Mailing List', path: '/dashboard/mailing-list' },
   { id: 'analytics', icon: 'fa-chart-line', label: 'Analytics', path: '/dashboard/analytics' },
   { id: 'settings', icon: 'fa-cog', label: 'Settings', path: '/dashboard/settings' }
 ]
@@ -23,12 +25,7 @@ function Sidebar({ isOpen, setIsOpen }) {
     }
   }
 
-  const isActive = (path) => {
-    if (path === '/dashboard') {
-      return location.pathname === '/dashboard' || location.pathname === '/dashboard/'
-    }
-    return location.pathname.startsWith(path)
-  }
+  const isActive = (path) => location.pathname.startsWith(path)
 
   return (
     <aside className={`sidebar ${isOpen ? 'active' : ''}`}>
