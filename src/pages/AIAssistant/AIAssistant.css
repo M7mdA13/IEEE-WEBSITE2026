@@ -1,7 +1,8 @@
 .ai-assistant-page {
-  /* Let it fill available space without aggressive 110vh */
-  min-height: calc(100vh - 80px);
-  padding-top: 100px; /* clear nav */
+  box-sizing: border-box;
+  min-height: 100vh;
+  padding-top: 120px; /* clear nav */
+  padding-bottom: 40px; /* buffer before footer */
   display: flex;
   flex-direction: column;
   align-items: center;
