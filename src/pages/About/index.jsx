@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SolarSystem from './SolarSystem';
 import api from '../../api/public';
@@ -78,6 +78,8 @@ function membersToTiers(members) {
     .map(t => ({ label: TIER_LABELS[t], members: groups[t] }));
 }
 
+const isTouch = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
 /* ── Page ─────────────────────────────────────────────────────── */
 const About = () => {
   const [selected, setSelected] = useState(null);
@@ -154,7 +156,8 @@ const About = () => {
               exit={{ opacity: 0 }}
               transition={{ delay: 1 }}
             >
-              <i className="fas fa-hand-pointer" /> Click a planet to explore
+              <i className={isTouch ? 'fas fa-hand' : 'fas fa-hand-pointer'} />
+              {isTouch ? 'Tap' : 'Click'} a planet to explore
             </motion.p>
           )}
         </AnimatePresence>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './PhotoCatalogueSection.css';
 
@@ -24,6 +24,7 @@ const PhotoCatalogueSection = () => {
   const [photos, setPhotos] = useState(DEFAULT_PHOTOS);
   const [centerIndex, setCenterIndex] = useState(1);
   const [hovered, setHovered] = useState(false);
+  const [dataReady, setDataReady] = useState(false);
 
   const total = photos.length;
   const timerRef    = useRef(null);
@@ -37,7 +38,8 @@ const PhotoCatalogueSection = () => {
           setCenterIndex(1);
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setDataReady(true));
   }, []);
 
   /* ── Auto-rotate ── */
@@ -82,8 +84,13 @@ const PhotoCatalogueSection = () => {
     resetTimer();
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'ArrowLeft')  { navigate(-1); }
+    if (e.key === 'ArrowRight') { navigate(1);  }
+  };
+
   return (
-    <section className="catalogue-section">
+    <section className="catalogue-section" onKeyDown={handleKeyDown} tabIndex={-1} style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.4s ease' }}>
       <motion.div
         className="catalogue-header"
         initial={{ opacity: 0, y: 24 }}

@@ -88,8 +88,8 @@ const MissionVisionSection = () => {
         <motion.div
           className="mv-tri mv-tri--mission"
           style={{ x: missionX }}
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.75, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
@@ -110,8 +110,8 @@ const MissionVisionSection = () => {
         <motion.div
           className="mv-tri mv-tri--vision"
           style={{ x: visionX }}
-          initial={{ opacity: 0, x: 50 }}
-          whileInView={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.75, ease: [0.25, 0.46, 0.45, 0.94] }}
         >

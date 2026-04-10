@@ -162,16 +162,22 @@ body.dark-mode .mv-tri__icon--vision { filter: brightness(0) invert(1); }
    Small Mobile (< 650px)
 ═══════════════════════════════════ */
 @media (max-width: 650px) {
-  .mv-wrapper { height: 180vw; } 
+  .mv-wrapper { height: 180vw; }
   .mv-tri { width: 100%; left: 0; right: 0; }
-  
-  .mv-tri__content { 
-    width: 68%; 
-    gap: 1.5vw; 
-    padding: 0 4vw; 
+
+  .mv-tri__content {
+    width: 68%;
+    gap: 1.5vw;
+    padding: 0 4vw;
   }
-  
-  .mv-tri__content--mission { top: 12%; }
+
+  /* Mission text tends to be longer — give it more breathing room */
+  .mv-tri__content--mission {
+    top: 10%;
+    width: 58%;
+    padding: 0 8vw;
+  }
+
   .mv-tri__content--vision { bottom: 12%; }
   
   /* Reduced mobile heading size */

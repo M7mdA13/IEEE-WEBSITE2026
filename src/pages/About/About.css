@@ -482,7 +482,7 @@
     top: 72px;
   }
 
-  .about-hint { display: none; }
+  .about-hint { font-size: 0.72rem; bottom: 16px; }
 
   .about-panel {
     /* Anchor to bottom of solar section, above the FAB (50px + 24px gap = 90px) */

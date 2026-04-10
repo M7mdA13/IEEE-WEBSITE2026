@@ -23,19 +23,24 @@ const staticLogos = [
 const PartnersSection = () => {
   const [logos, setLogos] = useState(staticLogos);
   const [pausedIdx, setPausedIdx] = useState(null);
+  const [dataReady, setDataReady] = useState(false);
   const isPaused = pausedIdx !== null;
 
   useEffect(() => {
     api.get('/partners')
       .then(({ data }) => {
         const imgs = (data.data || []).map(p => p.logo).filter(Boolean);
-        if (imgs.length > 0) setLogos(imgs);
+        if (imgs.length > 0) {
+          setPausedIdx(null);
+          setLogos(imgs);
+        }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setDataReady(true));
   }, []);
 
   return (
-    <section className="partners-section">
+    <section className="partners-section" style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.4s ease' }}>
       <motion.div
         className="partners-header"
         initial={{ opacity: 0, y: 20 }}
@@ -68,6 +73,8 @@ const PartnersSection = () => {
                 className={`partner-logo-slot ${isHovered ? 'partner-logo-slot--active' : ''}`}
                 onMouseEnter={() => setPausedIdx(i)}
                 onMouseLeave={() => setPausedIdx(null)}
+                onTouchStart={() => setPausedIdx(i)}
+                onTouchEnd={() => setPausedIdx(null)}
               >
                 <img src={src} alt="partner logo" draggable={false} />
               </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../api/public';
 import './ExComSection.css';
 
@@ -12,7 +12,7 @@ const staticExCom = [
 ];
 
 /* Magnetic icon: slightly follows cursor within its bounding box */
-const MagneticIcon = ({ href, icon }) => {
+const MagneticIcon = ({ href, icon, ariaLabel }) => {
   const ref = useRef(null);
 
   const handleMouseMove = (e) => {
@@ -34,6 +34,7 @@ const MagneticIcon = ({ href, icon }) => {
       target="_blank"
       rel="noopener noreferrer"
       className="excom-link-icon"
+      aria-label={ariaLabel}
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -68,43 +69,72 @@ const SpotlightPill = ({ isLeft, children }) => {
 
 const ExComCard = ({ member, index }) => {
   const isLeft = index % 2 === 0;
+  const [bioOpen, setBioOpen] = useState(false);
 
   return (
-    <motion.div
-      className={`excom-stagger-row ${isLeft ? 'align-to-left' : 'align-to-right'}`}
-      initial={{ opacity: 0, x: isLeft ? -80 : 80, scale: 0.96 }}
-      whileInView={{ opacity: 1, x: 0, scale: 1 }}
-      viewport={{ once: true, margin: '-20px' }}
-      transition={{ type: 'spring', stiffness: 220, damping: 28, delay: index * 0.10 }}
-    >
-      <div className="excom-pill-wrapper">
-        <div className="excom-person-frame">
-          <img src={member.photo} alt={member.name} className="excom-person-img" />
-        </div>
-
-        <SpotlightPill isLeft={isLeft}>
-          <div className="excom-info-content">
-            <h3 className="excom-name-bold">{member.name}</h3>
-            <p className="excom-role-subtitle">{member.role}</p>
-            <div className="excom-social-strip">
-              {member.github   && <MagneticIcon href={member.github}              icon="fab fa-github" />}
-              {member.linkedin && <MagneticIcon href={member.linkedin}            icon="fab fa-linkedin-in" />}
-              {member.email    && <MagneticIcon href={`mailto:${member.email}`}   icon="fas fa-envelope" />}
-            </div>
+    <div className="excom-item-wrapper">
+      <motion.div
+        className={`excom-stagger-row ${isLeft ? 'align-to-left' : 'align-to-right'}`}
+        initial={{ opacity: 0, x: isLeft ? -80 : 80, scale: 0.96 }}
+        whileInView={{ opacity: 1, x: 0, scale: 1 }}
+        viewport={{ once: true, margin: '-20px' }}
+        transition={{ type: 'spring', stiffness: 220, damping: 28, delay: index * 0.10 }}
+      >
+        <div className="excom-pill-wrapper">
+          <div className="excom-person-frame">
+            <img src={member.photo} alt={member.name} className="excom-person-img" />
           </div>
-        </SpotlightPill>
-      </div>
-    </motion.div>
+
+          <SpotlightPill isLeft={isLeft}>
+            <div className="excom-info-content">
+              <h3 className="excom-name-bold">{member.name}</h3>
+              <p className="excom-role-subtitle">{member.role}</p>
+              <div className="excom-social-strip">
+                {member.github   && <MagneticIcon href={member.github}            icon="fab fa-github"      ariaLabel={`${member.name}'s GitHub`} />}
+                {member.linkedin && <MagneticIcon href={member.linkedin}          icon="fab fa-linkedin-in" ariaLabel={`${member.name}'s LinkedIn`} />}
+                {member.email    && <MagneticIcon href={`mailto:${member.email}`} icon="fas fa-envelope"    ariaLabel={`Email ${member.name}`} />}
+              </div>
+            </div>
+            {member.bio && (
+              <button
+                className={`excom-bio-toggle ${bioOpen ? 'excom-bio-toggle--open' : ''}`}
+                onClick={() => setBioOpen(v => !v)}
+                aria-expanded={bioOpen}
+                aria-label={bioOpen ? 'Hide bio' : 'Show bio'}
+              >
+                <i className="fas fa-chevron-down" />
+              </button>
+            )}
+          </SpotlightPill>
+        </div>
+      </motion.div>
+
+      <AnimatePresence>
+        {bioOpen && member.bio && (
+          <motion.div
+            className={`excom-bio-panel ${isLeft ? 'excom-bio-panel--left' : 'excom-bio-panel--right'}`}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <p className="excom-bio-text">{member.bio}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 
 const ExComSection = () => {
   const [members, setMembers] = useState(staticExCom);
+  const [dataReady, setDataReady] = useState(false);
 
   useEffect(() => {
     api.get('/excom')
       .then(({ data }) => { if (data.data?.length > 0) setMembers(data.data); })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setDataReady(true));
   }, []);
 
   return (
@@ -120,7 +150,10 @@ const ExComSection = () => {
         />
       </div>
 
-      <div className="excom-center-constraint">
+      <div
+        className="excom-center-constraint"
+        style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.4s ease' }}
+      >
         <div className="excom-vertical-stack">
           {members.map((member, i) => (
             <ExComCard key={member._id} member={member} index={i} />
