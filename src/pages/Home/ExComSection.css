@@ -125,6 +125,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
+  min-width: 0; /* allows flex shrink so long names don't overflow the pill */
   display: flex;
   flex-direction: column;
 }
@@ -168,6 +169,9 @@
   font-size: 1.6rem;
   line-height: 1.1;
   margin-bottom: 4px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
 }
 
 .excom-role-subtitle {
@@ -282,7 +286,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  overflow: hidden;
+  /* No overflow:hidden here — it clips the pill glow/shadow on hover.
+     Bio panel has its own overflow:hidden for the height animation. */
 }
 
 /* Whole pill-wrapper is clickable when bio exists */
@@ -296,20 +301,27 @@
   border-radius: 4px;
 }
 
-/* Inline hint text inside the pill info-content — flows naturally, never clipped */
+/* Hint sits outside the pill — no clipping, no layout pressure on the name */
 .excom-bio-hint {
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
-  margin-top: 6px;
-  transition: color 0.2s;
+  color: var(--ieee-text-muted);
+  margin: 6px 0 0;
   pointer-events: none;
 }
 
-.excom-pill-wrapper--has-bio:hover .excom-bio-hint { color: rgba(255, 255, 255, 0.85); }
+.excom-bio-hint--left  { padding-left: 110px; text-align: left; }
+.excom-bio-hint--right { padding-right: 110px; text-align: right; }
+
+@media (max-width: 768px) {
+  .excom-bio-hint--left, .excom-bio-hint--right { padding-left: 80px; padding-right: 0; text-align: left; }
+}
+@media (max-width: 480px) {
+  .excom-bio-hint--left, .excom-bio-hint--right { padding-left: 55px; }
+}
 
 /* Bio panel — slides in below the pill row.
    Left panels indent by photo visible width (220 - 110 overlap = 110px)

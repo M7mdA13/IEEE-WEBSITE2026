@@ -165,26 +165,26 @@ body.dark-mode .mv-tri__icon--vision { filter: brightness(0) invert(1); }
   .mv-wrapper { height: 180vw; }
   .mv-tri { width: 100%; left: 0; right: 0; }
 
-  /* Both use 88% width; mission uses shape-outside to follow triangle */
   .mv-tri__content {
-    width: 88%;
+    width: 68%; /* Must fit inside triangle top (~80% wide) with safe margin */
     gap: 1.2vw;
     padding: 0;
   }
 
-  .mv-tri__content--mission { top: 6%; }
-  .mv-tri__content--vision { bottom: 10%; }
+  .mv-tri__content--mission { top: 5%; }
+  .mv-tri__content--vision  { bottom: 10%; }
 
   .mv-tri__heading { font-size: 5vw; }
 
-  /* Mission body text flows in a downward-triangle shape using CSS shape-outside.
-     Two zero-width floats with diagonal shape-outside polygons push each line
-     progressively narrower as the text descends, matching the triangle's edges. */
+  /* Mission body: shape-outside floats taper each line narrower going down.
+     Content width (68%) fits the triangle at the top. The floats (each 50% of
+     that = 34vw) start at zero exclusion and grow, narrowing text to match the
+     converging triangle edges. Height in vw so it scales with viewport. */
   .mv-tri__content--mission .mv-tri__body {
     width: 100%;
     display: block;
-    font-size: 2.8vw;
-    line-height: 1.6;
+    font-size: 2.7vw;
+    line-height: 1.65;
     text-align: center;
   }
 
@@ -192,7 +192,7 @@ body.dark-mode .mv-tri__icon--vision { filter: brightness(0) invert(1); }
     content: '';
     float: left;
     width: 50%;
-    height: 260px;
+    height: 160vw;
     shape-outside: polygon(0 0, 0 100%, 100% 100%);
   }
 
@@ -200,18 +200,19 @@ body.dark-mode .mv-tri__icon--vision { filter: brightness(0) invert(1); }
     content: '';
     float: right;
     width: 50%;
-    height: 260px;
+    height: 160vw;
     shape-outside: polygon(100% 0, 0 100%, 100% 100%);
   }
 
-  /* Vision body keeps simple centered layout */
+  /* Vision body: simple centered — upward triangle is widest at bottom
+     so text near bottom is safe; no shape-outside needed */
   .mv-tri__content--vision .mv-tri__body {
     width: 68%;
-    font-size: 2.8vw;
+    font-size: 2.7vw;
     line-height: 1.55;
   }
 
   .mv-tri__icon { width: 11vw; height: 11vw; }
   .mv-tri__icon--mission { bottom: 8%; }
-  .mv-tri__icon--vision { top: 8%; }
+  .mv-tri__icon--vision  { top: 8%; }
 }

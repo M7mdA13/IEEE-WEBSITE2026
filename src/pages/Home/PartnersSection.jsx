@@ -70,18 +70,23 @@ const PartnersSection = () => {
       >
         {isTouchDevice ? (
           /* Mobile: static scrollable row — DOM positions match visual positions */
-          <div className="partners-scroll-track">
-            {logos.map((src) => (
-              <div
-                key={src}
-                className={`partner-logo-slot ${activeSrc === src ? 'partner-logo-slot--active' : ''}`}
-                onTouchStart={() => setActiveSrc(src)}
-                onTouchEnd={() => setActiveSrc(null)}
-              >
-                <img src={src} alt="partner logo" draggable={false} />
-              </div>
-            ))}
-          </div>
+          <>
+            <div className="partners-scroll-track">
+              {logos.map((src) => (
+                <div
+                  key={src}
+                  className={`partner-logo-slot ${activeSrc === src ? 'partner-logo-slot--active' : ''}`}
+                  onTouchStart={() => setActiveSrc(src)}
+                  onTouchEnd={() => setActiveSrc(null)}
+                >
+                  <img src={src} alt="partner logo" draggable={false} />
+                </div>
+              ))}
+            </div>
+            <p className="partners-scroll-hint">
+              <i className="fas fa-hand-point-left" /> swipe to see all partners
+            </p>
+          </>
         ) : (
           /* Desktop: CSS marquee animation — fine because mouse events track visually */
           <div
