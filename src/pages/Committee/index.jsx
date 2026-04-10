@@ -41,14 +41,12 @@ const Committee = () => {
     return {
       committee: staticCmt,
       board: (staticCmt.board || []).map((m, i) => ({ _id: `sb-${i}`, ...m })),
-      featured: (staticCmt.members || []).map((m, i) => ({ _id: `sm-${i}`, ...m })),
     };
   };
 
   const initial = getStatic(slug);
   const [committee, setCommittee] = useState(initial?.committee || null);
   const [board, setBoard] = useState(initial?.board || []);
-  const [featured, setFeatured] = useState(initial?.featured || []);
   const [notFound, setNotFound] = useState(!initial);
 
   useEffect(() => {
@@ -60,7 +58,6 @@ const Committee = () => {
         setCommittee(apiCmt);
         const members = membersRes.data.data || [];
         setBoard(members.filter(m => m.roleType === 'head' || m.roleType === 'vice_head'));
-        setFeatured(members.filter(m => m.roleType === 'featured'));
       })
       .catch(() => {});
   }, [slug]);
@@ -143,31 +140,6 @@ const Committee = () => {
               </div>
             </motion.section>
           )}
-
-          {/* Roles and Responsibilities */}
-          <motion.section 
-            className="cmt-section"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="cmt-section-title">Roles and Responsibilities</h2>
-            <h3 className="cmt-subsection-title">All members</h3>
-            <ul className="cmt-roles-list">
-              {committee.roles.map((role, i) => (
-                <motion.li 
-                  key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1, duration: 0.4 }}
-                >
-                  {role}
-                </motion.li>
-              ))}
-            </ul>
-          </motion.section>
 
           {/* Key Activities */}
           {committee.activities && committee.activities.length > 0 && (
