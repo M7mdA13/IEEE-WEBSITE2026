@@ -69,6 +69,36 @@ exports.register = async (req, res, next) => {
   }
 };
 
+// GET /api/admin/auth/users  (superadmin only)
+exports.listUsers = async (req, res, next) => {
+  try {
+    if (req.user.role !== 'superadmin') {
+      return res.status(403).json({ success: false, message: 'Forbidden' });
+    }
+    const users = await User.find().sort({ createdAt: -1 });
+    res.json({ success: true, data: users.map(u => u.toJSON()) });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// DELETE /api/admin/auth/users/:id  (superadmin only)
+exports.deleteUser = async (req, res, next) => {
+  try {
+    if (req.user.role !== 'superadmin') {
+      return res.status(403).json({ success: false, message: 'Forbidden' });
+    }
+    if (req.params.id === String(req.user.id)) {
+      return res.status(400).json({ success: false, message: 'Cannot delete your own account' });
+    }
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    res.json({ success: true, message: 'User deleted' });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // GET /api/admin/auth/me
 exports.me = async (req, res, next) => {
   try {
@@ -76,6 +106,37 @@ exports.me = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
+    res.json({ success: true, user: user.toJSON() });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// PATCH /api/admin/auth/me  — update name, email, and/or password
+exports.updateMe = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const { name, email, currentPassword, newPassword } = req.body;
+
+    if (name) user.name = name.trim();
+    if (email) user.email = email.toLowerCase().trim();
+
+    if (newPassword) {
+      if (!currentPassword) {
+        return res.status(400).json({ success: false, message: 'Current password is required to set a new one' });
+      }
+      const isMatch = await user.matchPassword(currentPassword);
+      if (!isMatch) {
+        return res.status(401).json({ success: false, message: 'Current password is incorrect' });
+      }
+      user.passwordHash = await User.hashPassword(newPassword);
+    }
+
+    await user.save();
     res.json({ success: true, user: user.toJSON() });
   } catch (err) {
     next(err);
