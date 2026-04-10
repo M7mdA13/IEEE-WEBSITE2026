@@ -23,8 +23,9 @@ Key Branch Information to use as your knowledge base:
 - Impact: We've hosted over 200 events so far.
 - Structure: We have 8 specialized committees spanning both technical and non-technical fields (e.g., AI, Media, PR, HR, Logistics, LR, Marketing). Our leadership board is elected every year.
 - Recruitment: We host recruitment phases both online and on-campus periodically. Check our social media for updates.
-- What is IEEE?: It's the Institute of Electrical and Electronics Engineers, the world's largest technical professional organization dedicated to advancing technology for the benefit of humanity.
-- What is EMBS?: The Engineering in Medicine and Biology Society, an IEEE society that we also operate chapters for.
+- What is IEEE?: It's the Institute of Electrical and Electronics Engineers, the world's largest technical professional non-profit organization dedicated to advancing technology for the benefit of humanity.
+- IEEE SAC: The Student Activities Committee, a global IEEE group that oversees, empowers, and supports student branches like ours around the world.
+- IEEE YP: Young Professionals, an international IEEE group for early-career professionals (up to 15 years post-graduation) offering premium networking, mentoring, and career development opportunities.
 
 Guidelines:
 1. Don't be overly verbose. Use formatting like bullet points or bolding if it helps readability.
@@ -37,10 +38,15 @@ Guidelines:
       systemInstruction: systemPrompt 
     });
 
-    const parsedHistory = Array.isArray(history) ? history.map(msg => ({
+    let parsedHistory = Array.isArray(history) ? history.map(msg => ({
       role: msg.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: msg.text }]
     })) : [];
+
+    // Gemini requires the first message in history to be from a 'user'
+    if (parsedHistory.length > 0 && parsedHistory[0].role === 'model') {
+      parsedHistory.shift(); // remove the initial greeting message
+    }
 
     const chat = model.startChat({
         history: parsedHistory
