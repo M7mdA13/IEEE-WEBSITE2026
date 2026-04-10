@@ -21,12 +21,6 @@ const User = require('../models/User');
 
 // ── Static data (mirrors src/data/committees.js) ─────────────────────────────
 
-const COMMON_ROLES = [
-  'Attend all meetings, workshops, and activities regularly to stay engaged and contribute effectively.',
-  'Provide learning resources, mentorship, and discussions that help members grow technically and professionally.',
-  'Encourage collaboration and create an environment where ideas are shared, and innovation thrives.',
-];
-
 const committees = [
   {
     slug: 'ai', name: 'Artificial Intelligence', category: 'technical',
@@ -41,7 +35,6 @@ const committees = [
       { title: 'Connect Theory to Practice', desc: 'Introduce members to the foundations of Artificial Intelligence and its role in shaping the future of technology.' },
       { title: 'Empower Growth', desc: 'Introduce members to the foundations of Artificial Intelligence and its role in shaping the future of technology.' },
     ],
-    roles: COMMON_ROLES,
     activities: [
       { title: 'Educational Sessions', desc: 'Conducting interactive sessions on AI concepts, tools, and real-world applications.' },
       { title: 'Competitive Challenges', desc: 'Competing in AI-focused hackathons and challenges to apply knowledge and develop innovative solutions.' },
@@ -49,8 +42,8 @@ const committees = [
     ],
     order: 1,
     board: [
-      { name: 'Firstname Lastname', roleType: 'head', role: 'Artificial Intelligence Head', bio: 'A professional AI Engineer with expertise in ML, DL, CV, NLP, Optimization and GenAI.', stars: null },
-      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Artificial Intelligence Vice Head', bio: 'A professional AI Engineer with expertise in ML, DL, CV, NLP, Optimization and GenAI.', stars: null },
+      { name: 'Firstname Lastname', roleType: 'head', role: 'Artificial Intelligence Head', bio: 'A professional AI Engineer with expertise in ML, DL, CV, NLP, Optimization and GenAI.' },
+      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Artificial Intelligence Vice Head', bio: 'A professional AI Engineer with expertise in ML, DL, CV, NLP, Optimization and GenAI.' },
     ],
     members: [
       { name: 'Firstname Lastname', roleType: 'featured', role: 'AI Researcher', bio: 'Lorem ipsum dolor sit amet.', stars: 4 },
@@ -71,7 +64,6 @@ const committees = [
       { title: 'Connect Theory to Practice', desc: 'Bridge academic concepts with real-world scenarios.' },
       { title: 'Empower Growth', desc: 'Develop professional skills for cybersecurity careers.' },
     ],
-    roles: COMMON_ROLES,
     activities: [
       { title: 'Educational Sessions', desc: 'Interactive sessions on cybersecurity concepts, tools, and real-world applications.' },
       { title: 'CTF Competitions', desc: 'Capture the Flag competitions to develop offensive and defensive security skills.' },
@@ -79,8 +71,8 @@ const committees = [
     ],
     order: 2,
     board: [
-      { name: 'Firstname Lastname', roleType: 'head', role: 'Cybersecurity Head', bio: 'A passionate cybersecurity professional with expertise in ethical hacking and network security.', stars: null },
-      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Cybersecurity Vice Head', bio: 'A dedicated security researcher with hands-on experience in penetration testing.', stars: null },
+      { name: 'Firstname Lastname', roleType: 'head', role: 'Cybersecurity Head', bio: 'A passionate cybersecurity professional with expertise in ethical hacking and network security.' },
+      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Cybersecurity Vice Head', bio: 'A dedicated security researcher with hands-on experience in penetration testing.' },
     ],
     members: [
       { name: 'Firstname Lastname', roleType: 'featured', role: 'CTF Player', bio: 'Lorem ipsum dolor sit amet.', stars: 4 },
@@ -101,7 +93,6 @@ const committees = [
       { title: 'Connect Theory to Practice', desc: 'Bridge classroom concepts with real hardware deployments.' },
       { title: 'Empower Growth', desc: 'Develop career readiness in embedded systems and IoT.' },
     ],
-    roles: COMMON_ROLES,
     activities: [
       { title: 'Educational Sessions', desc: 'Interactive sessions on embedded systems concepts and microcontrollers.' },
       { title: 'Hardware Projects', desc: 'Building real-world projects including robotics and IoT devices using Arduino, STM32, and Raspberry Pi.' },
@@ -109,8 +100,8 @@ const committees = [
     ],
     order: 3,
     board: [
-      { name: 'Firstname Lastname', roleType: 'head', role: 'Embedded Systems Head', bio: 'An experienced embedded systems engineer with deep knowledge of microcontrollers and IoT.', stars: null },
-      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Embedded Systems Vice Head', bio: 'A skilled hardware developer specializing in PCB design and firmware development.', stars: null },
+      { name: 'Firstname Lastname', roleType: 'head', role: 'Embedded Systems Head', bio: 'An experienced embedded systems engineer with deep knowledge of microcontrollers and IoT.' },
+      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Embedded Systems Vice Head', bio: 'A skilled hardware developer specializing in PCB design and firmware development.' },
     ],
     members: [
       { name: 'Firstname Lastname', roleType: 'featured', role: 'Hardware Developer', bio: 'Lorem ipsum dolor sit amet.', stars: 4 },
@@ -131,7 +122,6 @@ const committees = [
       { title: 'Connect Theory to Practice', desc: 'Bridge academic concepts with real end-to-end web application projects.' },
       { title: 'Empower Growth', desc: 'Develop professional portfolios and career readiness in web development.' },
     ],
-    roles: COMMON_ROLES,
     activities: [
       { title: 'Educational Sessions', desc: 'Interactive sessions on web technologies, frameworks, and real-world applications.' },
       { title: 'Project Building', desc: 'Collaborating on real web projects from concept to deployment.' },
@@ -139,8 +129,8 @@ const committees = [
     ],
     order: 4,
     board: [
-      { name: 'Firstname Lastname', roleType: 'head', role: 'Web Development Head', bio: 'A full-stack developer with expertise in React, Node.js, and cloud deployment.', stars: null },
-      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Web Development Vice Head', bio: 'A frontend specialist with a strong eye for UI/UX design.', stars: null },
+      { name: 'Firstname Lastname', roleType: 'head', role: 'Web Development Head', bio: 'A full-stack developer with expertise in React, Node.js, and cloud deployment.' },
+      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Web Development Vice Head', bio: 'A frontend specialist with a strong eye for UI/UX design.' },
     ],
     members: [
       { name: 'Firstname Lastname', roleType: 'featured', role: 'Frontend Developer', bio: 'Lorem ipsum dolor sit amet.', stars: 4 },
@@ -161,7 +151,6 @@ const committees = [
       { title: 'Connect Creativity to Projects', desc: 'Apply creative skills to real IEEE MUST SB events and campaigns.' },
       { title: 'Empower Growth', desc: 'Develop creative portfolios and professional readiness in multimedia.' },
     ],
-    roles: COMMON_ROLES,
     activities: [
       { title: 'Creative Sessions', desc: 'Sessions on photography, video editing, motion graphics, and graphic design.' },
       { title: 'Event Coverage', desc: 'Documenting IEEE MUST SB events through professional photography and videography.' },
@@ -169,8 +158,8 @@ const committees = [
     ],
     order: 5,
     board: [
-      { name: 'Firstname Lastname', roleType: 'head', role: 'Multimedia Head', bio: 'A creative professional with expertise in visual media production.', stars: null },
-      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Multimedia Vice Head', bio: 'A skilled graphic designer and video editor.', stars: null },
+      { name: 'Firstname Lastname', roleType: 'head', role: 'Multimedia Head', bio: 'A creative professional with expertise in visual media production.' },
+      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Multimedia Vice Head', bio: 'A skilled graphic designer and video editor.' },
     ],
     members: [
       { name: 'Firstname Lastname', roleType: 'featured', role: 'Photographer', bio: 'Lorem ipsum dolor sit amet.', stars: 4 },
@@ -191,7 +180,6 @@ const committees = [
       { title: 'Connect People to Opportunities', desc: "Bridge members' skills with meaningful roles within the branch." },
       { title: 'Empower Growth', desc: 'Develop career readiness in HR and organizational management.' },
     ],
-    roles: COMMON_ROLES,
     activities: [
       { title: 'Recruitment Drives', desc: 'Organizing and managing the branch recruitment process end-to-end.' },
       { title: 'Team Building', desc: 'Planning team-building activities and social events across all committees.' },
@@ -199,8 +187,8 @@ const committees = [
     ],
     order: 6,
     board: [
-      { name: 'Firstname Lastname', roleType: 'head', role: 'Human Resources Head', bio: 'An organizational leader with a talent for identifying potential and building strong teams.', stars: null },
-      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Human Resources Vice Head', bio: 'A people-focused professional dedicated to member engagement and well-being.', stars: null },
+      { name: 'Firstname Lastname', roleType: 'head', role: 'Human Resources Head', bio: 'An organizational leader with a talent for identifying potential and building strong teams.' },
+      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Human Resources Vice Head', bio: 'A people-focused professional dedicated to member engagement and well-being.' },
     ],
     members: [
       { name: 'Firstname Lastname', roleType: 'featured', role: 'HR Coordinator', bio: 'Lorem ipsum dolor sit amet.', stars: 4 },
@@ -221,7 +209,6 @@ const committees = [
       { title: 'Connect Strategy to Execution', desc: 'Bridge marketing theory with real campaigns for branch initiatives.' },
       { title: 'Empower Growth', desc: 'Develop career readiness in marketing and digital communications.' },
     ],
-    roles: COMMON_ROLES,
     activities: [
       { title: 'Campaign Planning', desc: 'Developing and executing marketing campaigns for events and recruitment.' },
       { title: 'Social Media Management', desc: "Creating and scheduling content across IEEE MUST SB's social platforms." },
@@ -229,8 +216,8 @@ const committees = [
     ],
     order: 7,
     board: [
-      { name: 'Firstname Lastname', roleType: 'head', role: 'Marketing Head', bio: "A strategic marketer with a strong background in digital campaigns and brand development.", stars: null },
-      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Marketing Vice Head', bio: 'A creative content strategist skilled in social media management and copywriting.', stars: null },
+      { name: 'Firstname Lastname', roleType: 'head', role: 'Marketing Head', bio: "A strategic marketer with a strong background in digital campaigns and brand development." },
+      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Marketing Vice Head', bio: 'A creative content strategist skilled in social media management and copywriting.' },
     ],
     members: [
       { name: 'Firstname Lastname', roleType: 'featured', role: 'Content Creator', bio: 'Lorem ipsum dolor sit amet.', stars: 4 },
@@ -251,7 +238,6 @@ const committees = [
       { title: 'Connect Branch to Community', desc: 'Bridge IEEE MUST SB with the broader engineering community.' },
       { title: 'Empower Growth', desc: 'Develop career readiness in communications and relationship management.' },
     ],
-    roles: COMMON_ROLES,
     activities: [
       { title: 'Partnership Development', desc: 'Establishing relationships with companies, universities, and organizations.' },
       { title: 'Event Outreach', desc: 'Coordinating external communications for branch events and sponsorships.' },
@@ -259,8 +245,8 @@ const committees = [
     ],
     order: 8,
     board: [
-      { name: 'Firstname Lastname', roleType: 'head', role: 'Public Relations Head', bio: 'A skilled communicator with a wide professional network.', stars: null },
-      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Public Relations Vice Head', bio: 'An outgoing professional focused on community engagement and stakeholder relations.', stars: null },
+      { name: 'Firstname Lastname', roleType: 'head', role: 'Public Relations Head', bio: 'A skilled communicator with a wide professional network.' },
+      { name: 'Firstname Lastname', roleType: 'vice_head', role: 'Public Relations Vice Head', bio: 'An outgoing professional focused on community engagement and stakeholder relations.' },
     ],
     members: [
       { name: 'Firstname Lastname', roleType: 'featured', role: 'PR Specialist', bio: 'Lorem ipsum dolor sit amet.', stars: 4 },
@@ -442,23 +428,22 @@ async function seed() {
 
   // Seed committees and their members
   for (const data of committees) {
-    const { board, members: featuredMembers, ...committeeData } = data;
+    const { board, ...committeeData } = data;
 
     const committee = await Committee.create(committeeData);
 
-    const allMembers = [...board, ...featuredMembers].map((m, i) => ({
+    const members = board.map((m, i) => ({
       name: m.name,
       committee: committee._id,
       roleType: m.roleType,
       role: m.role,
       bio: m.bio,
-      stars: m.stars || undefined,
       order: i,
       isActive: true,
     }));
 
-    await Member.insertMany(allMembers);
-    console.log(`  Seeded: ${committee.name} (${allMembers.length} members)`);
+    await Member.insertMany(members);
+    console.log(`  Seeded: ${committee.name} (${members.length} members)`);
   }
 
   // Seed events

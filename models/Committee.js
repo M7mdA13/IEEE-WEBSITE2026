@@ -24,7 +24,6 @@ const committeeSchema = new mongoose.Schema(
     tagline: { type: String, trim: true },
     shortDesc: { type: String, trim: true },
     goals: { type: [goalSchema], default: [] },
-    roles: { type: [String], default: [] },
     activities: { type: [activitySchema], default: [] },
     order: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
