@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import './PhotoCatalogueSection.css';
 
-import api from '../../services/api';
+import api from '../../api/public';
 
 const DEFAULT_PHOTOS = [
   { src: '/images/group pic 1.jpg', alt: 'IEEE MUST SB event'    },
@@ -34,7 +34,7 @@ const PhotoCatalogueSection = () => {
   useEffect(() => {
     const loadGallery = async () => {
       try {
-        const { data } = await api.get('/public/gallery');
+        const { data } = await api.get('/gallery');
         if (data.data && data.data.length >= 3) {
           setPhotos(data.data);
         }
