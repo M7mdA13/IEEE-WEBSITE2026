@@ -83,8 +83,11 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+  object-position: bottom;
   background: transparent;
   transition: transform 0.4s ease;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
 .excom-pill-wrapper:hover .excom-person-img {

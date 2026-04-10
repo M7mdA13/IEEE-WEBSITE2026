@@ -60,14 +60,15 @@
   inset: 0;
   width: 100%;
   height: 100%;
+  filter: drop-shadow(0 6px 16px rgba(0,0,0,0.08)); /* softens the overall edge */
 }
 
 /* ── Fills & Strokes (Hooked to Dark Mode) ── */
 .mv-tri__fill--mission { fill: #003b71; }
 body.dark-mode .mv-tri__fill--mission { fill: #1a4a7a; } /* was #162032 — barely visible; now clearly distinct */
 
-.mv-tri__fill--vision { fill: transparent; stroke: var(--ieee-accent); stroke-width: 4px; }
-body.dark-mode .mv-tri__fill--vision { stroke: var(--ieee-cyan); filter: drop-shadow(0 0 6px rgba(0, 210, 255, 0.4)); }
+.mv-tri__fill--vision { fill: rgba(0, 150, 237, 0.04); stroke: var(--ieee-accent); stroke-width: 4px; }
+body.dark-mode .mv-tri__fill--vision { fill: rgba(0, 210, 255, 0.07); stroke: var(--ieee-cyan); filter: drop-shadow(0 0 6px rgba(0, 210, 255, 0.4)); }
 
 /* ═══════════════════════════════════
    Content & Text Alignment (Desktop)
@@ -158,61 +159,62 @@ body.dark-mode .mv-tri__icon--vision { filter: brightness(0) invert(1); }
   .mv-tri__icon--vision { top: 10%; left: 50%; transform: translateX(-50%); }
 }
 
+/* ── Mobile body text (hidden on desktop) ── */
+.mv-tri__body--mobile { display: none; }
+
 /* ═══════════════════════════════════
    Small Mobile (< 650px)
+   Strategy: triangles resize proportionally to keep perfect angles,
+   hardcoded mobile text perfectly flows within the geometry.
 ═══════════════════════════════════ */
 @media (max-width: 650px) {
-  .mv-wrapper { height: 180vw; }
-  .mv-tri { width: 100%; left: 0; right: 0; }
-
-  .mv-tri__content {
-    width: 68%; /* Must fit inside triangle top (~80% wide) with safe margin */
-    gap: 1.2vw;
-    padding: 0;
+  /* Wrapper becomes a normal vertical stack */
+  .mv-wrapper {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    overflow: visible;
   }
 
-  .mv-tri__content--mission { top: 5%; }
-  .mv-tri__content--vision  { bottom: 10%; }
+  /* Each triangle strictly enforces ratio for accurate edge routing */
+  .mv-tri {
+    position: relative;
+    width: 96%;
+    height: auto;
+    aspect-ratio: 200 / 174;
+    left: auto; right: auto; top: auto; bottom: auto;
+  }
 
-  .mv-tri__heading { font-size: 5vw; }
-
-  /* Mission body: shape-outside floats taper each line narrower going down.
-     Content width (68%) fits the triangle at the top. The floats (each 50% of
-     that = 34vw) start at zero exclusion and grow, narrowing text to match the
-     converging triangle edges. Height in vw so it scales with viewport. */
-  .mv-tri__content--mission .mv-tri__body {
-    width: 100%;
-    display: block;
-    font-size: 2.7vw;
-    line-height: 1.65;
+  /* Hide desktop block, show responsive mobile block */
+  .mv-tri__body--desktop { display: none; }
+  .mv-tri__body--mobile { 
+    display: block; 
+    font-size: 2.8vw;
+    line-height: 1.4;
+    margin-top: 0px;
     text-align: center;
   }
 
-  .mv-tri__content--mission .mv-tri__body::before {
-    content: '';
-    float: left;
-    width: 50%;
-    height: 160vw;
-    shape-outside: polygon(0 0, 0 100%, 100% 100%);
+  .mv-tri__content {
+    width: 85%;
+    gap: 14px;
+    padding: 0;
+    left: 7.5%;
+    transform: none;
+    text-align: center;
+    align-items: center;
   }
 
-  .mv-tri__content--mission .mv-tri__body::after {
-    content: '';
-    float: right;
-    width: 50%;
-    height: 160vw;
-    shape-outside: polygon(100% 0, 0 100%, 100% 100%);
-  }
+  /* Pushed headings closer to edge so text has more room */
+  .mv-tri__content--mission { top: 7%; }
+  .mv-tri__content--vision  { bottom: 8%; right: auto; }
 
-  /* Vision body: simple centered — upward triangle is widest at bottom
-     so text near bottom is safe; no shape-outside needed */
-  .mv-tri__content--vision .mv-tri__body {
-    width: 68%;
-    font-size: 2.7vw;
-    line-height: 1.55;
-  }
+  .mv-tri__heading { font-size: 5.2vw; }
 
-  .mv-tri__icon { width: 11vw; height: 11vw; }
-  .mv-tri__icon--mission { bottom: 8%; }
-  .mv-tri__icon--vision  { top: 8%; }
+  /* Adjust icons so text won't touch */
+  .mv-tri__icon { width: 10vw; height: 10vw; }
+  .mv-tri__icon--mission { bottom: 6%; left: 50%; transform: translateX(-50%); }
+  .mv-tri__icon--vision  { top: 7%; left: 50%; transform: translateX(-50%); }
 }

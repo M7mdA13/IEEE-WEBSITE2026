@@ -85,6 +85,7 @@ const MissionVisionSection = () => {
 
       <div className="mv-wrapper">
 
+        {/* ── Mission ── */}
         <motion.div
           className="mv-tri mv-tri--mission"
           style={{ x: missionX }}
@@ -94,19 +95,34 @@ const MissionVisionSection = () => {
           transition={{ duration: 0.75, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           <svg viewBox="0 0 200 174" preserveAspectRatio="none" className="mv-tri__svg">
-            <path d={MISSION_PATH} className="mv-tri__fill--mission" />
+            <path d={MISSION_PATH} className="mv-tri__fill--mission" strokeLinejoin="round" />
           </svg>
 
           <div className="mv-tri__content mv-tri__content--mission">
             <h2 className="mv-tri__heading mv-tri__heading--light">Our Mission</h2>
-            <p className="mv-tri__body mv-tri__body--light">
+            {/* Desktop body — hidden on mobile via CSS */}
+            <p className="mv-tri__body mv-tri__body--light mv-tri__body--desktop">
               We exist to advance technology for the benefit of humanity. That means giving students access to real knowledge, real networks, and real opportunities — through technical workshops, mentorship programs, and a culture of continuous learning across every discipline.
+            </p>
+            {/* Mobile body — hardcoded to flow with triangle edges */}
+            <p className="mv-tri__body mv-tri__body--light mv-tri__body--mobile">
+              We exist to advance technology for<br/>
+              the benefit of humanity. That means<br/>
+              giving students access to real<br/>
+              knowledge, real networks, and<br/>
+              real opportunities — through<br/>
+              technical workshops,<br/>
+              mentorship programs,<br/>
+              and a culture of<br/>
+              continuous<br/>
+              learning.
             </p>
           </div>
 
           <img src="/images/7fd33e2444354311f749a713ec1cfeddc607bd3f.png" alt="Target" className="mv-tri__icon mv-tri__icon--mission" />
         </motion.div>
 
+        {/* ── Vision ── */}
         <motion.div
           className="mv-tri mv-tri--vision"
           style={{ x: visionX }}
@@ -116,21 +132,31 @@ const MissionVisionSection = () => {
           transition={{ duration: 0.75, ease: [0.25, 0.46, 0.45, 0.94] }}
         >
           <svg viewBox="0 0 200 174" preserveAspectRatio="none" className="mv-tri__svg">
-            <path d={VISION_PATH} className="mv-tri__fill--vision" vectorEffect="non-scaling-stroke" />
+            <path d={VISION_PATH} className="mv-tri__fill--vision" vectorEffect="non-scaling-stroke" strokeLinejoin="round" />
           </svg>
 
           <img src="/images/Icon.png" alt="Eye" className="mv-tri__icon mv-tri__icon--vision" />
 
           <div className="mv-tri__content mv-tri__content--vision">
             <h2 className="mv-tri__heading mv-tri__heading--dark">Our Vision</h2>
-            <p className="mv-tri__body mv-tri__body--dark">
-              Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit. Duis volutpat eu libero cursus
-              sollicitudin. Proin at magna eu enim tempor
-              vestibulum eget ac nunc. Morbi a finibus enim.
+            {/* Desktop body — hidden on mobile via CSS */}
+            <p className="mv-tri__body mv-tri__body--dark mv-tri__body--desktop">
+              To be the premier community for students to develop their technical skills, leadership abilities, and professional networks, empowering them to innovate and shape the future of technology for a better tomorrow.
+            </p>
+            {/* Mobile body — hardcoded to flow with triangle edges */}
+            <p className="mv-tri__body mv-tri__body--dark mv-tri__body--mobile">
+              To be the<br/>
+              premier community<br/>
+              for students to develop<br/>
+              their technical skills,<br/>
+              leadership abilities, and<br/>
+              professional networks, empowering<br/>
+              them to innovate and shape the<br/>
+              future of technology for a better tomorrow.
             </p>
           </div>
         </motion.div>
+
       </div>
     </section>
   );
