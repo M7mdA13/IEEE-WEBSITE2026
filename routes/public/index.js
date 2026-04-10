@@ -9,5 +9,6 @@ router.use('/recruitment', require('./recruitment.routes'));
 router.use('/partners', require('./partners.routes'));
 router.use('/mailing-list', require('./mailingList.routes'));
 router.use('/website-team', require('./websiteTeam.routes'));
+router.use('/gallery', require('./gallery.routes'));
 
 module.exports = router;
