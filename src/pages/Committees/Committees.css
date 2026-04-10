@@ -25,6 +25,7 @@ body.dark-mode .committees-heading {
 }
 
 .committees-intro {
+  font-family: 'Montserrat', sans-serif;
   color: var(--ieee-text);
   font-size: 0.9rem;
   line-height: 1.6;
@@ -33,6 +34,7 @@ body.dark-mode .committees-heading {
 }
 
 .committees-bullets {
+  font-family: 'Montserrat', sans-serif;
   color: var(--ieee-text);
   font-size: 0.88rem;
   line-height: 1.7;
@@ -46,6 +48,7 @@ body.dark-mode .committees-heading {
 }
 
 .committees-tagline {
+  font-family: 'Montserrat', sans-serif;
   color: var(--ieee-text);
   font-size: 0.88rem;
   line-height: 1.6;

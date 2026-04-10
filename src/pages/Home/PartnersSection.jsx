@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import api from '../../api/public';
 import './PartnersSection.css';
 
-const logos = [
+const staticLogos = [
   '/images/partner 1.png',
   '/images/partner 2.png',
   '/images/partner 3.png',
@@ -20,9 +21,18 @@ const logos = [
 ];
 
 const PartnersSection = () => {
-  /* Track which logo slot is hovered so we can pause the marquee */
+  const [logos, setLogos] = useState(staticLogos);
   const [pausedIdx, setPausedIdx] = useState(null);
   const isPaused = pausedIdx !== null;
+
+  useEffect(() => {
+    api.get('/partners')
+      .then(({ data }) => {
+        const imgs = (data.data || []).map(p => p.logo).filter(Boolean);
+        if (imgs.length > 0) setLogos(imgs);
+      })
+      .catch(() => {});
+  }, []);
 
   return (
     <section className="partners-section">

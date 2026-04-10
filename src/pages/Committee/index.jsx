@@ -26,7 +26,7 @@ const SocialLinks = ({ github, linkedin, email }) => (
       </a>
     )}
     {email && (
-      <a href={`mailto:${email === '#' ? '' : email}`} aria-label="Email">
+      <a href={`mailto:${email}`} aria-label="Email">
         <i className="fas fa-envelope"></i>
       </a>
     )}

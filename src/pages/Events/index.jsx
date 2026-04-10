@@ -92,11 +92,7 @@ const EventCard = ({ event, index }) => {
                   <button className="btn-primary" disabled>Coming Soon</button>
                 )}
               </>
-            ) : (
-              event.recapLink
-                ? <a href={event.recapLink} target="_blank" rel="noopener noreferrer" className="btn-primary">Recap</a>
-                : <button className="btn-primary" disabled>Recap</button>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
