@@ -165,26 +165,24 @@ body.dark-mode .mv-tri__icon--vision { filter: brightness(0) invert(1); }
   .mv-wrapper { height: 180vw; }
   .mv-tri { width: 100%; left: 0; right: 0; }
 
+  /* Both panels centered, narrower to stay within the triangle's slanted edges */
   .mv-tri__content {
-    width: 68%;
-    gap: 1.5vw;
-    padding: 0 4vw;
+    width: 60%;
+    gap: 1.2vw;
+    padding: 0 2vw;
   }
 
-  /* Mission text tends to be longer — give it more breathing room */
-  .mv-tri__content--mission {
-    top: 10%;
-    width: 58%;
-    padding: 0 8vw;
-  }
+  /* Mission points DOWN — widest at top, text safe near top: 8% */
+  .mv-tri__content--mission { top: 8%; }
 
-  .mv-tri__content--vision { bottom: 12%; }
-  
-  /* Reduced mobile heading size */
-  .mv-tri__heading { font-size: 5.5vw; } 
-  .mv-tri__body { font-size: 2.8vw; line-height: 1.5; }
+  /* Vision points UP — widest at bottom, text safe near bottom: 10% */
+  .mv-tri__content--vision { bottom: 10%; }
 
-  .mv-tri__icon { width: 12vw; height: 12vw; }
+  /* Smaller type so the long mission text fits comfortably */
+  .mv-tri__heading { font-size: 4.8vw; }
+  .mv-tri__body { font-size: 2.5vw; line-height: 1.55; }
+
+  .mv-tri__icon { width: 11vw; height: 11vw; }
   .mv-tri__icon--mission { bottom: 8%; }
   .mv-tri__icon--vision { top: 8%; }
 }

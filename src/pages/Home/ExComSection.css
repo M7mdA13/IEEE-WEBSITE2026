@@ -282,41 +282,54 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  overflow: hidden; /* clips the height animation */
+  overflow: hidden;
 }
 
-/* Small chevron toggle inside the pill */
-.excom-bio-toggle {
-  position: absolute;
-  bottom: 12px;
-  right: 18px;
-  background: rgba(255, 255, 255, 0.15);
-  border: none;
-  color: #fff;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
+/* Whole pill-wrapper is clickable when bio exists */
+.excom-pill-wrapper--has-bio {
   cursor: pointer;
-  transition: background 0.2s, transform 0.3s ease;
-  flex-shrink: 0;
 }
 
-.excom-bio-toggle:hover { background: rgba(255, 255, 255, 0.28); }
+.excom-pill-wrapper--has-bio:focus-visible {
+  outline: 2px solid var(--ieee-accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
 
-.excom-bio-toggle--open { transform: rotate(180deg); }
+/* Chevron cue — anchored to pill-wrapper (position:relative) so it sits
+   outside the pill's overflow:hidden boundary */
+.excom-bio-cue {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.6);
+  transition: transform 0.3s ease, color 0.2s;
+  pointer-events: none;
+  z-index: 20;
+}
 
-/* Bio panel — slides in below the pill row */
+.excom-pill-wrapper--has-bio:hover .excom-bio-cue { color: rgba(255,255,255,1); }
+
+.excom-bio-cue--open { transform: rotate(180deg); }
+
+/* Bio panel — slides in below the pill row.
+   Left panels indent by photo visible width (220 - 110 overlap = 110px)
+   so the text visually lines up under the pill, not the photo. */
 .excom-bio-panel {
   width: 50%;
   overflow: hidden;
 }
 
-.excom-bio-panel--left  { align-self: flex-start; padding-left: 16px; }
-.excom-bio-panel--right { align-self: flex-end;   padding-right: 16px; }
+.excom-bio-panel--left {
+  align-self: flex-start;
+  padding-left: 110px;
+}
+
+.excom-bio-panel--right {
+  align-self: flex-end;
+  padding-right: 110px;
+}
 
 .excom-bio-text {
   font-family: 'Montserrat', sans-serif;
@@ -332,10 +345,10 @@
 .excom-bio-panel--right .excom-bio-text {
   border-left: none;
   border-right: 3px solid var(--ieee-accent);
+  text-align: right;
 }
 
 @media (max-width: 768px) {
-  .excom-bio-panel { width: 100%; padding: 0 16px; }
-  .excom-bio-panel--right .excom-bio-text { border-right: none; border-left: 3px solid var(--ieee-accent); }
-  .excom-bio-toggle { bottom: 8px; right: 14px; }
+  .excom-bio-panel { width: 100%; padding-left: 0 !important; padding-right: 0 !important; }
+  .excom-bio-panel--right .excom-bio-text { border-right: none; border-left: 3px solid var(--ieee-accent); text-align: left; }
 }

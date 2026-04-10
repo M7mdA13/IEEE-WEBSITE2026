@@ -22,22 +22,23 @@ const staticLogos = [
 
 const PartnersSection = () => {
   const [logos, setLogos] = useState(staticLogos);
-  const [pausedIdx, setPausedIdx] = useState(null);
+  const [activeSrc, setActiveSrc] = useState(null);
   const [dataReady, setDataReady] = useState(false);
-  const isPaused = pausedIdx !== null;
 
   useEffect(() => {
     api.get('/partners')
       .then(({ data }) => {
         const imgs = (data.data || []).map(p => p.logo).filter(Boolean);
         if (imgs.length > 0) {
-          setPausedIdx(null);
+          setActiveSrc(null);
           setLogos(imgs);
         }
       })
       .catch(() => {})
       .finally(() => setDataReady(true));
   }, []);
+
+  const doubled = [...logos, ...logos];
 
   return (
     <section className="partners-section" style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.4s ease' }}>
@@ -63,23 +64,20 @@ const PartnersSection = () => {
       >
         <div
           className="partners-marquee-track"
-          style={{ animationPlayState: isPaused ? 'paused' : 'running' }}
+          style={{ animationPlayState: activeSrc ? 'paused' : 'running' }}
         >
-          {[...logos, ...logos].map((src, i) => {
-            const isHovered = pausedIdx === i;
-            return (
-              <div
-                key={i}
-                className={`partner-logo-slot ${isHovered ? 'partner-logo-slot--active' : ''}`}
-                onMouseEnter={() => setPausedIdx(i)}
-                onMouseLeave={() => setPausedIdx(null)}
-                onTouchStart={() => setPausedIdx(i)}
-                onTouchEnd={() => setPausedIdx(null)}
-              >
-                <img src={src} alt="partner logo" draggable={false} />
-              </div>
-            );
-          })}
+          {doubled.map((src, i) => (
+            <div
+              key={i}
+              className={`partner-logo-slot ${activeSrc === src ? 'partner-logo-slot--active' : ''}`}
+              onMouseEnter={() => setActiveSrc(src)}
+              onMouseLeave={() => setActiveSrc(null)}
+              onTouchStart={(e) => { e.stopPropagation(); setActiveSrc(src); }}
+              onTouchEnd={() => setActiveSrc(null)}
+            >
+              <img src={src} alt="partner logo" draggable={false} />
+            </div>
+          ))}
         </div>
       </motion.div>
     </section>

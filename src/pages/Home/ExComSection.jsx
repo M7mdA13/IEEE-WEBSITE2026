@@ -80,7 +80,14 @@ const ExComCard = ({ member, index }) => {
         viewport={{ once: true, margin: '-20px' }}
         transition={{ type: 'spring', stiffness: 220, damping: 28, delay: index * 0.10 }}
       >
-        <div className="excom-pill-wrapper">
+        <div
+          className={`excom-pill-wrapper ${member.bio ? 'excom-pill-wrapper--has-bio' : ''}`}
+          onClick={member.bio ? () => setBioOpen(v => !v) : undefined}
+          role={member.bio ? 'button' : undefined}
+          tabIndex={member.bio ? 0 : undefined}
+          onKeyDown={member.bio ? (e) => { if (e.key === 'Enter' || e.key === ' ') setBioOpen(v => !v); } : undefined}
+          aria-expanded={member.bio ? bioOpen : undefined}
+        >
           <div className="excom-person-frame">
             <img src={member.photo} alt={member.name} className="excom-person-img" />
           </div>
@@ -95,17 +102,13 @@ const ExComCard = ({ member, index }) => {
                 {member.email    && <MagneticIcon href={`mailto:${member.email}`} icon="fas fa-envelope"    ariaLabel={`Email ${member.name}`} />}
               </div>
             </div>
-            {member.bio && (
-              <button
-                className={`excom-bio-toggle ${bioOpen ? 'excom-bio-toggle--open' : ''}`}
-                onClick={() => setBioOpen(v => !v)}
-                aria-expanded={bioOpen}
-                aria-label={bioOpen ? 'Hide bio' : 'Show bio'}
-              >
-                <i className="fas fa-chevron-down" />
-              </button>
-            )}
           </SpotlightPill>
+
+          {member.bio && (
+            <span className={`excom-bio-cue ${bioOpen ? 'excom-bio-cue--open' : ''}`} aria-hidden="true">
+              <i className="fas fa-chevron-down" />
+            </span>
+          )}
         </div>
       </motion.div>
 
