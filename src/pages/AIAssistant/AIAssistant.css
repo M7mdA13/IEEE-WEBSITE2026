@@ -1,8 +1,8 @@
 .ai-assistant-page {
   box-sizing: border-box;
   min-height: 100vh;
-  padding-top: 120px; /* clear nav */
-  padding-bottom: 40px; /* buffer before footer */
+  padding-top: 100px; /* clear nav */
+  padding-bottom: 100px; /* symmetric buffer */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -19,9 +19,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 15px;
   padding-bottom: 40px;
-  flex: 1;
+  width: 100%;
 }
 
 .ai-header {
