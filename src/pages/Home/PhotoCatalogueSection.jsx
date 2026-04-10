@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import './PhotoCatalogueSection.css';
 
-const photos = [
+import api from '../../services/api';
+
+const DEFAULT_PHOTOS = [
   { src: '/images/group pic 1.jpg', alt: 'IEEE MUST SB event'    },
   { src: '/images/group pic 2.jpg', alt: 'IEEE MUST SB team'     },
   { src: '/images/group pic 3.jpg', alt: 'IEEE MUST SB activity' },
@@ -19,11 +21,29 @@ const AUTO_ROTATE_MS = 5000;
 const SWIPE_THRESHOLD = 40;
 
 const PhotoCatalogueSection = () => {
+  const [photos, setPhotos] = useState([]);
   const [centerIndex, setCenterIndex] = useState(1);
   const [hovered, setHovered] = useState(false);
-  const total = photos.length;
+  
+  const total = photos.length || DEFAULT_PHOTOS.length;
+  const displayPhotos = photos.length >= 3 ? photos : DEFAULT_PHOTOS;
+
   const timerRef   = useRef(null);
   const touchStartX = useRef(null);
+
+  useEffect(() => {
+    const loadGallery = async () => {
+      try {
+        const { data } = await api.get('/public/gallery');
+        if (data.data && data.data.length >= 3) {
+          setPhotos(data.data);
+        }
+      } catch (err) {
+        console.error('Failed to load gallery photos', err);
+      }
+    };
+    loadGallery();
+  }, []);
 
   /* ── Auto-rotate: pauses when hovered ── */
   useEffect(() => {
@@ -105,13 +125,13 @@ const PhotoCatalogueSection = () => {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        {photos.map((photo, i) => {
+        {displayPhotos.map((photo, i) => {
           const slot = getSlot(i);
           const isCenter = i === centerIndex;
 
           return (
             <motion.div
-              key={photo.src}
+              key={photo._id || photo.src}
               className={`catalogue-frame ${isCenter ? 'catalogue-frame--center' : 'catalogue-frame--side'}`}
               animate={{
                 rotateY: slot.rotateY,
@@ -139,7 +159,7 @@ const PhotoCatalogueSection = () => {
 
       {/* ── Dot indicators (mobile only) ── */}
       <div className="catalogue-dots">
-        {photos.map((_, i) => (
+        {displayPhotos.map((_, i) => (
           <button
             key={i}
             className={`catalogue-dot ${i === centerIndex ? 'catalogue-dot--active' : ''}`}
