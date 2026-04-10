@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
 import api from '../../api/index'
+import { compressImage } from '../../utils/imageCompressor'
 
 function EventsSection() {
   const [events, setEvents] = useState([])
@@ -53,12 +53,15 @@ function EventsSection() {
     setForm(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => setForm(prev => ({ ...prev, image: reader.result }))
-      reader.readAsDataURL(file)
+      try {
+        const compressed = await compressImage(file, 800, 800, 0.8)
+        setForm(prev => ({ ...prev, image: compressed }))
+      } catch (err) {
+        console.error('Image compression failed', err)
+      }
     }
   }
 

@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
 import api from '../../api/index'
+import { compressImage } from '../../utils/imageCompressor'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -97,12 +97,13 @@ function CommitteesSection() {
     }))
   }
 
-  const handleCImageUpload = (e) => {
+  const handleCImageUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onloadend = () => setCForm(prev => ({ ...prev, image: reader.result }))
-    reader.readAsDataURL(file)
+    try {
+      const compressed = await compressImage(file, 800, 800, 0.8)
+      setCForm(prev => ({ ...prev, image: compressed }))
+    } catch(err) { console.error(err) }
   }
 
   // Goals
@@ -211,12 +212,13 @@ function CommitteesSection() {
     setMForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
   }
 
-  const handlePhotoUpload = (e) => {
+  const handlePhotoUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onloadend = () => setMForm(prev => ({ ...prev, photo: reader.result }))
-    reader.readAsDataURL(file)
+    try {
+      const compressed = await compressImage(file, 400, 400, 0.8)
+      setMForm(prev => ({ ...prev, photo: compressed }))
+    } catch(err) { console.error(err) }
   }
 
   const handleMemberSubmit = async (e) => {
@@ -283,12 +285,11 @@ function CommitteesSection() {
             <div key={c._id} className="event-card" style={{ opacity: c.isActive ? 1 : 0.6 }}>
               <div className="event-card-header" style={{ padding: 0, position: 'relative' }}>
                 {c.image ? (
-                  <img src={c.image} alt={c.name} style={{ width: '100%', height: '140px', objectFit: 'cover' }} />
-                ) : (
-                  <div style={{ width: '100%', height: '140px', background: 'var(--primary-color)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <i className={`fas ${c.icon || 'fa-users'}`} style={{ fontSize: '3rem', color: 'white', opacity: 0.8 }}></i>
-                  </div>
-                )}
+                  <img src={c.image?.startsWith('/') ? 'https://ieee-website-2026.vercel.app' + c.image : c.image} alt={c.name} style={{ width: '100%', height: '140px', objectFit: 'cover' }} onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+                ) : null}
+                <div style={{ display: c.image ? 'none' : 'flex', width: '100%', height: '140px', background: 'var(--primary-color)', alignItems: 'center', justifyContent: 'center' }}>
+                  <i className={`fas ${c.icon || 'fa-users'}`} style={{ fontSize: '3rem', color: 'white', opacity: 0.8 }}></i>
+                </div>
                 <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '6px' }}>
                   <button type="button" className="action-btn mini" title="Edit" onClick={() => openCommitteeModal(c)} style={{ background: 'white', color: 'var(--primary-color)' }}>
                     <i className="fas fa-edit"></i>
@@ -401,12 +402,18 @@ function CommitteesSection() {
                   <button type="button" className="action-btn mini" onClick={addGoal}><i className="fas fa-plus"></i> Add</button>
                 </div>
                 {cForm.goals.map((g, i) => (
-                  <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'flex-start' }}>
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      <input type="text" value={g.title} onChange={e => updateGoal(i, 'title', e.target.value)} placeholder="Goal title" style={{ padding: '8px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-color)' }} />
-                      <input type="text" value={g.desc} onChange={e => updateGoal(i, 'desc', e.target.value)} placeholder="Goal description" style={{ padding: '8px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-color)' }} />
+                  <div key={i} style={{ display: 'flex', gap: '15px', marginBottom: '15px', alignItems: 'flex-start', background: 'var(--card-bg)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <div className="form-group" style={{ marginBottom: 0 }}>
+                        <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Goal Title</label>
+                        <input type="text" value={g.title} onChange={e => updateGoal(i, 'title', e.target.value)} placeholder="e.g. Explore AI Concepts" style={{ padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-color)' }} />
+                      </div>
+                      <div className="form-group" style={{ marginBottom: 0 }}>
+                        <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Goal Description</label>
+                        <input type="text" value={g.desc} onChange={e => updateGoal(i, 'desc', e.target.value)} placeholder="e.g. Introduce members to..." style={{ padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-color)' }} />
+                      </div>
                     </div>
-                    <button type="button" className="action-btn mini danger" style={{ marginTop: '4px' }} onClick={() => removeGoal(i)}><i className="fas fa-times"></i></button>
+                    <button type="button" className="action-btn mini danger" style={{ marginTop: '26px' }} onClick={() => removeGoal(i)}><i className="fas fa-trash"></i></button>
                   </div>
                 ))}
               </div>
@@ -418,9 +425,12 @@ function CommitteesSection() {
                   <button type="button" className="action-btn mini" onClick={addRole}><i className="fas fa-plus"></i> Add</button>
                 </div>
                 {cForm.roles.map((r, i) => (
-                  <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                    <input type="text" value={r} onChange={e => updateRole(i, e.target.value)} placeholder="e.g. Attend all meetings regularly" style={{ flex: 1, padding: '8px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-color)' }} />
-                    <button type="button" className="action-btn mini danger" onClick={() => removeRole(i)}><i className="fas fa-times"></i></button>
+                  <div key={i} style={{ display: 'flex', gap: '15px', marginBottom: '15px', alignItems: 'flex-start', background: 'var(--card-bg)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                    <div className="form-group" style={{ flex: 1, marginBottom: 0 }}>
+                      <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Role Requirement / Expectation</label>
+                      <input type="text" value={r} onChange={e => updateRole(i, e.target.value)} placeholder="e.g. Attend all meetings regularly" style={{ width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-color)' }} />
+                    </div>
+                    <button type="button" className="action-btn mini danger" style={{ marginTop: '26px' }} onClick={() => removeRole(i)}><i className="fas fa-trash"></i></button>
                   </div>
                 ))}
               </div>
@@ -432,12 +442,18 @@ function CommitteesSection() {
                   <button type="button" className="action-btn mini" onClick={addActivity}><i className="fas fa-plus"></i> Add</button>
                 </div>
                 {cForm.activities.map((a, i) => (
-                  <div key={i} style={{ display: 'flex', gap: '8px', marginBottom: '8px', alignItems: 'flex-start' }}>
-                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      <input type="text" value={a.title} onChange={e => updateActivity(i, 'title', e.target.value)} placeholder="Activity title" style={{ padding: '8px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-color)' }} />
-                      <input type="text" value={a.desc} onChange={e => updateActivity(i, 'desc', e.target.value)} placeholder="Activity description" style={{ padding: '8px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-color)' }} />
+                  <div key={i} style={{ display: 'flex', gap: '15px', marginBottom: '15px', alignItems: 'flex-start', background: 'var(--card-bg)', padding: '15px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                      <div className="form-group" style={{ marginBottom: 0 }}>
+                        <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Activity Title</label>
+                        <input type="text" value={a.title} onChange={e => updateActivity(i, 'title', e.target.value)} placeholder="e.g. Educational Sessions" style={{ padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-color)' }} />
+                      </div>
+                      <div className="form-group" style={{ marginBottom: 0 }}>
+                        <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Activity Description</label>
+                        <input type="text" value={a.desc} onChange={e => updateActivity(i, 'desc', e.target.value)} placeholder="What happens in this activity..." style={{ padding: '10px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--input-bg)', color: 'var(--text-color)' }} />
+                      </div>
                     </div>
-                    <button type="button" className="action-btn mini danger" style={{ marginTop: '4px' }} onClick={() => removeActivity(i)}><i className="fas fa-times"></i></button>
+                    <button type="button" className="action-btn mini danger" style={{ marginTop: '26px' }} onClick={() => removeActivity(i)}><i className="fas fa-trash"></i></button>
                   </div>
                 ))}
               </div>

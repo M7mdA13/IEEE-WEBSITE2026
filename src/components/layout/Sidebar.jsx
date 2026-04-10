@@ -10,6 +10,7 @@ const menuItems = [
   { id: 'website-team', icon: 'fa-laptop-code', label: 'Website Team', path: '/dashboard/website-team' },
   { id: 'recruitment', icon: 'fa-door-open', label: 'Recruitment', path: '/dashboard/recruitment' },
   { id: 'mailing-list', icon: 'fa-envelope-open-text', label: 'Mailing List', path: '/dashboard/mailing-list' },
+  { id: 'gallery', icon: 'fa-images', label: 'Gallery', path: '/dashboard/gallery' },
   { id: 'analytics', icon: 'fa-chart-line', label: 'Analytics', path: '/dashboard/analytics' },
   { id: 'settings', icon: 'fa-cog', label: 'Settings', path: '/dashboard/settings' }
 ]

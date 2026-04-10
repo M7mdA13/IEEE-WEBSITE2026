@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react'
 import api from '../../api/index'
+import { compressImage } from '../../utils/imageCompressor'
 
 function MembersSection() {
   const [members, setMembers] = useState([])
@@ -48,12 +48,15 @@ function MembersSection() {
     setForm(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
   }
 
-  const handleAvatarUpload = (e) => {
+  const handleAvatarUpload = async (e) => {
     const file = e.target.files[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => setForm(prev => ({ ...prev, photo: reader.result }))
-      reader.readAsDataURL(file)
+      try {
+        const compressed = await compressImage(file, 400, 400, 0.8)
+        setForm(prev => ({ ...prev, photo: compressed }))
+      } catch (err) {
+        console.error('Image compression failed', err)
+      }
     }
   }
 
