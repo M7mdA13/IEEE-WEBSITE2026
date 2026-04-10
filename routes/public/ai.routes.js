@@ -34,7 +34,7 @@ Guidelines:
 4. Try to sign off with a friendly remark or a subtle call to action (e.g., "Ready to build the future with us?").`;
 
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       systemInstruction: systemPrompt 
     });
 
