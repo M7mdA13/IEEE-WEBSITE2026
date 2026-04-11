@@ -559,6 +559,32 @@
   text-decoration: none;
 }
 
+/* ── Odd-card centering: Goals (2-col) ── */
+@media (min-width: 769px) {
+  .cmt-goals-grid .cmt-goal-item:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    max-width: calc(50% - 30px);
+    justify-self: center;
+  }
+}
+
+/* ── Odd-card centering: Activities (3-col desktop) ── */
+@media (min-width: 1025px) {
+  /* 1 card alone in last row = total count is 1, 4, 7, … */
+  .cmt-activities-grid .cmt-activity-card:last-child:nth-child(3n + 1) {
+    grid-column: 2; /* centre column */
+  }
+}
+
+/* ── Odd-card centering: Activities (2-col tablet) ── */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .cmt-activities-grid .cmt-activity-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    max-width: calc(50% - 12px);
+    justify-self: center;
+  }
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .hero-name { font-size: 2.2rem; }

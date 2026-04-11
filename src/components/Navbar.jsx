@@ -37,7 +37,8 @@ const Navbar = ({ isDark, toggleTheme }) => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) =>
+    path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
 
   return (
     <nav className={`main-head ${isScrolled ? 'slidedown' : ''}`}>

@@ -68,7 +68,7 @@ const Committee = () => {
     return (
       <div className="committee-not-found">
         <h2>Committee not found.</h2>
-        <Link to="/committees">← Back to Committees</Link>
+        <Link to="/committees"><i className="fas fa-arrow-left" /> Back to Committees</Link>
       </div>
     );
   }

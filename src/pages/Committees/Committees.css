@@ -279,6 +279,15 @@ body.dark-mode .cmt-card-icon i {
   color: #90CAF9;
 }
 
+/* Lone last card when category has odd number of committees */
+@media (min-width: 641px) {
+  .committees-grid .cmt-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    max-width: calc(50% - 12px);
+    justify-self: center;
+  }
+}
+
 @media (max-width: 640px) {
   .committees-grid {
     grid-template-columns: 1fr;

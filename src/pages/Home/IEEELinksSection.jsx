@@ -100,7 +100,7 @@ const IEEELinksSection = () => (
             <p className="ieee-tile-desc">{link.desc}</p>
 
             {/* Arrow */}
-            <span className="ieee-tile-arrow">↗</span>
+            <span className="ieee-tile-arrow"><i className="fas fa-arrow-up-right" /></span>
 
             {/* Decorative circle in background */}
             <div className="ieee-tile-decor" aria-hidden="true" />

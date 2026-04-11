@@ -456,6 +456,31 @@
   transition: color 0.25s;
 }
 
+.website-team-social {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.website-team-social a {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ieee-text-soft);
+  font-size: 0.9rem;
+  text-decoration: none;
+  border-radius: 50%;
+  transition: color 0.2s, transform 0.2s;
+}
+
+.website-team-social a:hover {
+  color: var(--ieee-accent);
+  transform: translateY(-2px);
+}
+
 /* ══════════════════════════════════════════════════════════════
    RESPONSIVE
    ══════════════════════════════════════════════════════════════ */

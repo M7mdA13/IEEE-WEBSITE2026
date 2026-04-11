@@ -21,6 +21,7 @@ const Footer = () => {
           <div className="footer-link-group">
             <Link to="/events">Events</Link>
             <Link to="/committees">Committees</Link>
+            <Link to="/ai-assistant">AI Assistant</Link>
           </div>
         </div>
         <div className="footer-col footer-contact">

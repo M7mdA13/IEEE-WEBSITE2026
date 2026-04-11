@@ -70,7 +70,7 @@ const Membership = () => {
             >
               {status.message || (status.isOpen
                 ? 'Apply now and join our community!'
-                : "We're not accepting new members right now.\nRecruitment happens online and on campus, and we announce everything on our social media."
+                : "We're not accepting new members right now. Recruitment happens online and on campus — we announce everything on our social media."
               )}
             </motion.p>
 

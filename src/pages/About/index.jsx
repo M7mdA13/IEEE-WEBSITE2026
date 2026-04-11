@@ -239,6 +239,25 @@ const About = () => {
                       <div className="website-team-info">
                         <h4>{member.name}</h4>
                         <span>{member.role}</span>
+                        {(member.github || member.linkedin || member.email) && (
+                          <div className="website-team-social">
+                            {member.github && member.github !== '#' && (
+                              <a href={member.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+                                <i className="fab fa-github" />
+                              </a>
+                            )}
+                            {member.linkedin && member.linkedin !== '#' && (
+                              <a href={member.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                                <i className="fab fa-linkedin" />
+                              </a>
+                            )}
+                            {member.email && member.email !== '#' && (
+                              <a href={`mailto:${member.email}`} aria-label="Email">
+                                <i className="fas fa-envelope" />
+                              </a>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}

@@ -12,6 +12,7 @@ import About from './pages/About';
 import Committees from './pages/Committees';
 import Committee from './pages/Committee';
 import AIAssistant from './pages/AIAssistant';
+import NotFound from './pages/NotFound';
 import './index.css';
 
 const pageVariants = {
@@ -59,6 +60,7 @@ const AnimatedRoutes = ({ isDark }) => {
         <Route path="/committees" element={<PageWrapper><Committees /></PageWrapper>} />
         <Route path="/committees/:slug" element={<PageWrapper><Committee /></PageWrapper>} />
         <Route path="/ai-assistant" element={<PageWrapper><AIAssistant /></PageWrapper>} />
+        <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
       </Routes>
     </AnimatePresence>
   );
