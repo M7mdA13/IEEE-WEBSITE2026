@@ -42,6 +42,7 @@ function Dashboard({ toggleTheme, theme }) {
             <Route path="mailing-list" element={<MailingListSection />} />
             <Route path="gallery" element={<GallerySection />} />
             <Route path="users" element={<UsersSection />} />
+            <Route path="*" element={<Navigate to="overview" replace />} />
           </Routes>
         </div>
       </main>
