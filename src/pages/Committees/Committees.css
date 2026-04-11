@@ -279,6 +279,31 @@ body.dark-mode .cmt-card-icon i {
   color: #90CAF9;
 }
 
+/* ── Skeleton cards ── */
+.cmt-card-skel {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  background: var(--ieee-bg-card);
+  border: 1px solid var(--ieee-border);
+  border-radius: 16px;
+  padding: 28px 24px;
+  gap: 16px;
+}
+
+.cmt-skel-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cmt-skel-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
 /* Lone last card when category has odd number of committees */
 @media (min-width: 641px) {
   .committees-grid .cmt-card:last-child:nth-child(odd) {

@@ -217,6 +217,34 @@
   transform: translateY(-2px);
 }
 
+/* ── Skeleton event card ── */
+.event-card-skel {
+  display: flex;
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--ieee-bg-card);
+  border: 1px solid var(--ieee-border);
+  min-height: 180px;
+}
+
+.event-skel-image {
+  flex: 0 0 240px;
+  margin: 14px 0 14px 14px;
+  border-radius: 14px;
+  height: auto;
+}
+
+.event-skel-body {
+  flex: 1;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 640px) {
+  .event-skel-image { flex: 0 0 120px; }
+}
+
 /* ── Mobile tab switcher ── */
 
 .events-mobile-tabs {

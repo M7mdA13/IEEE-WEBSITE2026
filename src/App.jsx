@@ -83,6 +83,18 @@ const App = () => {
 
   const toggleTheme = () => setIsDark((prev) => !prev);
 
+  // Ctrl+D / Cmd+D keyboard shortcut for dark mode toggle
+  useEffect(() => {
+    const handler = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+        e.preventDefault();
+        setIsDark((prev) => !prev);
+      }
+    };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, []);
+
   return (
     <BrowserRouter>
       {/* SVG Filters for Glass Surface Effect */}

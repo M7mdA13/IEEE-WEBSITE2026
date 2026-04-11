@@ -181,22 +181,40 @@ const Committees = () => {
           </div>
         </motion.div>
 
-        {/* Animated card grid */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            className="committees-grid"
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-            exit="exit"
-            style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.35s ease' }}
-          >
-            {list.map((committee) => (
-              <CommitteeCard key={committee._id || committee.slug} committee={committee} />
+        {/* Skeleton while loading */}
+        {!dataReady && (
+          <div className="committees-grid">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="cmt-card-skel">
+                <div className="cmt-skel-body">
+                  <span className="skeleton-block" style={{ height: '13px', width: '55%', marginBottom: '10px' }} />
+                  <span className="skeleton-block" style={{ height: '11px', marginBottom: '6px' }} />
+                  <span className="skeleton-block" style={{ height: '11px', width: '75%', marginBottom: '28px' }} />
+                  <span className="skeleton-block" style={{ height: '30px', width: '110px', borderRadius: '999px' }} />
+                </div>
+                <span className="skeleton-block cmt-skel-icon" />
+              </div>
             ))}
-          </motion.div>
-        </AnimatePresence>
+          </div>
+        )}
+
+        {/* Animated card grid */}
+        {dataReady && (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              className="committees-grid"
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              exit="exit"
+            >
+              {list.map((committee) => (
+                <CommitteeCard key={committee._id || committee.slug} committee={committee} />
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        )}
 
       </div>
     </div>

@@ -3,11 +3,16 @@ import api from '../../api/public';
 import './AIAssistant.css';
 
 const suggestions = [
+  "Who is the Chairman?",
+  "How to join IEEE MUST?",
+  "What committees are available?",
+  "When is the next event?",
   "Benefits of joining?",
-  "How to join?",
   "What is IEEE MUST SB?",
+  "Tell me about the ExCom",
   "What does IEEE do globally?",
-  "IEEE MUST SB activities & events"
+  "How to contact IEEE MUST?",
+  "IEEE MUST activities & events",
 ];
 
 const AIAssistant = () => {

@@ -372,13 +372,53 @@
   margin: 0 0 6px;
 }
 
+.cmt-board-role-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.cmt-board-badge {
+  font-family: 'Krona One', sans-serif;
+  font-weight: 400;
+  font-size: 0.62rem;
+  padding: 2px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.cmt-board-badge--head {
+  background: rgba(0, 152, 237, 0.1);
+  color: #0098ED;
+  border: 1px solid rgba(0, 152, 237, 0.3);
+}
+
+.cmt-board-badge--vice_head {
+  background: rgba(36, 240, 255, 0.08);
+  color: #1aacbc;
+  border: 1px solid rgba(36, 240, 255, 0.25);
+}
+
+body.dark-mode .cmt-board-badge--head {
+  background: rgba(0, 152, 237, 0.18);
+  color: #62C6FF;
+  border-color: rgba(0, 152, 237, 0.4);
+}
+
+body.dark-mode .cmt-board-badge--vice_head {
+  background: rgba(36, 240, 255, 0.1);
+  color: #24F0FF;
+  border-color: rgba(36, 240, 255, 0.3);
+}
+
 .cmt-board-role {
-  display: block;
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: 0.95rem;
   color: #0098ED;
-  margin-bottom: 16px;
 }
 
 .cmt-board-bio {
