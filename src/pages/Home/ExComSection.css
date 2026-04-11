@@ -94,9 +94,9 @@
   transform: translateY(-6px);
 }
 
-/* ── THE PILL: 170px ── */
+/* ── THE PILL ── */
 .excom-heavy-pill {
-  height: 170px;
+  min-height: 170px;
   flex-grow: 1;
   display: flex;
   align-items: center;
@@ -141,14 +141,14 @@
 .pill-grow-right {
   border-radius: 0 100px 100px 0;
   background: linear-gradient(120deg, #5db8f5 0%, #82C7FF 60%, #a8daff 100%);
-  padding: 0 40px 0 130px;
+  padding: 22px 40px 22px 130px;
   transition: box-shadow 0.35s ease, transform 0.35s ease;
 }
 
 .pill-grow-left {
   border-radius: 100px 0 0 100px;
   background: linear-gradient(240deg, #003b6b 0%, #004577 60%, #005a96 100%);
-  padding: 0 130px 0 40px;
+  padding: 22px 130px 22px 40px;
   text-align: right;
   transition: box-shadow 0.35s ease, transform 0.35s ease;
 }
@@ -215,11 +215,11 @@
 
   .excom-person-frame { width: 180px; height: 210px; }
 
-  .pill-grow-right { padding: 0 28px 0 105px; }
-  .pill-grow-left  { padding: 0 105px 0 28px; }
+  .pill-grow-right { padding: 20px 28px 20px 105px; }
+  .pill-grow-left  { padding: 20px 105px 20px 28px; }
 
   .excom-heavy-pill {
-    height: 150px;
+    min-height: 150px;
     margin-left: -90px;
   }
 
@@ -231,6 +231,15 @@
   .excom-name-bold    { font-size: 1.3rem; }
   .excom-role-subtitle { font-size: 0.95rem; }
   .excom-social-strip  { gap: 14px; }
+
+  /* Bio hint: photo=180px, overlap=90px → pill text starts at 90px from each edge */
+  .excom-bio-hint--left  { padding-left: 90px; }
+  .excom-bio-hint--right { padding-right: 90px; padding-left: 0; text-align: right; }
+
+  /* Bio panel: widen to match pill-wrapper, realign indent */
+  .excom-bio-panel { width: 70%; }
+  .excom-bio-panel--left  { padding-left: 90px; }
+  .excom-bio-panel--right { padding-right: 90px; padding-left: 0; }
 }
 
 @media (max-width: 768px) {
@@ -238,14 +247,13 @@
   .excom-pill-wrapper { width: 100%; max-width: 420px; }
   .align-to-right .excom-pill-wrapper { flex-direction: row; }
   
-  .excom-heavy-pill { 
-    height: 125px; 
-    margin-left: -90px !important; 
+  .excom-heavy-pill {
+    min-height: 125px;
+    margin-left: -90px !important;
     margin-right: 0 !important;
     border-radius: 0 100px 100px 0 !important;
     /* PUSHES TEXT AWAY FROM EDGES */
-    padding-left: 105px !important;
-    padding-right: 40px !important; 
+    padding: 18px 40px 18px 105px !important;
     text-align: left !important;
   }
   
@@ -259,11 +267,9 @@
   .excom-pill-wrapper { max-width: 340px; }
   
   .excom-heavy-pill {
-    height: 105px;
+    min-height: 105px;
     margin-left: -75px !important;
-    /* TIGHTENS PADDING SO TEXT REMAINS CENTERED BUT SAFE */
-    padding-left: 85px !important;
-    padding-right: 30px !important;
+    padding: 16px 30px 16px 85px !important;
   }
   
   .excom-person-frame { width: 130px; height: 155px; }

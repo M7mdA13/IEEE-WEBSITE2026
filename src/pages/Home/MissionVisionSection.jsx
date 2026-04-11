@@ -53,8 +53,8 @@ const MissionVisionSection = () => {
     target: sectionRef,
     offset: ['start end', 'end start'],
   });
-  const missionX = useTransform(scrollYProgress, [0, 1], [-80, 80]);
-  const visionX  = useTransform(scrollYProgress, [0, 1], [80, -80]);
+  const missionX = useTransform(scrollYProgress, [0, 1], [-150, 0]);
+  const visionX  = useTransform(scrollYProgress, [0, 1], [150, 0]);
 
   return (
     <section className="mv-section" ref={sectionRef}>
