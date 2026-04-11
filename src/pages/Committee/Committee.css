@@ -249,9 +249,14 @@
 
 /* ── Activities ── */
 .cmt-activities-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 24px;
+}
+
+.cmt-activity-card {
+  flex: 0 0 calc(33.333% - 16px);
 }
 
 .cmt-activity-card {
@@ -608,28 +613,13 @@ body.dark-mode .cmt-board-badge--vice_head {
   }
 }
 
-/* ── Odd-card centering: Activities (3-col desktop) ── */
-@media (min-width: 1025px) {
-  /* 1 card alone in last row = total count is 1, 4, 7, … */
-  .cmt-activities-grid .cmt-activity-card:last-child:nth-child(3n + 1) {
-    grid-column: 2; /* centre column */
-  }
-}
-
-/* ── Odd-card centering: Activities (2-col tablet) ── */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .cmt-activities-grid .cmt-activity-card:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
-    max-width: calc(50% - 12px);
-    justify-self: center;
-  }
-}
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .hero-name { font-size: 2.2rem; }
   .hero-info-row { flex-direction: column; align-items: flex-start; gap: 20px; }
-  .cmt-goals-grid, .cmt-activities-grid, .cmt-members-grid { grid-template-columns: 1fr; }
+  .cmt-goals-grid, .cmt-members-grid { grid-template-columns: 1fr; }
+  .cmt-activities-grid .cmt-activity-card { flex: 0 0 100%; }
   .cmt-board-card { flex-direction: column-reverse; padding: 32px 24px; text-align: center; border-radius: 30px; }
   .cmt-board-info { align-items: center; display: flex; flex-direction: column;}
   .cmt-board-photo-wrap { width: 160px; height: 160px; }
@@ -637,7 +627,7 @@ body.dark-mode .cmt-board-badge--vice_head {
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .cmt-members-grid { grid-template-columns: repeat(2, 1fr); }
-  .cmt-activities-grid { grid-template-columns: repeat(2, 1fr); }
+  .cmt-activities-grid .cmt-activity-card { flex: 0 0 calc(50% - 12px); }
 }
 
 /* ── Dark Mode Overrides ── */

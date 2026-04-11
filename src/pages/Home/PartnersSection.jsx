@@ -24,7 +24,9 @@ const staticLogos = [
 // On real mobile devices touch events fire at DOM positions, not visual positions,
 // so tapping logo #5 visually hits logo #1 in the DOM. Fix: use a static scrollable
 // row on touch devices where hit-testing must be accurate.
-const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+const isTouchDevice = typeof window !== 'undefined' &&
+  ('ontouchstart' in window || navigator.maxTouchPoints > 0) &&
+  window.matchMedia('(pointer: coarse)').matches;
 
 const PartnersSection = () => {
   const [logos, setLogos] = useState(staticLogos);

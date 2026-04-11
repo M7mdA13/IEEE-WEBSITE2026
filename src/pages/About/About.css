@@ -384,6 +384,7 @@
 .website-tier-row {
   display: flex;
   justify-content: center;
+  align-items: stretch;
   gap: 16px;
   flex-wrap: wrap;
 }
@@ -446,6 +447,10 @@
   font-weight: 800;
   color: var(--ieee-text);
   margin: 0 0 3px;
+  min-height: 2.3em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: color 0.25s;
 }
 
