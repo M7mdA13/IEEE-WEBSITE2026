@@ -124,6 +124,20 @@
   overflow-x: hidden;
 }
 
+/* Scroll fade hint — shows content continues below */
+.about-panel::after {
+  content: '';
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  height: 32px;
+  background: linear-gradient(to top, rgba(8, 14, 28, 0.90), transparent);
+  pointer-events: none;
+  border-radius: 0 0 20px 20px;
+}
+
 .about-panel-accent {
   height: 3px;
   border-radius: 20px 20px 0 0;

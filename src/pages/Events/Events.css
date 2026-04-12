@@ -23,7 +23,7 @@
   align-items: center;
   text-align: center;
   color: var(--ieee-text);
-  font-size: 26px;
+  font-size: clamp(1.25rem, 3vw, 1.625rem);
   font-weight: 800;
   margin: 60px 0 40px;
   transition: color 0.25s ease;

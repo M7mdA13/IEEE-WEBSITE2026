@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import api from '../../api/public';
 import './PartnersSection.css';
@@ -32,6 +32,16 @@ const PartnersSection = () => {
   const [logos, setLogos] = useState(staticLogos);
   const [activeSrc, setActiveSrc] = useState(null);
   const [dataReady, setDataReady] = useState(false);
+  const scrollRef = useRef(null);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+
+  const checkScrollEdges = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setAtStart(el.scrollLeft <= 4);
+    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 4);
+  }, []);
 
   useEffect(() => {
     api.get('/partners')
@@ -45,6 +55,11 @@ const PartnersSection = () => {
       .catch(() => {})
       .finally(() => setDataReady(true));
   }, []);
+
+  // Check scroll edges once logos render
+  useEffect(() => {
+    if (dataReady) checkScrollEdges();
+  }, [dataReady, logos, checkScrollEdges]);
 
   const doubled = [...logos, ...logos];
 
@@ -73,17 +88,30 @@ const PartnersSection = () => {
         {isTouchDevice ? (
           /* Mobile: static scrollable row — DOM positions match visual positions */
           <>
-            <div className="partners-scroll-track">
-              {logos.map((src) => (
-                <div
-                  key={src}
-                  className={`partner-logo-slot ${activeSrc === src ? 'partner-logo-slot--active' : ''}`}
-                  onTouchStart={() => setActiveSrc(src)}
-                  onTouchEnd={() => setActiveSrc(null)}
-                >
-                  <img src={src} alt="partner logo" draggable={false} />
-                </div>
-              ))}
+            <div className="partners-scroll-wrapper">
+              <div
+                className={`partners-edge partners-edge--left ${atStart ? 'partners-edge--visible' : ''}`}
+              />
+              <div
+                className="partners-scroll-track"
+                ref={scrollRef}
+                onScroll={checkScrollEdges}
+                onLoad={checkScrollEdges}
+              >
+                {logos.map((src) => (
+                  <div
+                    key={src}
+                    className={`partner-logo-slot ${activeSrc === src ? 'partner-logo-slot--active' : ''}`}
+                    onTouchStart={() => setActiveSrc(src)}
+                    onTouchEnd={() => setActiveSrc(null)}
+                  >
+                    <img src={src} alt="partner logo" draggable={false} />
+                  </div>
+                ))}
+              </div>
+              <div
+                className={`partners-edge partners-edge--right ${atEnd ? 'partners-edge--visible' : ''}`}
+              />
             </div>
             <p className="partners-scroll-hint">
               <i className="fas fa-hand-point-left" /> swipe to see all partners

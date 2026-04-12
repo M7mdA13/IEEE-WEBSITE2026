@@ -51,7 +51,13 @@ const Membership = () => {
           style={{ objectFit: 'contain', minHeight: '120px' }}
         />
 
-        {!loading && (
+        {loading ? (
+          <div className="membership-skeleton">
+            <div className="skel-line skel-line--wide" />
+            <div className="skel-line skel-line--narrow" />
+            <div className="skel-line skel-line--medium" />
+          </div>
+        ) : (
           <>
             <motion.h2
               className="membership-status"

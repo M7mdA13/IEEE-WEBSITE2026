@@ -60,10 +60,11 @@
   flex-direction: row-reverse;
 }
 
-/* ── THE PERSON: 250px ── */
+/* ── THE PERSON ── */
 .excom-person-frame {
   width: 220px;
-  height: 250px;
+  min-height: 250px;
+  align-self: stretch;
   flex-shrink: 0;
   z-index: 10;
   display: flex;
@@ -82,8 +83,8 @@
 .excom-person-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  object-position: bottom;
+  object-fit: cover;
+  object-position: bottom center;
   background: transparent;
   transition: transform 0.4s ease;
   border-top-left-radius: 12px;
@@ -140,17 +141,25 @@
 
 .pill-grow-right {
   border-radius: 0 100px 100px 0;
-  background: linear-gradient(120deg, #5db8f5 0%, #82C7FF 60%, #a8daff 100%);
+  background: var(--excom-pill-right, linear-gradient(120deg, #5db8f5 0%, #82C7FF 60%, #a8daff 100%));
   padding: 22px 40px 22px 130px;
   transition: box-shadow 0.35s ease, transform 0.35s ease;
 }
 
 .pill-grow-left {
   border-radius: 100px 0 0 100px;
-  background: linear-gradient(240deg, #003b6b 0%, #004577 60%, #005a96 100%);
+  background: var(--excom-pill-left, linear-gradient(240deg, #003b6b 0%, #004577 60%, #005a96 100%));
   padding: 22px 130px 22px 40px;
   text-align: right;
   transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+body.dark-mode .pill-grow-right {
+  --excom-pill-right: linear-gradient(120deg, #1a6aaa 0%, #2080c4 60%, #2a90d4 100%);
+}
+
+body.dark-mode .pill-grow-left {
+  --excom-pill-left: linear-gradient(240deg, #001d35 0%, #002a4a 60%, #003560 100%);
 }
 
 .excom-pill-wrapper:hover .pill-grow-right {
@@ -205,87 +214,116 @@
 /* ═══════════════════════════════════
    RESPONSIVITY
 ═══════════════════════════════════ */
+
+/* ── Narrow desktop (769px – 1024px): scale down to prevent text overflow ── */
 @media (max-width: 1024px) {
   .excom-center-constraint { max-width: 90%; }
-}
 
-/* ── Tablet (769px – 960px): pill-wrapper too narrow at 50% ── */
-@media (max-width: 960px) and (min-width: 769px) {
-  .excom-pill-wrapper { width: 70%; }
+  .excom-pill-wrapper { width: 65%; }
 
-  .excom-person-frame { width: 180px; height: 210px; }
-
-  .pill-grow-right { padding: 20px 28px 20px 105px; }
-  .pill-grow-left  { padding: 20px 105px 20px 28px; }
+  .excom-person-frame { width: 190px; min-height: 220px; }
 
   .excom-heavy-pill {
     min-height: 150px;
-    margin-left: -90px;
+    margin-left: -95px;
   }
 
   .align-to-right .excom-heavy-pill {
     margin-left: 0;
-    margin-right: -90px;
+    margin-right: -95px;
   }
 
-  .excom-name-bold    { font-size: 1.3rem; }
+  .pill-grow-right { padding: 20px 32px 20px 110px; }
+  .pill-grow-left  { padding: 20px 110px 20px 32px; }
+
+  .excom-name-bold    { font-size: 1.35rem; }
   .excom-role-subtitle { font-size: 0.95rem; }
-  .excom-social-strip  { gap: 14px; }
+  .excom-social-strip  { gap: 16px; }
 
-  /* Bio hint: photo=180px, overlap=90px → pill text starts at 90px from each edge */
-  .excom-bio-hint--left  { padding-left: 90px; }
-  .excom-bio-hint--right { padding-right: 90px; padding-left: 0; text-align: right; }
+  .excom-bio-hint--left  { padding-left: 95px; }
+  .excom-bio-hint--right { padding-right: 95px; padding-left: 0; text-align: right; }
 
-  /* Bio panel: widen to match pill-wrapper, realign indent */
-  .excom-bio-panel { width: 70%; }
-  .excom-bio-panel--left  { padding-left: 90px; }
-  .excom-bio-panel--right { padding-right: 90px; padding-left: 0; }
+  .excom-bio-panel { width: 65%; }
+  .excom-bio-panel--left  { padding-left: 95px; }
+  .excom-bio-panel--right { padding-right: 95px; padding-left: 0; }
 }
 
+/* ── Tablet (481px – 768px): keep alternating, scale down further ── */
 @media (max-width: 768px) {
-  .excom-stagger-row { justify-content: center !important; }
-  .excom-pill-wrapper { width: 100%; max-width: 420px; }
-  .align-to-right .excom-pill-wrapper { flex-direction: row; }
-  
+  .excom-vertical-stack { gap: 70px; }
+
+  .excom-pill-wrapper { width: 80%; }
+
+  .excom-person-frame { width: 160px; min-height: 185px; }
+
   .excom-heavy-pill {
-    min-height: 125px;
-    margin-left: -90px !important;
-    margin-right: 0 !important;
-    border-radius: 0 100px 100px 0 !important;
-    /* PUSHES TEXT AWAY FROM EDGES */
-    padding: 18px 40px 18px 105px !important;
-    text-align: left !important;
+    min-height: 130px;
+    margin-left: -80px;
   }
-  
-  .excom-person-frame { width: 170px; height: 190px; }
-  .excom-name-bold { font-size: 1.3rem; }
-  .excom-info-content { align-items: flex-start !important; }
+
+  .align-to-right .excom-heavy-pill {
+    margin-left: 0;
+    margin-right: -80px;
+  }
+
+  .pill-grow-right { padding: 18px 28px 18px 95px; }
+  .pill-grow-left  { padding: 18px 95px 18px 28px; }
+
+  .excom-name-bold    { font-size: 1.2rem; }
+  .excom-role-subtitle { font-size: 0.88rem; }
+  .excom-social-strip  { gap: 14px; }
+  .excom-link-icon     { font-size: 1.15rem; }
+
+  .excom-bio-hint--left  { padding-left: 80px; }
+  .excom-bio-hint--right { padding-right: 80px; padding-left: 0; text-align: right; }
+
+  .excom-bio-panel { width: 80%; }
+  .excom-bio-panel--left  { padding-left: 80px; }
+  .excom-bio-panel--right { padding-right: 80px; padding-left: 0; }
 }
 
-/* SMALL MOBILE (480px and below) */
+/* ── Small mobile (480px and below) ── */
 @media (max-width: 480px) {
-  .excom-pill-wrapper { max-width: 340px; }
-  
+  .excom-full-section { padding: 80px 0; }
+  .excom-title-wrap { margin-bottom: 60px; }
+  .excom-vertical-stack { gap: 50px; }
+
+  .excom-pill-wrapper { width: 90%; }
+
+  .excom-person-frame { width: 120px; min-height: 145px; }
+
   .excom-heavy-pill {
     min-height: 105px;
-    margin-left: -75px !important;
-    padding: 16px 30px 16px 85px !important;
+    margin-left: -60px;
   }
-  
-  .excom-person-frame { width: 130px; height: 155px; }
-  
-  .excom-name-bold { 
-    font-size: 1.05rem; 
-    letter-spacing: -0.2px; /* Tighten for long names */
+
+  .align-to-right .excom-heavy-pill {
+    margin-left: 0;
+    margin-right: -60px;
   }
-  
-  .excom-role-subtitle { 
-    font-size: 0.8rem; 
+
+  .pill-grow-right { padding: 16px 22px 16px 70px; }
+  .pill-grow-left  { padding: 16px 70px 16px 22px; }
+
+  .excom-name-bold {
+    font-size: 1rem;
+    letter-spacing: -0.2px;
+  }
+
+  .excom-role-subtitle {
+    font-size: 0.78rem;
     margin-bottom: 8px;
   }
 
   .excom-social-strip { gap: 12px; }
-  .excom-link-icon { font-size: 1.1rem; }
+  .excom-link-icon { font-size: 1rem; }
+
+  .excom-bio-hint--left  { padding-left: 60px; }
+  .excom-bio-hint--right { padding-right: 60px; padding-left: 0; text-align: right; }
+
+  .excom-bio-panel { width: 90%; }
+  .excom-bio-panel--left  { padding-left: 60px; }
+  .excom-bio-panel--right { padding-right: 60px; padding-left: 0; }
 }
 
 /* ═══════════════════════════════════
@@ -326,10 +364,12 @@
 .excom-bio-hint--right { padding-right: 110px; text-align: right; }
 
 @media (max-width: 768px) {
-  .excom-bio-hint--left, .excom-bio-hint--right { padding-left: 80px; padding-right: 0; text-align: left; }
+  .excom-bio-hint--left  { padding-left: 80px; text-align: left; }
+  .excom-bio-hint--right { padding-right: 80px; padding-left: 0; text-align: right; }
 }
 @media (max-width: 480px) {
-  .excom-bio-hint--left, .excom-bio-hint--right { padding-left: 55px; }
+  .excom-bio-hint--left  { padding-left: 60px; }
+  .excom-bio-hint--right { padding-right: 60px; padding-left: 0; }
 }
 
 /* Bio panel — slides in below the pill row.
@@ -368,12 +408,13 @@
 }
 
 @media (max-width: 768px) {
-  /* Photo 170px, pill overlap 90px → pill starts at 80px */
-  .excom-bio-panel { width: 100%; padding-left: 80px !important; padding-right: 0 !important; }
-  .excom-bio-panel--right .excom-bio-text { border-right: none; border-left: 3px solid var(--ieee-accent); text-align: left; }
+  .excom-bio-panel { width: 80% !important; }
+  .excom-bio-panel--left  { padding-left: 80px !important; padding-right: 0 !important; }
+  .excom-bio-panel--right { padding-right: 80px !important; padding-left: 0 !important; }
 }
 
 @media (max-width: 480px) {
-  /* Photo 130px, pill overlap 75px → pill starts at 55px */
-  .excom-bio-panel { padding-left: 55px !important; }
+  .excom-bio-panel { width: 90% !important; }
+  .excom-bio-panel--left  { padding-left: 60px !important; }
+  .excom-bio-panel--right { padding-right: 60px !important; }
 }
