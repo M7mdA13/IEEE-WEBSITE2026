@@ -43,10 +43,37 @@
 }
 
 .stay-tuned {
-  font-size: 3.5rem;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
   font-weight: 800;
   color: var(--ieee-accent);
   margin: 1.5rem 0;
+}
+
+/* ── Skeleton loader ── */
+.membership-skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.skel-line {
+  height: 20px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--ieee-bg-elevated) 25%, var(--ieee-bg-card) 50%, var(--ieee-bg-elevated) 75%);
+  background-size: 200% 100%;
+  animation: skel-shimmer 1.5s ease-in-out infinite;
+}
+
+.skel-line--wide   { width: 80%; height: 28px; }
+.skel-line--narrow { width: 50%; }
+.skel-line--medium { width: 65%; height: 40px; border-radius: 20px; }
+
+@keyframes skel-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .notify-form-wrapper {
@@ -132,9 +159,7 @@
     font-size: 1rem;
   }
 
-  .stay-tuned {
-    font-size: 2.8rem;
-  }
+  /* stay-tuned uses clamp() — no override needed */
 
   .notify-form {
     flex-direction: column;

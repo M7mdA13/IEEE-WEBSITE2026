@@ -81,9 +81,18 @@
 .chat-log::-webkit-scrollbar {
   width: 6px;
 }
+.chat-log::-webkit-scrollbar-track {
+  background: transparent;
+}
 .chat-log::-webkit-scrollbar-thumb {
-  background: var(--ieee-border-strong);
+  background: var(--ieee-text-muted);
   border-radius: 4px;
+}
+.chat-log::-webkit-scrollbar-thumb:hover {
+  background: var(--ieee-text-soft);
+}
+.chat-log {
+  scrollbar-color: var(--ieee-text-muted) transparent;
 }
 
 /* Chat bubble flex wrapper */

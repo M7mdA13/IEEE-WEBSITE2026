@@ -37,13 +37,19 @@ const Navbar = ({ isDark, toggleTheme }) => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) =>
+    path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
 
   return (
     <nav className={`main-head ${isScrolled ? 'slidedown' : ''}`}>
       <div className="nav-island">
         <div className="logo">
-          <Link to="/">
+          <Link to="/" onClick={(e) => {
+            if (location.pathname === '/') {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}>
             <img className="logo-img" src="/images/IEEE-MUST.png" alt="IEEE MUST Student Branch" />
           </Link>
         </div>

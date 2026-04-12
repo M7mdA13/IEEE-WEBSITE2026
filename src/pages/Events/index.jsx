@@ -30,6 +30,20 @@ const listVariants = {
   exit:   (d) => ({ opacity: 0, x: d * -56, transition: { duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] } }),
 };
 
+const SkeletonEventCard = () => (
+  <div className="event-card-skel">
+    <span className="skeleton-block event-skel-image" />
+    <div className="event-skel-body">
+      <span className="skeleton-block" style={{ height: '13px', width: '40%', marginBottom: '18px' }} />
+      <span className="skeleton-block" style={{ height: '18px', width: '70%', marginBottom: '10px' }} />
+      <span className="skeleton-block" style={{ height: '12px', marginBottom: '6px' }} />
+      <span className="skeleton-block" style={{ height: '12px', width: '80%', marginBottom: '6px' }} />
+      <span className="skeleton-block" style={{ height: '12px', width: '60%', marginBottom: '24px' }} />
+      <span className="skeleton-block" style={{ height: '12px', width: '45%' }} />
+    </div>
+  </div>
+);
+
 const EventCard = ({ event, index }) => {
   const cardRef = useRef(null);
 
@@ -138,7 +152,6 @@ const Events = () => {
       className="events-page-container"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.35s ease' }}
     >
       <div className="events-page">
 
@@ -146,17 +159,21 @@ const Events = () => {
         <div className="events-desktop">
           <h2 className="section-title"><span>Upcoming Events</span></h2>
           <div className="events-list">
-            {upcoming.length > 0
-              ? upcoming.map((event, i) => <EventCard key={event._id} event={event} index={i} />)
-              : <p style={{ opacity: 0.5, padding: '20px 0' }}>No upcoming events right now. Check back soon!</p>
+            {!dataReady
+              ? [1, 2].map(i => <SkeletonEventCard key={i} />)
+              : upcoming.length > 0
+                ? upcoming.map((event, i) => <EventCard key={event._id} event={event} index={i} />)
+                : <p style={{ opacity: 0.5, padding: '20px 0' }}>No upcoming events right now. Check back soon!</p>
             }
           </div>
 
           <h2 className="section-title"><span>Past Events</span></h2>
           <div className="events-list">
-            {past.length > 0
-              ? past.map((event, i) => <EventCard key={event._id} event={event} index={i} />)
-              : <p style={{ opacity: 0.5, padding: '20px 0' }}>No past events yet.</p>
+            {!dataReady
+              ? [1, 2].map(i => <SkeletonEventCard key={i} />)
+              : past.length > 0
+                ? past.map((event, i) => <EventCard key={event._id} event={event} index={i} />)
+                : <p style={{ opacity: 0.5, padding: '20px 0' }}>No past events yet.</p>
             }
           </div>
         </div>
@@ -185,27 +202,33 @@ const Events = () => {
           </div>
 
           <div className="events-mobile-panel">
-          <AnimatePresence mode="wait" custom={dirRef.current}>
-            <motion.div
-              key={mobileTab}
-              className="events-list"
-              custom={dirRef.current}
-              variants={listVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-            >
-              {mobileTab === 'upcoming' ? (
-                upcoming.length > 0
-                  ? upcoming.map((event, i) => <EventCard key={event._id} event={event} index={i} />)
-                  : <p style={{ opacity: 0.5, padding: '20px 0' }}>No upcoming events right now. Check back soon!</p>
-              ) : (
-                past.length > 0
-                  ? past.map((event, i) => <EventCard key={event._id} event={event} index={i} />)
-                  : <p style={{ opacity: 0.5, padding: '20px 0' }}>No past events yet.</p>
-              )}
-            </motion.div>
-          </AnimatePresence>
+            {!dataReady ? (
+              <div className="events-list">
+                {[1, 2].map(i => <SkeletonEventCard key={i} />)}
+              </div>
+            ) : (
+              <AnimatePresence mode="wait" custom={dirRef.current}>
+                <motion.div
+                  key={mobileTab}
+                  className="events-list"
+                  custom={dirRef.current}
+                  variants={listVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                >
+                  {mobileTab === 'upcoming' ? (
+                    upcoming.length > 0
+                      ? upcoming.map((event, i) => <EventCard key={event._id} event={event} index={i} />)
+                      : <p style={{ opacity: 0.5, padding: '20px 0' }}>No upcoming events right now. Check back soon!</p>
+                  ) : (
+                    past.length > 0
+                      ? past.map((event, i) => <EventCard key={event._id} event={event} index={i} />)
+                      : <p style={{ opacity: 0.5, padding: '20px 0' }}>No past events yet.</p>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            )}
           </div>
 
           <p className="events-swipe-hint">Swipe to switch</p>

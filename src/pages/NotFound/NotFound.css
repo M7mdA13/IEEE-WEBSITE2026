@@ -1,0 +1,85 @@
+.nf-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--ieee-bg);
+  padding: 120px 24px 80px;
+  text-align: center;
+  transition: background-color 0.35s ease;
+}
+
+.nf-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 480px;
+}
+
+/* Giant 404 number */
+.nf-code {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 900;
+  font-size: clamp(6rem, 20vw, 10rem);
+  line-height: 1;
+  color: #054377;
+  letter-spacing: -0.04em;
+  user-select: none;
+}
+
+body.dark-mode .nf-code {
+  color: #42A5F5;
+}
+
+/* Middle zero gets the accent colour */
+.nf-code span {
+  color: #0096ED;
+}
+
+body.dark-mode .nf-code span {
+  color: #24F0FF;
+}
+
+.nf-heading {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  color: var(--ieee-text);
+  margin: 0;
+  letter-spacing: -0.01em;
+  transition: color 0.25s;
+}
+
+.nf-body {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--ieee-text-soft);
+  line-height: 1.6;
+  margin: 0;
+  transition: color 0.25s;
+}
+
+.nf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #62C6FF 0%, #0096ED 20%, #0096ED 80%, #62C6FF 100%);
+  color: #ffffff;
+  font-family: 'Krona One', sans-serif;
+  font-weight: 400;
+  font-size: 0.9rem;
+  text-decoration: none;
+  padding: 12px 28px;
+  border-radius: 70px;
+  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 150, 237, 0.25);
+  margin-top: 8px;
+}
+
+.nf-btn:hover {
+  background: linear-gradient(135deg, #1976D2 0%, #054377 50%, #1976D2 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 84, 119, 0.3);
+}

@@ -51,7 +51,13 @@ const Membership = () => {
           style={{ objectFit: 'contain', minHeight: '120px' }}
         />
 
-        {!loading && (
+        {loading ? (
+          <div className="membership-skeleton">
+            <div className="skel-line skel-line--wide" />
+            <div className="skel-line skel-line--narrow" />
+            <div className="skel-line skel-line--medium" />
+          </div>
+        ) : (
           <>
             <motion.h2
               className="membership-status"
@@ -70,7 +76,7 @@ const Membership = () => {
             >
               {status.message || (status.isOpen
                 ? 'Apply now and join our community!'
-                : "We're not accepting new members right now.\nRecruitment happens online and on campus, and we announce everything on our social media."
+                : "We're not accepting new members right now. Recruitment happens online and on campus — we announce everything on our social media."
               )}
             </motion.p>
 

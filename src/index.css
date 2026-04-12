@@ -730,9 +730,9 @@ body.dark-mode .logo-img {
     bottom: 0;
     width: 100%;
     height: calc(100vh - 64px);
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px) saturate(1.8);
-    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(24px) saturate(1.8);
+    -webkit-backdrop-filter: blur(24px) saturate(1.8);
     padding: 2rem 0;
     margin: 0;
     flex-direction: column;
@@ -810,9 +810,9 @@ body.dark-mode .logo-img {
   }
 
   body.dark-mode .nav-container {
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(20px) saturate(1.8);
-    -webkit-backdrop-filter: blur(20px) saturate(1.8);
+    background: rgba(8, 12, 24, 0.92);
+    backdrop-filter: blur(24px) saturate(1.8);
+    -webkit-backdrop-filter: blur(24px) saturate(1.8);
   }
 
   body.dark-mode .nav-links a,
@@ -1942,4 +1942,23 @@ body.dark-mode .ask-ai-fab::after {
   .ask-ai-fab::after {
     display: none;
   }
+}
+
+/* ── Skeleton loading ── */
+@keyframes skeleton-shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+.skeleton-block {
+  background: linear-gradient(
+    90deg,
+    var(--ieee-bg-elevated) 25%,
+    var(--ieee-bg-alt)      50%,
+    var(--ieee-bg-elevated) 75%
+  );
+  background-size: 1200px 100%;
+  animation: skeleton-shimmer 1.5s infinite ease-in-out;
+  border-radius: 8px;
+  display: block;
 }
