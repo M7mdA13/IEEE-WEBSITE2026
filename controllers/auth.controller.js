@@ -120,10 +120,11 @@ exports.updateMe = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    const { name, email, currentPassword, newPassword } = req.body;
+    const { name, email, avatar, currentPassword, newPassword } = req.body;
 
     if (name) user.name = name.trim();
     if (email) user.email = email.toLowerCase().trim();
+    if (avatar !== undefined) user.avatar = avatar; // empty string allowed (= remove)
 
     if (newPassword) {
       if (!currentPassword) {
