@@ -6,11 +6,12 @@ const settingsTabs = [
   { id: 'security-settings', label: 'Security' }
 ]
 
+const DEFAULT_AVATAR = "https://randomuser.me/api/portraits/men/1.jpg"
+
 function SettingsSection() {
   const [activeTab, setActiveTab] = useState('profile-settings')
-  const [profileImage, setProfileImage] = useState(() => {
-    return localStorage.getItem('profileImage') || "https://randomuser.me/api/portraits/men/1.jpg"
-  })
+  const [profileImage, setProfileImage] = useState(DEFAULT_AVATAR)
+  const [avatarSaving, setAvatarSaving] = useState(false)
   const fileInputRef = useRef(null)
 
   // Profile state
@@ -29,10 +30,16 @@ function SettingsSection() {
     api.get('/admin/auth/me')
       .then(({ data }) => {
         setProfileForm({ name: data.user.name, email: data.user.email })
+        setProfileImage(data.user.avatar || DEFAULT_AVATAR)
+        // Sync localStorage user so navbar reflects backend truth
+        const stored = JSON.parse(localStorage.getItem('user') || '{}')
+        localStorage.setItem('user', JSON.stringify({ ...stored, ...data.user }))
+        window.dispatchEvent(new Event('storage'))
       })
       .catch(() => {
         const stored = JSON.parse(localStorage.getItem('user') || '{}')
         setProfileForm({ name: stored.name || '', email: stored.email || '' })
+        setProfileImage(stored.avatar || DEFAULT_AVATAR)
       })
       .finally(() => setProfileLoading(false))
   }, [])
@@ -41,16 +48,30 @@ function SettingsSection() {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        const base64 = reader.result
-        setProfileImage(base64)
-        localStorage.setItem('profileImage', base64)
-        window.dispatchEvent(new CustomEvent('profileImageUpdate', { detail: base64 }))
+    if (!file) return
+    const reader = new FileReader()
+    reader.onloadend = async () => {
+      const base64 = reader.result
+      setProfileImage(base64) // optimistic
+      setAvatarSaving(true)
+      setProfileMsg({ text: '', isError: false })
+      try {
+        const { data } = await api.patch('/admin/auth/me', { avatar: base64 })
+        const stored = JSON.parse(localStorage.getItem('user') || '{}')
+        localStorage.setItem('user', JSON.stringify({ ...stored, ...data.user }))
+        window.dispatchEvent(new Event('storage'))
+        setProfileMsg({ text: 'Photo updated successfully.', isError: false })
+      } catch (err) {
+        // Rollback
+        const stored = JSON.parse(localStorage.getItem('user') || '{}')
+        setProfileImage(stored.avatar || DEFAULT_AVATAR)
+        setProfileMsg({ text: err.response?.data?.message || 'Failed to upload photo.', isError: true })
+      } finally {
+        setAvatarSaving(false)
+        if (fileInputRef.current) fileInputRef.current.value = ''
       }
-      reader.readAsDataURL(file)
     }
+    reader.readAsDataURL(file)
   }
 
   const handleProfileChange = (e) => {
@@ -144,8 +165,8 @@ function SettingsSection() {
               <form className="settings-form" onSubmit={handleProfileSubmit}>
                 <div className="profile-upload">
                   <img src={profileImage} alt="Profile" />
-                  <button type="button" className="upload-btn" onClick={handleImageUpload}>
-                    Upload New Photo
+                  <button type="button" className="upload-btn" onClick={handleImageUpload} disabled={avatarSaving}>
+                    {avatarSaving ? 'Uploading...' : 'Upload New Photo'}
                   </button>
                   <input type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" style={{ display: 'none' }} />
                 </div>
