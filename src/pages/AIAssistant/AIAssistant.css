@@ -134,6 +134,27 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
 
+/* ── Typewriter cursor ── */
+.typing-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: var(--ieee-accent);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: cursor-blink 0.6s steps(2) infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.chat-bubble.typing-active {
+  /* subtle left border accent while typing */
+  border-left: 2px solid var(--ieee-accent);
+}
+
 /* Typing Indicator Dots */
 .chat-bubble.typing {
   display: flex;
