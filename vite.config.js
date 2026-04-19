@@ -6,14 +6,13 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Core React — tiny, cached forever
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          // Animation — used on every page but large
-          'vendor-motion': ['framer-motion'],
-          // 3D / animation libs — only needed on About page
-          'vendor-three': ['three'],
-          'vendor-gsap':  ['gsap'],
+        manualChunks: (id) => {
+          if (id.includes('node_modules/three'))          return 'vendor-three';
+          if (id.includes('node_modules/gsap'))           return 'vendor-gsap';
+          if (id.includes('node_modules/framer-motion'))  return 'vendor-motion';
+          if (id.includes('node_modules/react-dom'))      return 'vendor-react';
+          if (id.includes('node_modules/react-router'))   return 'vendor-react';
+          if (id.includes('node_modules/react/'))         return 'vendor-react';
         },
       },
     },
