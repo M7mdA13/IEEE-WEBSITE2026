@@ -272,7 +272,7 @@ const PhotoCatalogueSection = () => {
                   style={{ width: slideWidthPx ? `${slideWidthPx}px` : `${100 / perView}%` }}
                   onClick={() => isActive ? openLightbox(origIdx) : navigate(i > internalIdx ? 1 : -1)}
                 >
-                  <img src={cloudinaryUrl(photo.src, 800)} alt={photo.alt} className="cat-slide-img" draggable={false} />
+                  <img src={cloudinaryUrl(photo.src, 800)} alt={photo.alt} className="cat-slide-img" draggable={false} loading={Math.abs(i - internalIdx) <= 2 ? 'eager' : 'lazy'} />
                   {!isActive && <div className="cat-slide-dim" />}
                 </div>
               );
