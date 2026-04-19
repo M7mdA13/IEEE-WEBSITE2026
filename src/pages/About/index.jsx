@@ -30,12 +30,13 @@ const PLANET_CONTENT = {
 
 /* ── Timeline milestones ─────────────────────────────────────── */
 const TIMELINE = [
-  { year: '2012', title: 'Branch Founded',      desc: 'IEEE MUST Student Branch established at Misr University for Science and Technology with a small group of passionate students.' },
-  { year: '2015', title: 'First Hackathon',      desc: 'Hosted our first 24-hour hackathon, attracting over 80 student participants from across the university.' },
-  { year: '2017', title: 'Eight Committees',     desc: 'Expanded into 8 specialized technical and non-technical committees, covering everything from AI to media.' },
-  { year: '2019', title: '200+ Members',         desc: 'Crossed 200 active members and launched the mentorship program connecting students with industry professionals.' },
-  { year: '2022', title: 'National Recognition', desc: 'Recognized among Egypt\'s most active IEEE branches for event volume, quality, and community impact.' },
-  { year: '2024', title: 'New Website',          desc: 'Launched a fully redesigned website, built entirely by our in-house engineering and design team.' },
+  { year: '2012', icon: 'fa-flag',        color: '#0096ED', title: 'Branch Founded',          desc: 'IEEE MUST Student Branch established at Misr University for Science and Technology with a small group of passionate students.' },
+  { year: '2015', icon: 'fa-bolt',        color: '#f97316', title: 'First Hackathon',         desc: 'Hosted our first 24-hour hackathon, attracting over 80 student participants from across the university.' },
+  { year: '2017', icon: 'fa-layer-group', color: '#8b5cf6', title: 'Eight Committees',        desc: 'Expanded into 8 specialized technical and non-technical committees, covering everything from AI to media.' },
+  { year: '2019', icon: 'fa-users',       color: '#22c55e', title: '200+ Members',            desc: 'Crossed 200 active members and launched the mentorship program connecting students with industry professionals.' },
+  { year: '2022', icon: 'fa-award',       color: '#06b6d4', title: 'National Recognition',    desc: 'Recognized among Egypt\'s most active IEEE branches for event volume, quality, and community impact.' },
+  { year: '2024', icon: 'fa-code',        color: '#3b82f6', title: 'New Website',             desc: 'Launched a fully redesigned website, built entirely by our in-house engineering and design team.' },
+  { year: '2025', icon: 'fa-star',        color: '#ffc107', title: 'Exemplary Branch Award',  desc: 'IEEE MUST Student Branch received the prestigious 2025 IEEE Exemplary Student Branch award — the highest recognition for outstanding technical excellence, community engagement, and impact.' },
 ];
 
 /* ── Website Team (pyramid tiers) ───────────────────────────── */
@@ -187,12 +188,23 @@ const About = () => {
                 viewport={{ once: true, margin: '-40px' }}
                 transition={{ duration: 0.5, delay: 0.05, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
-                <div className="about-timeline-card">
-                  <span className="about-timeline-year">{item.year}</span>
+                <div
+                  className="about-timeline-card"
+                  style={{ '--card-accent': item.color }}
+                >
+                  <div className="about-timeline-card-top">
+                    <div className="about-timeline-icon">
+                      <i className={`fas ${item.icon}`} />
+                    </div>
+                    <span className="about-timeline-year">{item.year}</span>
+                  </div>
                   <h4 className="about-timeline-title">{item.title}</h4>
                   <p className="about-timeline-desc">{item.desc}</p>
                 </div>
-                <div className="about-timeline-dot" />
+                <div
+                  className="about-timeline-dot"
+                  style={{ '--card-accent': item.color }}
+                />
               </motion.div>
             ))}
           </div>

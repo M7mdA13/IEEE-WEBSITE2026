@@ -56,6 +56,16 @@ const MissionVisionSection = () => {
   const missionX = useTransform(scrollYProgress, [0, 1], [-150, 0]);
   const visionX  = useTransform(scrollYProgress, [0, 1], [150, 0]);
 
+  /* Disable x-parallax on mobile — stacked layout has no horizontal drift */
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 650px)');
+    setIsMobile(mq.matches);
+    const handler = (e) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
   return (
     <section className="mv-section" ref={sectionRef}>
       <motion.div
@@ -81,6 +91,36 @@ const MissionVisionSection = () => {
             </React.Fragment>
           ))}
         </div>
+
+        <div className="mv-award-banner">
+          <span className="mv-award-trophy" aria-label="trophy">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              {/* Cup body */}
+              <path d="M8 4h16v12a8 8 0 0 1-16 0V4Z" fill="url(#trophyGold)" stroke="#b8860b" strokeWidth="1"/>
+              {/* Handles */}
+              <path d="M8 7H5a3 3 0 0 0 0 6h3" stroke="#b8860b" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+              <path d="M24 7h3a3 3 0 0 1 0 6h-3" stroke="#b8860b" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+              {/* Stem */}
+              <rect x="13" y="20" width="6" height="5" rx="1" fill="url(#trophyGold)" stroke="#b8860b" strokeWidth="1"/>
+              {/* Base */}
+              <rect x="10" y="25" width="12" height="3" rx="1.5" fill="url(#trophyGold)" stroke="#b8860b" strokeWidth="1"/>
+              {/* Star accent */}
+              <path d="M16 8l1.1 2.2 2.4.35-1.75 1.7.41 2.42L16 13.5l-2.16 1.17.41-2.42L12.5 10.55l2.4-.35L16 8Z" fill="#fff8" stroke="none"/>
+              <defs>
+                <linearGradient id="trophyGold" x1="8" y1="4" x2="24" y2="28" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stopColor="#ffd700"/>
+                  <stop offset="50%" stopColor="#ffc107"/>
+                  <stop offset="100%" stopColor="#e6a000"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </span>
+          <div className="mv-award-text">
+            <span className="mv-award-title">2025 IEEE Exemplary Branch Award</span>
+            <span className="mv-award-sub">Recognized among Egypt's finest IEEE student branches</span>
+          </div>
+          <span className="mv-award-shine" aria-hidden="true" />
+        </div>
       </motion.div>
 
       <div className="mv-wrapper">
@@ -88,7 +128,7 @@ const MissionVisionSection = () => {
         {/* ── Mission ── */}
         <motion.div
           className="mv-tri mv-tri--mission"
-          style={{ x: missionX }}
+          style={{ x: isMobile ? 0 : missionX }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-60px' }}
@@ -102,20 +142,19 @@ const MissionVisionSection = () => {
             <h2 className="mv-tri__heading mv-tri__heading--light">Our Mission</h2>
             {/* Desktop body — hidden on mobile via CSS */}
             <p className="mv-tri__body mv-tri__body--light mv-tri__body--desktop">
-              We exist to advance technology for the benefit of humanity. That means giving students access to real knowledge, real networks, and real opportunities — through technical workshops, mentorship programs, and a culture of continuous learning across every discipline.
+              To foster a supportive, connected community that bridges the gap between students and industry through hands-on workshops, meaningful events, and real opportunities that empower every member to grow, belong, and lead.
             </p>
-            {/* Mobile body — hardcoded to flow with triangle edges */}
+            {/* Mobile body — flows with downward-pointing triangle (wide top, narrow bottom) */}
             <p className="mv-tri__body mv-tri__body--light mv-tri__body--mobile">
-              We exist to advance technology for<br/>
-              the benefit of humanity. That means<br/>
-              giving students access to real<br/>
-              knowledge, real networks, and<br/>
-              real opportunities — through<br/>
-              technical workshops,<br/>
-              mentorship programs,<br/>
-              and a culture of<br/>
-              continuous<br/>
-              learning.
+              To foster a supportive, connected community<br/>
+              that bridges the gap between students<br/>
+              and industry through hands-on<br/>
+              workshops, meaningful events,<br/>
+              and real opportunities<br/>
+              that empower every<br/>
+              member to grow,<br/>
+              belong, and<br/>
+              lead.
             </p>
           </div>
 
@@ -125,7 +164,7 @@ const MissionVisionSection = () => {
         {/* ── Vision ── */}
         <motion.div
           className="mv-tri mv-tri--vision"
-          style={{ x: visionX }}
+          style={{ x: isMobile ? 0 : visionX }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-60px' }}
@@ -141,18 +180,17 @@ const MissionVisionSection = () => {
             <h2 className="mv-tri__heading mv-tri__heading--dark">Our Vision</h2>
             {/* Desktop body — hidden on mobile via CSS */}
             <p className="mv-tri__body mv-tri__body--dark mv-tri__body--desktop">
-              To be the premier community for students to develop their technical skills, leadership abilities, and professional networks, empowering them to innovate and shape the future of technology for a better tomorrow.
+              A thriving, connected IEEE community where members feel valued, inspired to innovate, and empowered to lead the future of technology.
             </p>
-            {/* Mobile body — hardcoded to flow with triangle edges */}
+            {/* Mobile body — flows with upward-pointing triangle (narrow top, wide bottom) */}
             <p className="mv-tri__body mv-tri__body--dark mv-tri__body--mobile">
-              To be the<br/>
-              premier community<br/>
-              for students to develop<br/>
-              their technical skills,<br/>
-              leadership abilities, and<br/>
-              professional networks, empowering<br/>
-              them to innovate and shape the<br/>
-              future of technology for a better tomorrow.
+              A<br/>
+              thriving,<br/>
+              connected IEEE<br/>
+              community where members<br/>
+              feel valued, inspired to innovate,<br/>
+              and empowered to lead the future<br/>
+              of technology.
             </p>
           </div>
         </motion.div>

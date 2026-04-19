@@ -43,11 +43,6 @@ const cardVariants = {
   }),
 };
 
-const listVariants = {
-  enter:  (d) => ({ opacity: 0, x: d * 56 }),
-  center: { opacity: 1, x: 0,   transition: { duration: 0.32, ease: [0.25, 0.46, 0.45, 0.94] } },
-  exit:   (d) => ({ opacity: 0, x: d * -56, transition: { duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] } }),
-};
 
 const SkeletonEventCard = () => (
   <div className="event-card-skel">
@@ -104,12 +99,12 @@ const FeaturedEventCard = ({ event }) => {
         <p className="featured-event-desc">{event.description}</p>
         <div className="featured-event-meta">
           <span className="meta-item">
-            <CalendarIcon />
+            <CalendarIcon width="14" height="14" />
             {formatDate(event.date)}
           </span>
           {event.location && (
             <span className="meta-item">
-              <LocationIcon />
+              <LocationIcon width="14" height="14" />
               {event.location}
             </span>
           )}
@@ -144,6 +139,7 @@ const EventCard = ({ event, index }) => {
     cardRef.current.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
   };
 
+  const [expanded, setExpanded] = useState(false);
   const isUpcoming = event.status === 'upcoming' || event.status === 'planning';
   const isPast = event.status === 'completed';
   const badge = statusConfig[event.status];
@@ -166,23 +162,29 @@ const EventCard = ({ event, index }) => {
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         } : {}}
-      >
+      />
+      <div className="event-card-content">
         {badge && (
           <span className={`event-badge event-badge-card ${badge.className}`}>{badge.label}</span>
         )}
-      </div>
-      <div className="event-card-content">
         <h3 className="event-card-title">{event.title}</h3>
-        <p className="event-card-desc">{event.description}</p>
+        <p className={`event-card-desc ${expanded ? 'event-card-desc--expanded' : ''}`}>
+          {event.description}
+        </p>
+        {event.description?.length > 120 && (
+          <button className="event-read-more" onClick={() => setExpanded(e => !e)}>
+            {expanded ? 'Read less ↑' : 'Read more ↓'}
+          </button>
+        )}
         <div className="event-card-bottom">
           <div className="event-card-meta">
             <span className="meta-item">
-              <CalendarIcon />
+              <CalendarIcon width="14" height="14" />
               {formatDate(event.date)}
             </span>
             {event.location && (
               <span className="meta-item">
-                <LocationIcon />
+                <LocationIcon width="14" height="14" />
                 {event.location}
               </span>
             )}
@@ -254,15 +256,6 @@ const Events = () => {
     setMobileTab(tab);
   }, [mobileTab]);
 
-  const touchStartX = useRef(null);
-  const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
-  const handleTouchEnd = (e) => {
-    if (touchStartX.current === null) return;
-    const dx = e.changedTouches[0].clientX - touchStartX.current;
-    if (Math.abs(dx) < 40) return;
-    switchTab(dx < 0 ? 'past' : 'upcoming');
-    touchStartX.current = null;
-  };
 
   useEffect(() => {
     api.get('/events')
@@ -279,11 +272,7 @@ const Events = () => {
   const restUpcoming = upcoming.slice(1);
 
   return (
-    <div
-      className="events-page-container"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
+    <div className="events-page-container">
       {/* ── Hero Header ── */}
       <motion.div
         className="events-hero"
@@ -329,7 +318,6 @@ const Events = () => {
 
         {/* ── Desktop layout ── */}
         <div className="events-desktop">
-          {/* Featured upcoming event */}
           {!dataReady ? (
             <div className="events-list"><SkeletonEventCard /><SkeletonEventCard /></div>
           ) : (
@@ -373,25 +361,35 @@ const Events = () => {
 
         {/* ── Mobile layout: tab switcher ── */}
         <div className="events-mobile">
-          <div className="events-mobile-tabs">
-            <button
-              className={`events-mobile-tab ${mobileTab === 'upcoming' ? 'active' : ''}`}
-              onClick={() => switchTab('upcoming')}
-            >
-              Upcoming
-              {upcoming.length > 0 && (
-                <span className="events-tab-badge">{upcoming.length}</span>
-              )}
-            </button>
-            <button
-              className={`events-mobile-tab ${mobileTab === 'past' ? 'active' : ''}`}
-              onClick={() => switchTab('past')}
-            >
-              Past
-              {past.length > 0 && (
-                <span className="events-tab-badge">{past.length}</span>
-              )}
-            </button>
+          <div className="events-toggle-wrap">
+            <div className="events-toggle-pill">
+              <button className="events-tab-btn" onClick={() => switchTab('upcoming')}>
+                {mobileTab === 'upcoming' && (
+                  <motion.span
+                    layoutId="events-tab-indicator"
+                    className="events-tab-indicator"
+                    transition={{ type: 'spring', stiffness: 420, damping: 36 }}
+                  />
+                )}
+                <span className="events-tab-label">
+                  Upcoming
+                  {upcoming.length > 0 && <span className="events-tab-count">{upcoming.length}</span>}
+                </span>
+              </button>
+              <button className="events-tab-btn" onClick={() => switchTab('past')}>
+                {mobileTab === 'past' && (
+                  <motion.span
+                    layoutId="events-tab-indicator"
+                    className="events-tab-indicator"
+                    transition={{ type: 'spring', stiffness: 420, damping: 36 }}
+                  />
+                )}
+                <span className="events-tab-label">
+                  Past
+                  {past.length > 0 && <span className="events-tab-count">{past.length}</span>}
+                </span>
+              </button>
+            </div>
           </div>
 
           <div className="events-mobile-panel">
@@ -405,10 +403,9 @@ const Events = () => {
                   key={mobileTab}
                   className="events-list"
                   custom={dirRef.current}
-                  variants={listVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
+                  initial={(d) => ({ opacity: 0, x: d * 56 })}
+                  animate={{ opacity: 1, x: 0, transition: { duration: 0.32, ease: [0.25, 0.46, 0.45, 0.94] } }}
+                  exit={(d) => ({ opacity: 0, x: d * -56, transition: { duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] } })}
                 >
                   {mobileTab === 'upcoming' ? (
                     upcoming.length > 0
@@ -424,7 +421,6 @@ const Events = () => {
             )}
           </div>
 
-          <p className="events-swipe-hint">Swipe to switch</p>
         </div>
 
       </div>
