@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
-import { loadFull } from 'tsparticles';
+import { loadSlim } from '@tsparticles/slim';
 
 const SparklesHero = ({ isDark }) => {
   const sectionRef = useRef(null);
@@ -15,9 +15,18 @@ const SparklesHero = ({ isDark }) => {
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadFull(engine);
-    }).then(() => setInit(true));
+    const run = () =>
+      initParticlesEngine(async (engine) => {
+        await loadSlim(engine);
+      }).then(() => setInit(true));
+
+    if ('requestIdleCallback' in window) {
+      const id = requestIdleCallback(run, { timeout: 2000 });
+      return () => cancelIdleCallback(id);
+    } else {
+      const t = setTimeout(run, 200);
+      return () => clearTimeout(t);
+    }
   }, []);
 
   useEffect(() => {
