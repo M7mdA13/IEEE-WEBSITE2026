@@ -152,27 +152,32 @@
 
 .badge-upcoming {
   background: rgba(32, 225, 125, 0.15);
-  color: #20E17D;
+  color: #0a7a43;
   border: 1px solid rgba(32, 225, 125, 0.3);
 }
 
 .badge-planning {
   background: rgba(0, 150, 237, 0.12);
-  color: #62C6FF;
+  color: #005fa3;
   border: 1px solid rgba(0, 150, 237, 0.3);
 }
 
 .badge-completed {
   background: rgba(144, 202, 249, 0.12);
-  color: #90CAF9;
+  color: #1155a3;
   border: 1px solid rgba(144, 202, 249, 0.2);
 }
 
 .badge-cancelled {
   background: rgba(255, 100, 100, 0.12);
-  color: #ff8a8a;
+  color: #b91c1c;
   border: 1px solid rgba(255, 100, 100, 0.2);
 }
+
+body.dark-mode .badge-upcoming  { color: #20E17D; }
+body.dark-mode .badge-planning  { color: #62C6FF; }
+body.dark-mode .badge-completed { color: #90CAF9; }
+body.dark-mode .badge-cancelled { color: #ff8a8a; }
 
 .event-badge-card {
   position: absolute;
