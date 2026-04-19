@@ -4,6 +4,7 @@ import './Events.css';
 import { CalendarIcon, LocationIcon } from '../../components/Icons';
 import api from '../../api/public';
 import { upcomingEvent, pastEvents } from '../../data/events';
+import { cloudinaryUrl } from '../../utils/cloudinary';
 
 const staticFallback = [
   { ...upcomingEvent, _id: upcomingEvent.id, status: 'upcoming' },
@@ -69,7 +70,7 @@ const FeaturedEventCard = ({ event }) => {
     >
       <div className="featured-event-glow" />
       <div className="featured-event-image" style={event.image ? {
-        backgroundImage: `url("${event.image}")`,
+        backgroundImage: `url("${cloudinaryUrl(event.image, 1200)}")`,
         backgroundSize: 'cover',
         backgroundPosition: 'center'
       } : {}}>
@@ -145,7 +146,7 @@ const EventCard = ({ event, index }) => {
       <div
         className="event-card-image"
         style={event.image ? {
-          backgroundImage: `url("${event.image}")`,
+          backgroundImage: `url("${cloudinaryUrl(event.image, 800)}")`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         } : {}}

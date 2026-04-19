@@ -90,7 +90,7 @@ const SparklesHero = ({ isDark }) => {
     <section ref={sectionRef} className="sparkles-hero relative">
       <motion.div className="hero-content" style={{ pointerEvents: 'none', y: contentY }}>
         <div className="header-ieee-logo">
-          <img className="logo-animate" src="/images/IEEE-MUST.webp" alt="IEEE MUST logo" />
+          <img className="logo-animate" src="/images/IEEE-MUST.webp" alt="IEEE MUST logo" fetchpriority="high" />
         </div>
         <div className="header-text">
           <h1 className="text-animate-title">IEEE MUST</h1>

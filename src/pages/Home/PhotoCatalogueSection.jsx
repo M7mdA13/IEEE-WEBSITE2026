@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useLayoutEffect, useMemo, useCallback } fr
 import { motion, AnimatePresence } from 'framer-motion';
 import './PhotoCatalogueSection.css';
 import api from '../../api/public';
+import { cloudinaryUrl } from '../../utils/cloudinary';
 
 const DEFAULT_PHOTOS = [
   { src: '/images/group pic 1.webp', alt: 'IEEE MUST SB event' },
@@ -34,7 +35,7 @@ const Lightbox = ({ photos, index, onClose, onNav }) => {
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <AnimatePresence mode="wait">
-        <motion.img key={photo?.src} src={photo?.src} alt={photo?.alt} className="lightbox-img"
+        <motion.img key={photo?.src} src={cloudinaryUrl(photo?.src, 1400)} alt={photo?.alt} className="lightbox-img"
           initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.92 }}
           transition={{ duration: 0.2 }} onClick={(e) => e.stopPropagation()} draggable={false} />
       </AnimatePresence>
@@ -271,7 +272,7 @@ const PhotoCatalogueSection = () => {
                   style={{ width: slideWidthPx ? `${slideWidthPx}px` : `${100 / perView}%` }}
                   onClick={() => isActive ? openLightbox(origIdx) : navigate(i > internalIdx ? 1 : -1)}
                 >
-                  <img src={photo.src} alt={photo.alt} className="cat-slide-img" draggable={false} />
+                  <img src={cloudinaryUrl(photo.src, 800)} alt={photo.alt} className="cat-slide-img" draggable={false} />
                   {!isActive && <div className="cat-slide-dim" />}
                 </div>
               );

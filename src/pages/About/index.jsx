@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import SolarSystem from './SolarSystem';
 import api from '../../api/public';
 import './About.css';
+import { cloudinaryUrl } from '../../utils/cloudinary';
 
 /* ── Planet content ──────────────────────────────────────────── */
 const PLANET_CONTENT = {
@@ -241,7 +242,7 @@ const About = () => {
                     <div key={mi} className="website-team-card">
                       <div className="website-team-photo">
                         {member.photo ? (
-                          <img src={member.photo} alt={member.name} />
+                          <img src={cloudinaryUrl(member.photo, 320)} alt={member.name} />
                         ) : (
                           <div className="website-team-placeholder">
                             <i className="fas fa-user" />

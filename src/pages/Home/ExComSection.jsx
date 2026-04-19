@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../api/public';
 import './ExComSection.css';
+import { cloudinaryUrl } from '../../utils/cloudinary';
 
 const staticExCom = [
   { _id: 's1', name: 'Mennatallah Mostafa', role: 'Webmaster',  photo: '/images/Mennatallah copy.webp' },
@@ -89,7 +90,7 @@ const ExComCard = ({ member, index }) => {
           aria-expanded={member.bio ? bioOpen : undefined}
         >
           <div className="excom-person-frame">
-            <img src={member.photo} alt={member.name} className="excom-person-img" />
+            <img src={cloudinaryUrl(member.photo, 400)} alt={member.name} className="excom-person-img" />
           </div>
 
           <SpotlightPill isLeft={isLeft}>

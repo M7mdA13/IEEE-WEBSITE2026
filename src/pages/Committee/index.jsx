@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '../../api/public';
 import { getCommitteeBySlug } from '../../data/committees';
+import { cloudinaryUrl } from '../../utils/cloudinary';
 import './Committee.css';
 
 const Stars = ({ count }) => (
@@ -90,7 +91,7 @@ const Committee = () => {
           <div className="hero-info-row">
             <motion.div layoutId={`cmt-icon-${slug}`} className="hero-logo-wrap">
               {committee.image ? (
-                <img src={committee.image} alt={committee.name} className="hero-logo-img" />
+                <img src={cloudinaryUrl(committee.image, 400)} alt={committee.name} className="hero-logo-img" />
               ) : (
                 <div className="hero-logo-icon">
                   <i className={`fas ${committee.icon}`}></i>
@@ -204,7 +205,7 @@ const Committee = () => {
                     </div>
                     <div className="cmt-board-photo-wrap">
                       {member.photo ? (
-                        <img src={member.photo} alt={member.name} className="cmt-board-photo-img" />
+                        <img src={cloudinaryUrl(member.photo, 400)} alt={member.name} className="cmt-board-photo-img" />
                       ) : (
                         <div className="cmt-board-photo-placeholder">
                           <i className="fas fa-user"></i>

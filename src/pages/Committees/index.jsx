@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../api/public';
 import { committees as staticCommittees } from '../../data/committees';
+import { cloudinaryUrl } from '../../utils/cloudinary';
 import './Committees.css';
 
 /* ── Animation variants ── */
@@ -66,7 +67,7 @@ const CommitteeCard = ({ committee }) => {
     </div>
     <motion.div layoutId={`cmt-icon-${committee.slug}`} className="cmt-card-icon">
       {committee.image ? (
-        <img src={committee.image} alt={committee.name} />
+        <img src={cloudinaryUrl(committee.image, 320)} alt={committee.name} />
       ) : (
         <i className={`fas ${committee.icon}`}></i>
       )}

@@ -1944,6 +1944,16 @@ body.dark-mode .ask-ai-fab::after {
   }
 }
 
+/* ── FontAwesome font-display override (CDN CSS doesn't set swap) ── */
+@font-face {
+  font-family: 'Font Awesome 6 Free';
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Font Awesome 6 Brands';
+  font-display: swap;
+}
+
 /* ── Skeleton loading ── */
 @keyframes skeleton-shimmer {
   0%   { background-position: -600px 0; }

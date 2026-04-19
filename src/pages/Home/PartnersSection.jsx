@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import api from '../../api/public';
 import './PartnersSection.css';
+import { cloudinaryUrl } from '../../utils/cloudinary';
 
 const staticLogos = [
   '/images/partner 1.webp',
@@ -105,7 +106,7 @@ const PartnersSection = () => {
                     onTouchStart={() => setActiveSrc(src)}
                     onTouchEnd={() => setActiveSrc(null)}
                   >
-                    <img src={src} alt="partner logo" draggable={false} />
+                    <img src={cloudinaryUrl(src, 240)} alt="partner logo" draggable={false} />
                   </div>
                 ))}
               </div>
@@ -130,7 +131,7 @@ const PartnersSection = () => {
                 onMouseEnter={() => setActiveSrc(src)}
                 onMouseLeave={() => setActiveSrc(null)}
               >
-                <img src={src} alt="partner logo" draggable={false} />
+                <img src={cloudinaryUrl(src, 240)} alt="partner logo" draggable={false} />
               </div>
             ))}
           </div>
