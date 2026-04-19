@@ -28,10 +28,14 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/images/ieeebluelogo.png" />
 
-    <!-- Early connection to font origins -->
+    <!-- Preload LCP image — browser discovers & fetches it before JS runs -->
+    <link rel="preload" as="image" href="/images/IEEE-MUST.png" fetchpriority="high" />
+
+    <!-- Early connections -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://ieee-website2026-production-fa3b.up.railway.app" />
+    <!-- crossorigin required for Railway API (CORS fetch) -->
+    <link rel="preconnect" href="https://ieee-website2026-production-fa3b.up.railway.app" crossorigin />
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
 
     <!--
