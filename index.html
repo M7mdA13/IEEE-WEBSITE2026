@@ -28,20 +28,44 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/images/ieeebluelogo.png" />
 
-    <!-- Preconnect: fonts & API (saves ~150-300ms RTT per origin) -->
+    <!-- Early connection to font origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://ieee-website2026-production-fa3b.up.railway.app" />
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
 
-    <!-- Google Fonts — all three families in a single request -->
+    <!--
+      Google Fonts — non-blocking.
+      Preload fetches the CSS; onload flips it to a real stylesheet.
+      <noscript> covers JS-disabled browsers.
+    -->
     <link
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Krona+One&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
-      rel="stylesheet"
+      onload="this.onload=null;this.rel='stylesheet'"
+      crossorigin
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Krona+One&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
 
-    <!-- FontAwesome (used by About solar system labels) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!--
+      FontAwesome — non-blocking (only needed for About page solar system icons).
+      Same preload trick eliminates the 1,050 ms render-blocking hit.
+    -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    </noscript>
   </head>
   <body>
     <div id="root"></div>

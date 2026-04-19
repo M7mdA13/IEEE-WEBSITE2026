@@ -42,7 +42,12 @@ if ('scrollRestoration' in history) {
 
 const ScrollToTop = () => {
   const location = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
+  useEffect(() => {
+    // Delay matches the exit animation duration (0.28s) so the scroll
+    // happens while the new page is already fading in — never visible.
+    const t = setTimeout(() => window.scrollTo(0, 0), 280);
+    return () => clearTimeout(t);
+  }, [location.pathname]);
   return null;
 };
 
