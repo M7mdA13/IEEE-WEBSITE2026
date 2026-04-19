@@ -44,7 +44,7 @@ const TIERS = [
   {
     label: 'Tier I — Leadership',
     members: [
-      { name: 'Mennatallah Mostafa', role: 'Webmaster', photo: '/images/Mennatallah copy.png' },
+      { name: 'Mennatallah Mostafa', role: 'Webmaster', photo: '/images/Mennatallah copy.webp' },
     ],
   },
   {

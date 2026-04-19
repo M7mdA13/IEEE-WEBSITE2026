@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className="must-footer">
       <div className="footer-top">
         <div className="footer-col footer-logo">
-          <img src="/images/IEEE-MUST.png" alt="IEEE MUST Logo" className="footer-logo-img" />
+          <img src="/images/IEEE-MUST.webp" alt="IEEE MUST Logo" className="footer-logo-img" />
           <div className="footer-logo-text">
             <span className="footer-logo-title">IEEE</span><br />
             <span className="footer-logo-branch">Misr University for Science and Technology<br />Student Branch</span>

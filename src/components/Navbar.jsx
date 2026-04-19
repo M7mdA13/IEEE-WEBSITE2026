@@ -50,7 +50,7 @@ const Navbar = ({ isDark, toggleTheme }) => {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }
           }}>
-            <img className="logo-img" src="/images/IEEE-MUST.png" alt="IEEE MUST Student Branch" fetchpriority="high" width="175" height="175" />
+            <img className="logo-img" src="/images/IEEE-MUST.webp" alt="IEEE MUST Student Branch" fetchpriority="high" width="175" height="175" />
           </Link>
         </div>
 

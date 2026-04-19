@@ -4,14 +4,14 @@ import api from '../../api/public';
 import './PartnersSection.css';
 
 const staticLogos = [
-  '/images/partner 1.png',
+  '/images/partner 1.webp',
   '/images/partner 2.png',
   '/images/partner 3.png',
   '/images/partner 4.png',
   '/images/partner 5.webp',
   '/images/partner 6.png',
-  '/images/partner 7.png',
-  '/images/partner 8.png',
+  '/images/partner 7.webp',
+  '/images/partner 8.webp',
   '/images/partner 9.png',
   '/images/logo1.png',
   '/images/logo2.png',

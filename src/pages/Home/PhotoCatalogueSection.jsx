@@ -4,9 +4,9 @@ import './PhotoCatalogueSection.css';
 import api from '../../api/public';
 
 const DEFAULT_PHOTOS = [
-  { src: '/images/group pic 1.jpg', alt: 'IEEE MUST SB event' },
-  { src: '/images/group pic 2.jpg', alt: 'IEEE MUST SB team' },
-  { src: '/images/group pic 3.jpg', alt: 'IEEE MUST SB activity' },
+  { src: '/images/group pic 1.webp', alt: 'IEEE MUST SB event' },
+  { src: '/images/group pic 2.webp', alt: 'IEEE MUST SB team' },
+  { src: '/images/group pic 3.webp', alt: 'IEEE MUST SB activity' },
 ];
 
 /* ══════════════════════════════════════

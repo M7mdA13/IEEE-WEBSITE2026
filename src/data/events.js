@@ -8,10 +8,10 @@ export const upcomingEvent = {
   location: "Location",
   type: "upcoming",
   committee: "ai",
-  image: "/images/group pic 1.jpg"
+  image: "/images/group pic 1.webp"
 };
 
-const groupImages = ["/images/group pic 1.jpg", "/images/group pic 2.jpg", "/images/group pic 3.jpg"];
+const groupImages = ["/images/group pic 1.webp", "/images/group pic 2.webp", "/images/group pic 3.webp"];
 const pastCommittees = ['cybersecurity', 'embedded', 'web', 'multimedia'];
 
 export const pastEvents = Array(4).fill(null).map((_, index) => ({
