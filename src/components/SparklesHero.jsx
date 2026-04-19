@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import Particles, { initParticlesEngine } from '@tsparticles/react';
-import { loadSlim } from '@tsparticles/slim';
+// tsparticles is loaded dynamically at idle time — keeps the 144 KB chunk off the critical path
 
 const SparklesHero = ({ isDark }) => {
   const sectionRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] });
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -120]);
 
+  const [ParticlesComp, setParticlesComp] = useState(null);
   const [init, setInit] = useState(false);
 
   // Delayed isDark so particles switch color only after fading out
@@ -15,10 +15,15 @@ const SparklesHero = ({ isDark }) => {
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
-    const run = () =>
-      initParticlesEngine(async (engine) => {
-        await loadSlim(engine);
-      }).then(() => setInit(true));
+    const run = async () => {
+      const [{ initParticlesEngine, default: Particles }, { loadSlim }] = await Promise.all([
+        import('@tsparticles/react'),
+        import('@tsparticles/slim'),
+      ]);
+      await initParticlesEngine(async (engine) => { await loadSlim(engine); });
+      setParticlesComp(() => Particles);
+      setInit(true);
+    };
 
     if ('requestIdleCallback' in window) {
       const id = requestIdleCallback(run, { timeout: 2000 });
@@ -34,7 +39,7 @@ const SparklesHero = ({ isDark }) => {
     const swap = setTimeout(() => {
       setActiveIsDark(isDark);
       setFading(false);
-    }, 300); 
+    }, 300);
     return () => clearTimeout(swap);
   }, [isDark]);
 
@@ -43,7 +48,7 @@ const SparklesHero = ({ isDark }) => {
   const particlesConfig = useMemo(() => ({
     background: { color: { value: 'transparent' } },
     fullScreen: { enable: false },
-    fpsLimit: 60, /* Locked to 60fps to prevent lag */
+    fpsLimit: 60,
     interactivity: {
       events: {
         onClick: { enable: true, mode: 'push' },
@@ -68,7 +73,7 @@ const SparklesHero = ({ isDark }) => {
       },
       number: {
         density: { enable: true, width: 800, height: 800 },
-        value: 120, /* Reduced from 1200 to enable fullscreen grab seamlessly */
+        value: 120,
       },
       opacity: {
         value: { min: 0.1, max: 1 },
@@ -106,8 +111,8 @@ const SparklesHero = ({ isDark }) => {
           <div className="grad-4"></div>
         </div>
 
-        {init && (
-          <Particles
+        {init && ParticlesComp && (
+          <ParticlesComp
             id="tsparticles"
             className="w-full h-full"
             options={particlesConfig}

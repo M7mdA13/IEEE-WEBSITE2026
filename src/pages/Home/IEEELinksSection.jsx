@@ -56,6 +56,7 @@ const IEEELinksSection = () => (
           src="https://upload.wikimedia.org/wikipedia/commons/2/21/IEEE_logo.svg"
           alt="IEEE"
           className="ieee-feature-logo"
+          loading="lazy"
         />
         <h2 className="ieee-feature-title">
           <span>I</span>nstitute of <span>E</span>lectrical and{' '}
