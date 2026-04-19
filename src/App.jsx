@@ -1,26 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import AskAIFAB from './components/AskAIFAB';
 import MeshBackground from './components/MeshBackground';
-import Home from './pages/Home';
-import Events from './pages/Events';
-import Membership from './pages/Membership';
-import About from './pages/About';
-import Committees from './pages/Committees';
-import Committee from './pages/Committee';
-import AIAssistant from './pages/AIAssistant';
-import NotFound from './pages/NotFound';
 import './index.css';
+
+/* ── Lazy-loaded routes — each page becomes its own JS chunk ── */
+const Home        = lazy(() => import('./pages/Home'));
+const Events      = lazy(() => import('./pages/Events'));
+const Membership  = lazy(() => import('./pages/Membership'));
+const About       = lazy(() => import('./pages/About'));
+const Committees  = lazy(() => import('./pages/Committees'));
+const Committee   = lazy(() => import('./pages/Committee'));
+const AIAssistant = lazy(() => import('./pages/AIAssistant'));
+const NotFound    = lazy(() => import('./pages/NotFound'));
 
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
   animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
+  exit:    { opacity: 0, y: -8 },
 };
-
 const pageTransition = { duration: 0.28, ease: 'easeInOut' };
 
 const PageWrapper = ({ children }) => (
@@ -35,16 +36,13 @@ const PageWrapper = ({ children }) => (
   </motion.div>
 );
 
-// Disable browser scroll restoration so it never pre-scrolls on reload
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
 }
 
 const ScrollToTop = () => {
   const location = useLocation();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
+  useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
   return null;
 };
 
@@ -53,23 +51,21 @@ const AnimatedRoutes = ({ isDark }) => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageWrapper><Home isDark={isDark} /></PageWrapper>} />
-        <Route path="/events" element={<PageWrapper><Events /></PageWrapper>} />
-        <Route path="/membership" element={<PageWrapper><Membership /></PageWrapper>} />
-        <Route path="/about" element={<PageWrapper><About /></PageWrapper>} />
-        <Route path="/committees" element={<PageWrapper><Committees /></PageWrapper>} />
+        <Route path="/"                 element={<PageWrapper><Home isDark={isDark} /></PageWrapper>} />
+        <Route path="/events"           element={<PageWrapper><Events /></PageWrapper>} />
+        <Route path="/membership"       element={<PageWrapper><Membership /></PageWrapper>} />
+        <Route path="/about"            element={<PageWrapper><About /></PageWrapper>} />
+        <Route path="/committees"       element={<PageWrapper><Committees /></PageWrapper>} />
         <Route path="/committees/:slug" element={<PageWrapper><Committee /></PageWrapper>} />
-        <Route path="/ai-assistant" element={<PageWrapper><AIAssistant /></PageWrapper>} />
-        <Route path="*" element={<PageWrapper><NotFound /></PageWrapper>} />
+        <Route path="/ai-assistant"     element={<PageWrapper><AIAssistant /></PageWrapper>} />
+        <Route path="*"                 element={<PageWrapper><NotFound /></PageWrapper>} />
       </Routes>
     </AnimatePresence>
   );
 };
 
 const App = () => {
-  const [isDark, setIsDark] = useState(() => {
-    return localStorage.getItem('theme') === 'dark';
-  });
+  const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') === 'dark');
 
   useEffect(() => {
     if (isDark) {
@@ -81,14 +77,13 @@ const App = () => {
     }
   }, [isDark]);
 
-  const toggleTheme = () => setIsDark((prev) => !prev);
+  const toggleTheme = () => setIsDark(prev => !prev);
 
-  // Ctrl+D / Cmd+D keyboard shortcut for dark mode toggle
   useEffect(() => {
     const handler = (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
         e.preventDefault();
-        setIsDark((prev) => !prev);
+        setIsDark(prev => !prev);
       }
     };
     document.addEventListener('keydown', handler);
@@ -97,19 +92,19 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      {/* SVG Filters for Glass Surface Effect */}
+      {/* SVG filter for glass surface effect */}
       <svg xmlns="http://www.w3.org/2000/svg" style={{ position: 'fixed', width: 0, height: 0, overflow: 'hidden' }}>
         <defs>
           <filter id="glass-filter-btn" colorInterpolationFilters="sRGB" x="-50%" y="-50%" width="200%" height="200%">
             <feImage id="glass-map-btn" x="0" y="0" width="100%" height="100%" preserveAspectRatio="none" result="map" />
-            <feDisplacementMap in="SourceGraphic" in2="map" id="btn-disp-red" scale="-180" xChannelSelector="R" yChannelSelector="G" result="dispRed" />
-            <feColorMatrix in="dispRed" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red" />
+            <feDisplacementMap in="SourceGraphic" in2="map" id="btn-disp-red"   scale="-180" xChannelSelector="R" yChannelSelector="G" result="dispRed" />
+            <feColorMatrix in="dispRed"   type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="red" />
             <feDisplacementMap in="SourceGraphic" in2="map" id="btn-disp-green" scale="-170" xChannelSelector="R" yChannelSelector="G" result="dispGreen" />
             <feColorMatrix in="dispGreen" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="green" />
-            <feDisplacementMap in="SourceGraphic" in2="map" id="btn-disp-blue" scale="-160" xChannelSelector="R" yChannelSelector="G" result="dispBlue" />
-            <feColorMatrix in="dispBlue" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="blue" />
+            <feDisplacementMap in="SourceGraphic" in2="map" id="btn-disp-blue"  scale="-160" xChannelSelector="R" yChannelSelector="G" result="dispBlue" />
+            <feColorMatrix in="dispBlue"  type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 1 0 0  0 0 0 1 0"   result="blue" />
             <feBlend in="red" in2="green" mode="screen" result="rg" />
-            <feBlend in="rg" in2="blue" mode="screen" result="output" />
+            <feBlend in="rg"  in2="blue"  mode="screen" result="output" />
             <feGaussianBlur id="glass-blur-btn" in="output" stdDeviation="0.7" />
           </filter>
         </defs>
@@ -119,7 +114,10 @@ const App = () => {
       <ScrollToTop />
       <Navbar isDark={isDark} toggleTheme={toggleTheme} />
 
-      <AnimatedRoutes isDark={isDark} />
+      {/* Suspense: blank min-height div while lazy chunk loads (PageWrapper does the visual fade) */}
+      <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
+        <AnimatedRoutes isDark={isDark} />
+      </Suspense>
 
       <AskAIFAB />
       <Footer />

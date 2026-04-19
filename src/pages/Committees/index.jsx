@@ -79,13 +79,11 @@ const CommitteeCard = ({ committee }) => {
 const Committees = () => {
   const [activeTab, setActiveTab] = useState('technical');
   const [all, setAll] = useState(staticCommittees);
-  const [dataReady, setDataReady] = useState(false);
 
   useEffect(() => {
     api.get('/committees')
       .then(({ data }) => { if (data.data?.length > 0) setAll(data.data); })
-      .catch(() => {})
-      .finally(() => setDataReady(true));
+      .catch(() => {});
   }, []);
 
   const list = all.filter(c => c.category === activeTab);
@@ -181,40 +179,21 @@ const Committees = () => {
           </div>
         </motion.div>
 
-        {/* Skeleton while loading */}
-        {!dataReady && (
-          <div className="committees-grid">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="cmt-card-skel">
-                <div className="cmt-skel-body">
-                  <span className="skeleton-block" style={{ height: '13px', width: '55%', marginBottom: '10px' }} />
-                  <span className="skeleton-block" style={{ height: '11px', marginBottom: '6px' }} />
-                  <span className="skeleton-block" style={{ height: '11px', width: '75%', marginBottom: '28px' }} />
-                  <span className="skeleton-block" style={{ height: '30px', width: '110px', borderRadius: '999px' }} />
-                </div>
-                <span className="skeleton-block cmt-skel-icon" />
-              </div>
+        {/* Animated card grid — static data renders instantly, API data swaps in */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            className="committees-grid"
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            exit="exit"
+          >
+            {list.map((committee) => (
+              <CommitteeCard key={committee._id || committee.slug} committee={committee} />
             ))}
-          </div>
-        )}
-
-        {/* Animated card grid */}
-        {dataReady && (
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              className="committees-grid"
-              variants={containerVariants}
-              initial="hidden"
-              animate="show"
-              exit="exit"
-            >
-              {list.map((committee) => (
-                <CommitteeCard key={committee._id || committee.slug} committee={committee} />
-              ))}
-            </motion.div>
-          </AnimatePresence>
-        )}
+          </motion.div>
+        </AnimatePresence>
 
       </div>
     </div>

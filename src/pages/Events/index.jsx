@@ -44,19 +44,6 @@ const cardVariants = {
 };
 
 
-const SkeletonEventCard = () => (
-  <div className="event-card-skel">
-    <span className="skeleton-block event-skel-image" />
-    <div className="event-skel-body">
-      <span className="skeleton-block" style={{ height: '13px', width: '40%', marginBottom: '18px' }} />
-      <span className="skeleton-block" style={{ height: '18px', width: '70%', marginBottom: '10px' }} />
-      <span className="skeleton-block" style={{ height: '12px', marginBottom: '6px' }} />
-      <span className="skeleton-block" style={{ height: '12px', width: '80%', marginBottom: '6px' }} />
-      <span className="skeleton-block" style={{ height: '12px', width: '60%', marginBottom: '24px' }} />
-      <span className="skeleton-block" style={{ height: '12px', width: '45%' }} />
-    </div>
-  </div>
-);
 
 /* ── Featured Hero Card (next upcoming event) ── */
 const FeaturedEventCard = ({ event }) => {
@@ -245,9 +232,9 @@ const EmptyState = ({ type }) => (
 );
 
 const Events = () => {
-  const [events, setEvents] = useState(staticFallback);
-  const [mobileTab, setMobileTab] = useState('upcoming');
+  const [events, setEvents] = useState([]);
   const [dataReady, setDataReady] = useState(false);
+  const [mobileTab, setMobileTab] = useState('upcoming');
   const dirRef = useRef(1);
 
   const switchTab = useCallback((tab) => {
@@ -256,11 +243,10 @@ const Events = () => {
     setMobileTab(tab);
   }, [mobileTab]);
 
-
   useEffect(() => {
     api.get('/events')
-      .then(({ data }) => { if (data.data?.length > 0) setEvents(data.data); })
-      .catch(() => {})
+      .then(({ data }) => { setEvents(data.data?.length > 0 ? data.data : staticFallback); })
+      .catch(() => { setEvents(staticFallback); })
       .finally(() => setDataReady(true));
   }, []);
 
@@ -314,15 +300,16 @@ const Events = () => {
         </motion.div>
       </motion.div>
 
-      <div className="events-page">
+      <motion.div
+        className="events-page"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: dataReady ? 1 : 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+      >
 
         {/* ── Desktop layout ── */}
         <div className="events-desktop">
-          {!dataReady ? (
-            <div className="events-list"><SkeletonEventCard /><SkeletonEventCard /></div>
-          ) : (
-            <>
-              {featured && (
+          {featured && (
                 <section className="events-section">
                   <h2 className="section-title"><span>Next Up</span></h2>
                   <FeaturedEventCard event={featured} />
@@ -354,9 +341,7 @@ const Events = () => {
                 ) : (
                   <EmptyState type="past" />
                 )}
-              </section>
-            </>
-          )}
+          </section>
         </div>
 
         {/* ── Mobile layout: tab switcher ── */}
@@ -393,12 +378,7 @@ const Events = () => {
           </div>
 
           <div className="events-mobile-panel">
-            {!dataReady ? (
-              <div className="events-list">
-                {[1, 2].map(i => <SkeletonEventCard key={i} />)}
-              </div>
-            ) : (
-              <AnimatePresence mode="wait" custom={dirRef.current}>
+            <AnimatePresence mode="wait" custom={dirRef.current}>
                 <motion.div
                   key={mobileTab}
                   className="events-list"
@@ -417,13 +397,12 @@ const Events = () => {
                       : <EmptyState type="past" />
                   )}
                 </motion.div>
-              </AnimatePresence>
-            )}
+            </AnimatePresence>
           </div>
 
         </div>
 
-      </div>
+      </motion.div>
     </div>
   );
 };
