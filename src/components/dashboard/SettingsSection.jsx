@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import api from '../../api/index'
+import { uploadToCloudinary } from '../../utils/cloudinary'
 
 const settingsTabs = [
   { id: 'profile-settings', label: 'Profile Settings' },
@@ -46,32 +47,27 @@ function SettingsSection() {
 
   const handleImageUpload = () => fileInputRef.current.click()
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onloadend = async () => {
-      const base64 = reader.result
-      setProfileImage(base64) // optimistic
-      setAvatarSaving(true)
-      setProfileMsg({ text: '', isError: false })
-      try {
-        const { data } = await api.patch('/admin/auth/me', { avatar: base64 })
-        const stored = JSON.parse(localStorage.getItem('user') || '{}')
-        localStorage.setItem('user', JSON.stringify({ ...stored, ...data.user }))
-        window.dispatchEvent(new Event('storage'))
-        setProfileMsg({ text: 'Photo updated successfully.', isError: false })
-      } catch (err) {
-        // Rollback
-        const stored = JSON.parse(localStorage.getItem('user') || '{}')
-        setProfileImage(stored.avatar || DEFAULT_AVATAR)
-        setProfileMsg({ text: err.response?.data?.message || 'Failed to upload photo.', isError: true })
-      } finally {
-        setAvatarSaving(false)
-        if (fileInputRef.current) fileInputRef.current.value = ''
-      }
+    setAvatarSaving(true)
+    setProfileMsg({ text: '', isError: false })
+    try {
+      const url = await uploadToCloudinary(file)
+      setProfileImage(url)
+      const { data } = await api.patch('/admin/auth/me', { avatar: url })
+      const stored = JSON.parse(localStorage.getItem('user') || '{}')
+      localStorage.setItem('user', JSON.stringify({ ...stored, ...data.user }))
+      window.dispatchEvent(new Event('storage'))
+      setProfileMsg({ text: 'Photo updated successfully.', isError: false })
+    } catch (err) {
+      const stored = JSON.parse(localStorage.getItem('user') || '{}')
+      setProfileImage(stored.avatar || DEFAULT_AVATAR)
+      setProfileMsg({ text: 'Failed to upload photo. Try again.', isError: true })
+    } finally {
+      setAvatarSaving(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
     }
-    reader.readAsDataURL(file)
   }
 
   const handleProfileChange = (e) => {
