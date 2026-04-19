@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import api from '../../api/public';
 import './AIAssistant.css';
 
@@ -9,6 +9,94 @@ const suggestions = [
   "Benefits of joining?",
   "Who leads the branch?",
 ];
+
+const TYPING_SPEED_MS = 12; // ms per character
+
+/* ── Typewriter hook — reveals text character by character ── */
+const useTypewriter = (fullText, active) => {
+  const [displayed, setDisplayed] = useState('');
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    if (!active || !fullText) {
+      setDisplayed(fullText || '');
+      setDone(true);
+      return;
+    }
+
+    setDisplayed('');
+    setDone(false);
+    let i = 0;
+    const id = setInterval(() => {
+      i++;
+      setDisplayed(fullText.slice(0, i));
+      if (i >= fullText.length) {
+        clearInterval(id);
+        setDone(true);
+      }
+    }, TYPING_SPEED_MS);
+
+    return () => clearInterval(id);
+  }, [fullText, active]);
+
+  return { displayed, done };
+};
+
+/* ── Markdown parser for **bold** and [links](urls) ── */
+const formatText = (text) => {
+  return text.split('\n').map((line, i) => {
+    const parts = line.split(/(\*\*.*?\*\*|\[.*?\]\(.*?\))/g).map((part, j) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={j} style={{ color: '#0096ED' }}>{part.slice(2, -2)}</strong>;
+      }
+
+      const linkMatch = part.match(/\[(.*?)\]\((.*?)\)/);
+      if (linkMatch) {
+        return (
+          <a
+            key={j}
+            href={linkMatch[2]}
+            target={linkMatch[2].startsWith('http') ? '_blank' : '_self'}
+            rel="noopener noreferrer"
+            style={{ color: '#24F0FF', textDecoration: 'underline', fontWeight: 'bold' }}
+          >
+            {linkMatch[1]}
+          </a>
+        );
+      }
+
+      return part;
+    });
+
+    return (
+      <span key={i} style={{ display: 'block', minHeight: '1.2em' }}>
+        {parts}
+      </span>
+    );
+  });
+};
+
+/* ── Chat bubble with optional typewriter ── */
+const ChatBubble = ({ msg, isLatestAssistant, onTypingProgress }) => {
+  const shouldAnimate = msg.role === 'assistant' && isLatestAssistant && msg._animate;
+  const { displayed, done } = useTypewriter(msg.text, shouldAnimate);
+  const textToShow = shouldAnimate ? displayed : msg.text;
+
+  useEffect(() => {
+    if (shouldAnimate && onTypingProgress) {
+      onTypingProgress();
+    }
+  }, [displayed, shouldAnimate, onTypingProgress]);
+
+  return (
+    <div className={`chat-bubble-wrapper ${msg.role}`}>
+      <div className={`chat-bubble ${shouldAnimate && !done ? 'typing-active' : ''}`}>
+        {formatText(textToShow)}
+        {shouldAnimate && !done && <span className="typing-cursor" />}
+      </div>
+    </div>
+  );
+};
 
 const AIAssistant = () => {
   const initialMessages = [
@@ -22,22 +110,22 @@ const AIAssistant = () => {
   const [hasStartedChat, setHasStartedChat] = useState(false);
   const chatLogRef = useRef(null);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     if (chatLogRef.current) {
       chatLogRef.current.scrollTop = chatLogRef.current.scrollHeight;
     }
-  };
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isLoading]);
+  }, [messages, isLoading, scrollToBottom]);
 
   const handleSend = async (text) => {
     if (!text.trim()) return;
-    
+
     const userMsg = { role: 'user', text: text.trim() };
     const newHistory = [...messages, userMsg];
-    
+
     setMessages(newHistory);
     setInputStr('');
     setIsLoading(true);
@@ -46,18 +134,18 @@ const AIAssistant = () => {
     try {
       const response = await api.post('/ai/chat', {
         message: text.trim(),
-        history: messages // Pass the old messages so the AI remembers context
+        history: messages
       });
-      
+
       const { data } = response;
       if (data.success) {
-        setMessages([...newHistory, { role: 'assistant', text: data.reply }]);
+        setMessages([...newHistory, { role: 'assistant', text: data.reply, _animate: true }]);
       } else {
-        setMessages([...newHistory, { role: 'assistant', text: data.message || "I'm having trouble connecting right now." }]);
+        setMessages([...newHistory, { role: 'assistant', text: data.message || "I'm having trouble connecting right now.", _animate: true }]);
       }
     } catch (err) {
       const errorMsg = err.response?.data?.message || "I'm having trouble thinking right now. Please check my AI circuits!";
-      setMessages([...newHistory, { role: 'assistant', text: errorMsg }]);
+      setMessages([...newHistory, { role: 'assistant', text: errorMsg, _animate: true }]);
     } finally {
       setIsLoading(false);
     }
@@ -69,45 +157,18 @@ const AIAssistant = () => {
     }
   };
 
-  // Advanced Custom Regex Markdown Parser for **bold** and [links](urls)
-  const formatText = (text) => {
-    return text.split('\n').map((line, i) => {
-      // Split by bold (**text**) or markdown links ([text](url))
-      const parts = line.split(/(\*\*.*?\*\*|\[.*?\]\(.*?\))/g).map((part, j) => {
-        if (part.startsWith('**') && part.endsWith('**')) {
-          return <strong key={j} style={{ color: '#0096ED' }}>{part.slice(2, -2)}</strong>;
-        }
-        
-        const linkMatch = part.match(/\[(.*?)\]\((.*?)\)/);
-        if (linkMatch) {
-          return (
-            <a 
-              key={j} 
-              href={linkMatch[2]} 
-              target={linkMatch[2].startsWith('http') ? '_blank' : '_self'} 
-              rel="noopener noreferrer" 
-              style={{ color: '#24F0FF', textDecoration: 'underline', fontWeight: 'bold' }}
-            >
-              {linkMatch[1]}
-            </a>
-          );
-        }
-        
-        return part;
-      });
-
-      return (
-        <span key={i} style={{ display: 'block', minHeight: '1.2em' }}>
-          {parts}
-        </span>
-      );
-    });
-  };
-
   const handleResetChat = () => {
     setMessages(initialMessages);
     setHasStartedChat(false);
   };
+
+  // Find the index of the last assistant message (for typewriter targeting)
+  const lastAssistantIdx = (() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].role === 'assistant') return i;
+    }
+    return -1;
+  })();
 
   return (
     <div className="ai-assistant-page">
@@ -134,8 +195,8 @@ const AIAssistant = () => {
                 onKeyDown={onKeyDown}
                 disabled={isLoading}
               />
-              <button 
-                className="send-btn" 
+              <button
+                className="send-btn"
                 onClick={() => handleSend(inputStr)}
                 disabled={isLoading}
               >
@@ -148,8 +209,8 @@ const AIAssistant = () => {
 
             <div className="suggestions-container-start">
               {suggestions.map((text, idx) => (
-                <button 
-                  key={idx} 
+                <button
+                  key={idx}
                   className="suggestion-pill"
                   onClick={() => handleSend(text)}
                   disabled={isLoading}
@@ -171,9 +232,8 @@ const AIAssistant = () => {
                 style={{ objectFit: 'contain', minHeight: '80px' }}
               />
               <h1 className="greeting-text-small">IEEE MUST AI</h1>
-              
-              {/* Reset Chat Button */}
-              <button 
+
+              <button
                 onClick={handleResetChat}
                 style={{
                   position: 'absolute',
@@ -202,11 +262,12 @@ const AIAssistant = () => {
             <div className="chat-container">
               <div className="chat-log" ref={chatLogRef}>
                 {messages.map((msg, idx) => (
-                  <div key={idx} className={`chat-bubble-wrapper ${msg.role}`}>
-                    <div className="chat-bubble">
-                      {formatText(msg.text)}
-                    </div>
-                  </div>
+                  <ChatBubble
+                    key={idx}
+                    msg={msg}
+                    isLatestAssistant={idx === lastAssistantIdx}
+                    onTypingProgress={scrollToBottom}
+                  />
                 ))}
                 {isLoading && (
                   <div className="chat-bubble-wrapper assistant">
@@ -229,8 +290,8 @@ const AIAssistant = () => {
                   onKeyDown={onKeyDown}
                   disabled={isLoading}
                 />
-                <button 
-                  className="send-btn" 
+                <button
+                  className="send-btn"
                   onClick={() => handleSend(inputStr)}
                   disabled={isLoading}
                 >

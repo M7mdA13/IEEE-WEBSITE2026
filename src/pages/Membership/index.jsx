@@ -51,74 +51,71 @@ const Membership = () => {
           style={{ objectFit: 'contain', minHeight: '120px' }}
         />
 
-        {loading ? (
-          <div className="membership-skeleton">
-            <div className="skel-line skel-line--wide" />
-            <div className="skel-line skel-line--narrow" />
-            <div className="skel-line skel-line--medium" />
-          </div>
-        ) : (
-          <>
-            <motion.h2
-              className="membership-status"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              {status.isOpen ? 'Recruitment is now open!' : 'Recruitment is currently closed.'}
-            </motion.h2>
+        <motion.div
+          style={{ display: 'contents' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: loading ? 0 : 1 }}
+          transition={{ duration: 0.4 }}
+        >
+          <motion.h2
+            className="membership-status"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            {status.isOpen ? 'Recruitment is now open!' : 'Recruitment is currently closed.'}
+          </motion.h2>
 
-            <motion.p
-              className="membership-message"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              {status.message || (status.isOpen
-                ? 'Apply now and join our community!'
-                : "We're not accepting new members right now. Recruitment happens online and on campus — we announce everything on our social media."
-              )}
-            </motion.p>
-
-            <motion.h1
-              className="stay-tuned"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              {status.isOpen ? 'Apply Now!' : 'Stay Tuned!'}
-            </motion.h1>
-
-            {!status.isOpen && (
-              <motion.div
-                className="notify-form-wrapper"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-              >
-                <p className="notify-label">Get notified when recruitment opens</p>
-                {notifyState === 'success' ? (
-                  <p className="notify-success">{notifyMsg}</p>
-                ) : (
-                  <form className="notify-form" onSubmit={handleNotify}>
-                    <input
-                      type="email"
-                      className="notify-input"
-                      placeholder="your@email.com"
-                      value={email}
-                      onChange={e => setEmail(e.target.value)}
-                      required
-                    />
-                    <button type="submit" className="notify-button" disabled={notifyState === 'loading'}>
-                      {notifyState === 'loading' ? '...' : 'Notify me'}
-                    </button>
-                  </form>
-                )}
-                {notifyState === 'error' && <p className="notify-error">{notifyMsg}</p>}
-              </motion.div>
+          <motion.p
+            className="membership-message"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            {status.message || (status.isOpen
+              ? 'Apply now and join our community!'
+              : "We're not accepting new members right now. Recruitment happens online and on campus — we announce everything on our social media."
             )}
-          </>
-        )}
+          </motion.p>
+
+          <motion.h1
+            className="stay-tuned"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            {status.isOpen ? 'Apply Now!' : 'Stay Tuned!'}
+          </motion.h1>
+
+          {!status.isOpen && (
+            <motion.div
+              className="notify-form-wrapper"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+            >
+              <p className="notify-label">Get notified when recruitment opens</p>
+              {notifyState === 'success' ? (
+                <p className="notify-success">{notifyMsg}</p>
+              ) : (
+                <form className="notify-form" onSubmit={handleNotify}>
+                  <input
+                    type="email"
+                    className="notify-input"
+                    placeholder="your@email.com"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    required
+                  />
+                  <button type="submit" className="notify-button" disabled={notifyState === 'loading'}>
+                    {notifyState === 'loading' ? '...' : 'Notify me'}
+                  </button>
+                </form>
+              )}
+              {notifyState === 'error' && <p className="notify-error">{notifyMsg}</p>}
+            </motion.div>
+          )}
+        </motion.div>
       </div>
     </div>
   );

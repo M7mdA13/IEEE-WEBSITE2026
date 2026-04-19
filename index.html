@@ -2,17 +2,94 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/images/ieeebluelogo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Krona+One&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Primary meta -->
     <title>IEEE MUST Student Branch</title>
+    <meta name="title"       content="IEEE MUST Student Branch" />
+    <meta name="description" content="The official IEEE Student Branch at Misr University for Science and Technology — workshops, talks, competitions, and a community of future engineers." />
+    <meta name="theme-color" content="#0096ED" />
+    <meta name="robots"      content="index, follow" />
+
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="https://ieee-website-2026.vercel.app/" />
+    <meta property="og:title"       content="IEEE MUST Student Branch" />
+    <meta property="og:description" content="The official IEEE Student Branch at Misr University for Science and Technology — workshops, talks, competitions, and a community of future engineers." />
+    <meta property="og:image"       content="https://ieee-website-2026.vercel.app/images/ieeebluelogo.png" />
+    <meta property="og:site_name"   content="IEEE MUST SB" />
+
+    <!-- Twitter card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="IEEE MUST Student Branch" />
+    <meta name="twitter:description" content="The official IEEE Student Branch at Misr University for Science and Technology." />
+    <meta name="twitter:image"       content="https://ieee-website-2026.vercel.app/images/ieeebluelogo.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/ieeebluelogo.png" />
+
+    <!-- Critical CSS — inlined so above-fold content renders before the async main CSS loads -->
+    <style>
+      :root{--ieee-bg:#E8F2FD;--ieee-bg-alt:#e6f4fc;--ieee-bg-card:#fff;--ieee-bg-nav:#f9f8f6;--ieee-bg-elevated:#eef3fa;--ieee-text:#004577;--ieee-text-soft:#4a6f8a;--ieee-text-muted:#7a9ab5;--ieee-border:rgba(0,69,119,.14);--ieee-border-strong:rgba(0,69,119,.28);--ieee-accent:#0098ED;--ieee-accent-hover:#1d76d2;--ieee-accent-bg:#e8f1fb;--ieee-accent-icon:#e8f4ff;--ieee-cyan:#24F0FF;--ieee-cyan-hover:#3de0fc;--ieee-shadow:0 4px 16px rgba(0,59,113,.07);--ieee-shadow-hover:0 8px 28px rgba(0,59,113,.13)}
+      body.dark-mode{--ieee-bg:#0b1120;--ieee-bg-alt:#111827;--ieee-bg-card:#162032;--ieee-bg-nav:#0b1120;--ieee-bg-elevated:#1e2d3d;--ieee-text:#dce8f5;--ieee-text-soft:#8aaec8;--ieee-text-muted:#4a6f8a;--ieee-border:rgba(100,160,220,.14);--ieee-border-strong:rgba(100,160,220,.30);--ieee-accent:#2a85d4;--ieee-accent-hover:#3d9de8;--ieee-accent-bg:#0d2035;--ieee-accent-icon:#0d2035;--ieee-cyan:#00d2ff;--ieee-cyan-hover:#00baec;--ieee-shadow:0 4px 16px rgba(0,0,0,.28);--ieee-shadow-hover:0 8px 28px rgba(0,0,0,.45)}
+      *{box-sizing:border-box;margin:0;padding:0;border:0 solid}
+      button,input,select,textarea{font-family:inherit}
+      html{background-color:#E8F2FD;overflow-x:hidden;min-height:100dvh;display:flex;flex-direction:column;font-family:'Krona One',sans-serif;color:var(--ieee-text);-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+      body{background-color:transparent;overflow-x:hidden;min-height:100dvh;display:flex;flex-direction:column}
+      #root{display:flex;flex-direction:column;min-height:100dvh;flex:1}
+      main{flex:1;display:flex;flex-direction:column}
+      .relative{position:relative}
+      .w-full{width:100%}
+      @keyframes pop-in{0%{opacity:0;transform:scale(.85)}100%{opacity:1;transform:scale(1)}}
+      @keyframes slide-up{0%{opacity:0;transform:translateY(24px)}100%{opacity:1;transform:translateY(0)}}
+      .logo-animate{animation:pop-in 800ms ease-out 120ms both}
+      .text-animate-title{animation:slide-up 700ms cubic-bezier(.25,.8,.25,1) 220ms both;will-change:transform,opacity}
+      .text-animate-sub{animation:slide-up 700ms cubic-bezier(.25,.8,.25,1) 380ms both;will-change:transform,opacity}
+    </style>
+
+    <!-- Preload LCP image — browser discovers & fetches it before JS runs -->
+    <link rel="preload" as="image" href="/images/IEEE-MUST.webp" fetchpriority="high" />
+
+    <!-- Early connections -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- crossorigin required for Railway API (CORS fetch) -->
+    <link rel="preconnect" href="https://ieee-website2026-production-fa3b.up.railway.app" crossorigin />
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
+
+    <!--
+      Google Fonts — non-blocking.
+      Preload fetches the CSS; onload flips it to a real stylesheet.
+      <noscript> covers JS-disabled browsers.
+    -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Krona+One&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+      onload="this.onload=null;this.rel='stylesheet'"
+      crossorigin
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Krona+One&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <!--
+      FontAwesome — non-blocking (only needed for About page solar system icons).
+      Same preload trick eliminates the 1,050 ms render-blocking hit.
+    -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    </noscript>
   </head>
   <body>
     <div id="root"></div>

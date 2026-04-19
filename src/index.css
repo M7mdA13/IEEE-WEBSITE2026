@@ -375,8 +375,8 @@ main {
   background: #19212b;
   border-radius: 50%;
   text-decoration: none;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1942,6 +1942,16 @@ body.dark-mode .ask-ai-fab::after {
   .ask-ai-fab::after {
     display: none;
   }
+}
+
+/* ── FontAwesome font-display override (CDN CSS doesn't set swap) ── */
+@font-face {
+  font-family: 'Font Awesome 6 Free';
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Font Awesome 6 Brands';
+  font-display: swap;
 }
 
 /* ── Skeleton loading ── */

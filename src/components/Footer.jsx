@@ -6,7 +6,7 @@ const Footer = () => {
     <footer className="must-footer">
       <div className="footer-top">
         <div className="footer-col footer-logo">
-          <img src="/images/IEEE-MUST.png" alt="IEEE MUST Logo" className="footer-logo-img" />
+          <img src="/images/IEEE-MUST.webp" alt="IEEE MUST Logo" className="footer-logo-img" />
           <div className="footer-logo-text">
             <span className="footer-logo-title">IEEE</span><br />
             <span className="footer-logo-branch">Misr University for Science and Technology<br />Student Branch</span>
@@ -26,7 +26,7 @@ const Footer = () => {
         </div>
         <div className="footer-col footer-contact">
           <div className="footer-contact-item"><i className="fa-solid fa-envelope"></i> ieeemust2026@gmail.com</div>
-          <div className="footer-contact-item"><i className="fa-solid fa-phone"></i> +20 120 654 7195</div>
+          <div className="footer-contact-item"><i className="fa-solid fa-phone"></i> +20 12 050 80 333</div>
           <div className="footer-social">
             <a href="https://www.facebook.com/IEEEMUST.egy" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i className="fab fa-facebook-f"></i></a>
             <a href="https://www.instagram.com/ieeemust/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i className="fab fa-instagram"></i></a>

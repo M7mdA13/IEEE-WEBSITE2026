@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../api/public';
 import './ExComSection.css';
+import { cloudinaryUrl } from '../../utils/cloudinary';
 
 const staticExCom = [
-  { _id: 's1', name: 'Mennatallah Mostafa', role: 'Webmaster',  photo: '/images/Mennatallah copy.png' },
-  { _id: 's2', name: 'Mostafa Samir',       role: 'Treasurer',  photo: '/images/moustafa copy.png' },
-  { _id: 's3', name: 'Karima Ayman',        role: 'Secretary',  photo: '/images/karima copy.png' },
-  { _id: 's4', name: 'Mahmoud Alsonbaty',   role: 'Chairman',   photo: '/images/alsonbaty copy.png' },
-  { _id: 's5', name: 'Shahd Abdelaziz',     role: 'Vice Chair', photo: '/images/shahd copy.png' },
+  { _id: 's1', name: 'Mennatallah Mostafa', role: 'Webmaster',  photo: '/images/Mennatallah copy.webp' },
+  { _id: 's2', name: 'Mostafa Samir',       role: 'Treasurer',  photo: '/images/moustafa copy.webp' },
+  { _id: 's3', name: 'Karima Ayman',        role: 'Secretary',  photo: '/images/karima copy.webp' },
+  { _id: 's4', name: 'Mahmoud Alsonbaty',   role: 'Chairman',   photo: '/images/alsonbaty copy.webp' },
+  { _id: 's5', name: 'Shahd Abdelaziz',     role: 'Vice Chair', photo: '/images/shahd copy.webp' },
 ];
 
 /* Magnetic icon: slightly follows cursor within its bounding box */
@@ -89,7 +90,7 @@ const ExComCard = ({ member, index }) => {
           aria-expanded={member.bio ? bioOpen : undefined}
         >
           <div className="excom-person-frame">
-            <img src={member.photo} alt={member.name} className="excom-person-img" />
+            <img src={cloudinaryUrl(member.photo, 400)} alt={member.name} className="excom-person-img" />
           </div>
 
           <SpotlightPill isLeft={isLeft}>
