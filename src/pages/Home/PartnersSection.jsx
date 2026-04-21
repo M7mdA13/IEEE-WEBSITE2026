@@ -25,9 +25,14 @@ const PartnersSection = () => {
   const [logos, setLogos] = useState(staticLogos);
   const [activeIdx, setActiveIdx] = useState(null);
   const [dataReady, setDataReady] = useState(false);
-  // Suppress synthetic mouse events mobile browsers fire after a tap (to prevent
-  // the rapid null→idx→null toggle that causes the marquee to flicker/jump).
-  const lastTouchRef = useRef(0);
+
+  // (hover: hover) is true on real pointer devices (mouse/trackpad).
+  // Touch-only phones return false, so we never attach mouse handlers there —
+  // this eliminates the synthetic-mouseenter-before-touchstart race that caused
+  // the wrong logo to briefly highlight on first tap.
+  const supportsHover = useRef(
+    typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches
+  );
 
   useEffect(() => {
     api.get('/partners')
@@ -43,22 +48,6 @@ const PartnersSection = () => {
   }, []);
 
   const doubled = useMemo(() => [...logos, ...logos], [logos]);
-
-  const handleMouseEnter = (i) => {
-    if (Date.now() - lastTouchRef.current < 500) return;
-    setActiveIdx(i);
-  };
-  const handleMouseLeave = () => {
-    if (Date.now() - lastTouchRef.current < 500) return;
-    setActiveIdx(null);
-  };
-  const handleTouchStart = (i) => {
-    lastTouchRef.current = Date.now();
-    setActiveIdx(i);
-  };
-  const handleTouchEnd = () => {
-    setActiveIdx(null);
-  };
 
   return (
     <section className="partners-section" style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.4s ease' }}>
@@ -90,10 +79,12 @@ const PartnersSection = () => {
             <div
               key={i}
               className={`partner-logo-slot ${activeIdx === i ? 'partner-logo-slot--active' : ''}`}
-              onMouseEnter={() => handleMouseEnter(i)}
-              onMouseLeave={handleMouseLeave}
-              onTouchStart={() => handleTouchStart(i)}
-              onTouchEnd={handleTouchEnd}
+              // Mouse events: desktop/trackpad only — never fires on touch-only phones
+              onMouseEnter={supportsHover.current ? () => setActiveIdx(i) : undefined}
+              onMouseLeave={supportsHover.current ? () => setActiveIdx(null) : undefined}
+              // Touch events: tap to pause, hold to keep paused, lift to resume
+              onTouchStart={() => setActiveIdx(i)}
+              onTouchEnd={() => setActiveIdx(null)}
               onContextMenu={(e) => e.preventDefault()}
             >
               <img src={cloudinaryUrl(src, 240)} alt="partner logo" draggable={false} />
