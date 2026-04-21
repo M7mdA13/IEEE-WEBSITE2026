@@ -102,6 +102,7 @@ const App = () => {
   const [isDark, setIsDark] = useState(() => localStorage.getItem('theme') === 'dark');
 
   useEffect(() => {
+    const bg = isDark ? '#0b1120' : '#E8F2FD';
     if (isDark) {
       document.body.classList.add('dark-mode');
       localStorage.setItem('theme', 'dark');
@@ -109,6 +110,11 @@ const App = () => {
       document.body.classList.remove('dark-mode');
       localStorage.setItem('theme', 'light');
     }
+    // Keep <html> background in sync so iOS fills its browser chrome area with the
+    // right color (fixes the white bar at the bottom when the toolbar collapses).
+    document.documentElement.style.backgroundColor = bg;
+    // Keep Android Chrome's browser chrome tinted to match the page.
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', bg);
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(prev => !prev);

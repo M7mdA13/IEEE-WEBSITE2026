@@ -101,6 +101,11 @@ body.dark-mode .partner-logo-slot {
   opacity: 0.92;
   transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
   filter: none;
+  /* Prevent saving/copying logos */
+  pointer-events: none;       /* right-click hits the parent div, not the <img> */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none; /* iOS: suppress long-press "Save to Photos" */
 }
 
 body.dark-mode .partner-logo-slot img {

@@ -23,10 +23,10 @@ const staticLogos = [
 
 const PartnersSection = () => {
   const [logos, setLogos] = useState(staticLogos);
-  const [activeSrc, setActiveSrc] = useState(null);
+  const [activeIdx, setActiveIdx] = useState(null);
   const [dataReady, setDataReady] = useState(false);
-  // Track last touch time to suppress the synthetic mouse events mobile browsers
-  // fire after a tap — prevents the rapid null→src→null toggle that causes flicker.
+  // Suppress synthetic mouse events mobile browsers fire after a tap (to prevent
+  // the rapid null→idx→null toggle that causes the marquee to flicker/jump).
   const lastTouchRef = useRef(0);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const PartnersSection = () => {
       .then(({ data }) => {
         const imgs = (data.data || []).map(p => p.logo).filter(Boolean);
         if (imgs.length > 0) {
-          setActiveSrc(null);
+          setActiveIdx(null);
           setLogos(imgs);
         }
       })
@@ -44,20 +44,20 @@ const PartnersSection = () => {
 
   const doubled = useMemo(() => [...logos, ...logos], [logos]);
 
-  const handleMouseEnter = (src) => {
+  const handleMouseEnter = (i) => {
     if (Date.now() - lastTouchRef.current < 500) return;
-    setActiveSrc(src);
+    setActiveIdx(i);
   };
   const handleMouseLeave = () => {
     if (Date.now() - lastTouchRef.current < 500) return;
-    setActiveSrc(null);
+    setActiveIdx(null);
   };
-  const handleTouchStart = (src) => {
+  const handleTouchStart = (i) => {
     lastTouchRef.current = Date.now();
-    setActiveSrc(src);
+    setActiveIdx(i);
   };
   const handleTouchEnd = () => {
-    setActiveSrc(null);
+    setActiveIdx(null);
   };
 
   return (
@@ -84,16 +84,17 @@ const PartnersSection = () => {
       >
         <div
           className="partners-marquee-track"
-          style={{ animationPlayState: activeSrc ? 'paused' : 'running' }}
+          style={{ animationPlayState: activeIdx !== null ? 'paused' : 'running' }}
         >
           {doubled.map((src, i) => (
             <div
               key={i}
-              className={`partner-logo-slot ${activeSrc === src ? 'partner-logo-slot--active' : ''}`}
-              onMouseEnter={() => handleMouseEnter(src)}
+              className={`partner-logo-slot ${activeIdx === i ? 'partner-logo-slot--active' : ''}`}
+              onMouseEnter={() => handleMouseEnter(i)}
               onMouseLeave={handleMouseLeave}
-              onTouchStart={() => handleTouchStart(src)}
+              onTouchStart={() => handleTouchStart(i)}
               onTouchEnd={handleTouchEnd}
+              onContextMenu={(e) => e.preventDefault()}
             >
               <img src={cloudinaryUrl(src, 240)} alt="partner logo" draggable={false} />
             </div>
