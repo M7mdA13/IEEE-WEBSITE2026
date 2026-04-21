@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import api from '../../api/public';
 import { getCommitteeBySlug } from '../../data/committees';
@@ -36,6 +36,7 @@ const SocialLinks = ({ github, linkedin, email }) => (
 
 const Committee = () => {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const getStatic = (s) => {
     const staticCmt = getCommitteeBySlug(s);
     if (!staticCmt) return null;
@@ -83,10 +84,10 @@ const Committee = () => {
       <div className="committee-hero">
         <div className="committee-hero-inner">
 
-          <Link to="/committees" className="back-btn">
+          <button className="back-btn" onClick={() => navigate(-1)}>
             <i className="fas fa-arrow-left"></i>
             Back to committees
-          </Link>
+          </button>
 
           <div className="hero-info-row">
             <motion.div layoutId={`cmt-icon-${slug}`} className="hero-logo-wrap">
@@ -195,9 +196,6 @@ const Committee = () => {
                     <div className="cmt-board-info">
                       <h3 className="cmt-board-name">{member.name}</h3>
                       <div className="cmt-board-role-row">
-                        <span className={`cmt-board-badge cmt-board-badge--${member.roleType}`}>
-                          {member.roleType === 'head' ? 'Head' : 'Vice Head'}
-                        </span>
                         <span className="cmt-board-role">{member.role}</span>
                       </div>
                       {member.bio && <p className="cmt-board-bio">{member.bio}</p>}

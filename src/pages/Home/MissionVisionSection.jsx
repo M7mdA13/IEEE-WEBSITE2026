@@ -3,9 +3,9 @@ import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import './MissionVisionSection.css';
 
 const stats = [
-  { label: 'Members', value: 200, suffix: '+' },
-  { label: 'Events',  value: 20,  suffix: '+'  },
-  { label: 'Partners', value: 12, suffix: '+' },
+  { label: 'Members',  value: 100, suffix: '+' },
+  { label: 'Events',   value: 20,  suffix: '+' },
+  { label: 'Partners', value: 12,  suffix: '+' },
 ];
 
 const MISSION_PATH = 'M 18,6 L 182,6 Q 196,6 190,20 L 110,162 Q 100,180 90,162 L 10,20 Q 4,6 18,6 Z';
@@ -53,14 +53,18 @@ const MissionVisionSection = () => {
     target: sectionRef,
     offset: ['start end', 'end start'],
   });
-  const missionX = useTransform(scrollYProgress, [0, 1], [-150, 0]);
-  const visionX  = useTransform(scrollYProgress, [0, 1], [150, 0]);
+  /* Desktop: meet at scroll midpoint (0.5). Mobile stacked layout: meet later (~0.62)
+     so both triangles are actually in frame when they align. */
+  const missionXDesktop = useTransform(scrollYProgress, [0, 1], [-150, 0]);
+  const visionXDesktop  = useTransform(scrollYProgress, [0, 1], [150,  0]);
+  const missionXMobile  = useTransform(scrollYProgress, [0, 0.62, 1],  [-150, 0, 150]);
+  const visionXMobile   = useTransform(scrollYProgress, [0, 0.62, 1],  [150, 0, -150]);
 
-  /* Disable x-parallax on mobile — stacked layout has no horizontal drift */
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 650px)').matches
+  );
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 650px)');
-    setIsMobile(mq.matches);
     const handler = (e) => setIsMobile(e.matches);
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
@@ -93,33 +97,61 @@ const MissionVisionSection = () => {
         </div>
 
         <div className="mv-award-banner">
-          <span className="mv-award-trophy" role="img" aria-label="trophy">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              {/* Cup body */}
-              <path d="M8 4h16v12a8 8 0 0 1-16 0V4Z" fill="url(#trophyGold)" stroke="#b8860b" strokeWidth="1"/>
-              {/* Handles */}
-              <path d="M8 7H5a3 3 0 0 0 0 6h3" stroke="#b8860b" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-              <path d="M24 7h3a3 3 0 0 1 0 6h-3" stroke="#b8860b" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-              {/* Stem */}
-              <rect x="13" y="20" width="6" height="5" rx="1" fill="url(#trophyGold)" stroke="#b8860b" strokeWidth="1"/>
-              {/* Base */}
-              <rect x="10" y="25" width="12" height="3" rx="1.5" fill="url(#trophyGold)" stroke="#b8860b" strokeWidth="1"/>
-              {/* Star accent */}
-              <path d="M16 8l1.1 2.2 2.4.35-1.75 1.7.41 2.42L16 13.5l-2.16 1.17.41-2.42L12.5 10.55l2.4-.35L16 8Z" fill="#fff8" stroke="none"/>
-              <defs>
-                <linearGradient id="trophyGold" x1="8" y1="4" x2="24" y2="28" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stopColor="#ffd700"/>
-                  <stop offset="50%" stopColor="#ffc107"/>
-                  <stop offset="100%" stopColor="#e6a000"/>
-                </linearGradient>
-              </defs>
+          <span className="mv-award-shine" aria-hidden="true" />
+
+          {/* Left wreath branch */}
+          <span className="mv-award-branch" aria-hidden="true">
+            <svg width="48" height="140" viewBox="0 0 48 140" fill="none">
+              {[
+                { cx: 30, cy: 130, rot:  55, rx: 11, ry: 4.2 },
+                { cx: 20, cy: 115, rot:  40, rx: 11, ry: 4.2 },
+                { cx: 12, cy: 100, rot:  24, rx: 11, ry: 4.2 },
+                { cx:  8, cy:  84, rot:   8, rx: 11, ry: 4.2 },
+                { cx:  8, cy:  68, rot:  -8, rx: 11, ry: 4.2 },
+                { cx: 12, cy:  52, rot: -24, rx: 11, ry: 4.2 },
+                { cx: 19, cy:  37, rot: -40, rx: 11, ry: 4.2 },
+                { cx: 29, cy:  23, rot: -54, rx: 11, ry: 4.2 },
+                { cx: 38, cy:  10, rx: 10, ry: 3.8, rot: -65 },
+              ].map(({ cx, cy, rot, rx, ry }, i) => (
+                <ellipse key={i} cx={cx} cy={cy} rx={rx} ry={ry}
+                  transform={`rotate(${rot} ${cx} ${cy})`}
+                  fill="#FFC107" opacity={0.97 - i * 0.055} />
+              ))}
+              <path d="M26 135 C18 112, 10 88, 9 66 C8 44, 15 24, 38 8"
+                stroke="#E6A000" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.45"/>
+              <path d="M14 135 Q26 142 38 135" stroke="#FFC107" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.75"/>
             </svg>
           </span>
+
+          {/* Text in the centre of the wreath */}
           <div className="mv-award-text">
             <span className="mv-award-title">2025 IEEE Exemplary Branch Award</span>
             <span className="mv-award-sub">Recognized among Egypt's finest IEEE student branches</span>
           </div>
-          <span className="mv-award-shine" aria-hidden="true" />
+
+          {/* Right wreath branch — CSS mirror of left */}
+          <span className="mv-award-branch mv-award-branch--right" aria-hidden="true">
+            <svg width="48" height="140" viewBox="0 0 48 140" fill="none">
+              {[
+                { cx: 30, cy: 130, rot:  55, rx: 11, ry: 4.2 },
+                { cx: 20, cy: 115, rot:  40, rx: 11, ry: 4.2 },
+                { cx: 12, cy: 100, rot:  24, rx: 11, ry: 4.2 },
+                { cx:  8, cy:  84, rot:   8, rx: 11, ry: 4.2 },
+                { cx:  8, cy:  68, rot:  -8, rx: 11, ry: 4.2 },
+                { cx: 12, cy:  52, rot: -24, rx: 11, ry: 4.2 },
+                { cx: 19, cy:  37, rot: -40, rx: 11, ry: 4.2 },
+                { cx: 29, cy:  23, rot: -54, rx: 11, ry: 4.2 },
+                { cx: 38, cy:  10, rx: 10, ry: 3.8, rot: -65 },
+              ].map(({ cx, cy, rot, rx, ry }, i) => (
+                <ellipse key={i} cx={cx} cy={cy} rx={rx} ry={ry}
+                  transform={`rotate(${rot} ${cx} ${cy})`}
+                  fill="#FFC107" opacity={0.97 - i * 0.055} />
+              ))}
+              <path d="M26 135 C18 112, 10 88, 9 66 C8 44, 15 24, 38 8"
+                stroke="#E6A000" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.45"/>
+              <path d="M14 135 Q26 142 38 135" stroke="#FFC107" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.75"/>
+            </svg>
+          </span>
         </div>
       </motion.div>
 
@@ -128,7 +160,7 @@ const MissionVisionSection = () => {
         {/* ── Mission ── */}
         <motion.div
           className="mv-tri mv-tri--mission"
-          style={{ x: isMobile ? 0 : missionX }}
+          style={{ x: isMobile ? missionXMobile : missionXDesktop }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-60px' }}
@@ -164,7 +196,7 @@ const MissionVisionSection = () => {
         {/* ── Vision ── */}
         <motion.div
           className="mv-tri mv-tri--vision"
-          style={{ x: isMobile ? 0 : visionX }}
+          style={{ x: isMobile ? visionXMobile : visionXDesktop }}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true, margin: '-60px' }}
@@ -182,15 +214,15 @@ const MissionVisionSection = () => {
             <p className="mv-tri__body mv-tri__body--dark mv-tri__body--desktop">
               A thriving, connected IEEE community where members feel valued, inspired to innovate, and empowered to lead the future of technology.
             </p>
-            {/* Mobile body — flows with upward-pointing triangle (narrow top, wide bottom) */}
+            {/* Mobile body — shorter lines near the peak, wider toward the base */}
             <p className="mv-tri__body mv-tri__body--dark mv-tri__body--mobile">
-              A<br/>
-              thriving,<br/>
+              A Thriving,<br/>
               connected IEEE<br/>
               community where members<br/>
-              feel valued, inspired to innovate,<br/>
-              and empowered to lead the future<br/>
-              of technology.
+              feel valued, inspired to innovate and<br/>
+              empowered to lead the future of technology.<br/>
+              
+              
             </p>
           </div>
         </motion.div>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../api/public';
 import { committees as staticCommittees } from '../../data/committees';
@@ -78,7 +78,10 @@ const CommitteeCard = ({ committee }) => {
 
 /* ── Page ── */
 const Committees = () => {
-  const [activeTab, setActiveTab] = useState('technical');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(
+    searchParams.get('tab') === 'non-technical' ? 'non-technical' : 'technical'
+  );
   const [all, setAll] = useState(staticCommittees);
 
   useEffect(() => {
@@ -92,7 +95,7 @@ const Committees = () => {
   const switchTab = (tab) => {
     if (tab === activeTab) return;
     setActiveTab(tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setSearchParams({ tab }, { replace: true });
   };
 
   return (

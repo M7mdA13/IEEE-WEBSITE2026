@@ -10,28 +10,28 @@ const PLANET_CONTENT = {
   story: {
     title: 'Our Story',
     body: 'IEEE MUST Student Branch was founded at Misr University for Science and Technology with one goal: bring students closer to the engineering world. From a small group of passionate students, we grew into one of Egypt\'s most active IEEE branches — hosting workshops, hackathons, and events that shape future engineers.',
-    stats: [{ label: 'Founded', value: '2012' }, { label: 'Years Active', value: '12+' }, { label: 'Members', value: '400+' }],
+    stats: [{ label: 'Founded', value: '2011' }, { label: 'Years Active', value: '15+' }, { label: 'Members', value: '100+' }],
   },
   mission: {
     title: 'Our Mission',
     body: 'We exist to advance technology for the benefit of humanity. That means giving students access to real knowledge, real networks, and real opportunities — through technical workshops, mentorship programs, and a culture of continuous learning across every discipline.',
-    stats: [{ label: 'Committees', value: '8' }, { label: 'Events / Year', value: '50+' }, { label: 'Disciplines', value: '6+' }],
+    stats: [{ label: 'Events / Season', value: '20+' }, { label: 'Sessions / Season', value: '50+' }, { label: 'Committees', value: '8' }],
   },
   team: {
     title: 'Our Team',
     body: 'Our leadership board is elected every year from within our member base. Each committee is led by passionate students who volunteer their time to build something meaningful — from technical content to media, marketing, and beyond. Behind every event is a team of dedicated people.',
-    stats: [{ label: 'Committees', value: '8' }, { label: 'Board Members', value: '16+' }, { label: 'Volunteers', value: '100+' }],
+    stats: [{ label: 'Active Members', value: '100+' }, { label: 'Board Members', value: '16+' }, { label: 'Committees', value: '8' }],
   },
   impact: {
     title: 'Our Impact',
-    body: 'Over 200 events hosted, 400+ members engaged, and a growing network of alumni now working across Egypt and the world. Our impact extends beyond the university — touching industries, communities, and the next generation of engineers.',
-    stats: [{ label: 'Events Held', value: '200+' }, { label: 'Members', value: '400+' }, { label: 'Alumni', value: 'Global' }],
+    body: 'Hundreds of events hosted, thousands of student hours of learning delivered, and a growing network of alumni now working across Egypt and the world. Our impact extends beyond the university — touching industries, communities, and the next generation of engineers.',
+    stats: [{ label: 'Events Hosted', value: '200+' }, { label: 'Sessions Run', value: '500+' }, { label: 'Alumni', value: 'Global' }],
   },
 };
 
 /* ── Timeline milestones ─────────────────────────────────────── */
 const TIMELINE = [
-  { year: '2012', icon: 'fa-flag',        color: '#0096ED', title: 'Branch Founded',          desc: 'IEEE MUST Student Branch established at Misr University for Science and Technology with a small group of passionate students.' },
+  { year: '2011', icon: 'fa-flag',        color: '#0096ED', title: 'Branch Founded',          desc: 'IEEE MUST Student Branch established at Misr University for Science and Technology with a small group of passionate students.' },
   { year: '2015', icon: 'fa-bolt',        color: '#f97316', title: 'First Hackathon',         desc: 'Hosted our first 24-hour hackathon, attracting over 80 student participants from across the university.' },
   { year: '2017', icon: 'fa-layer-group', color: '#8b5cf6', title: 'Eight Committees',        desc: 'Expanded into 8 specialized technical and non-technical committees, covering everything from AI to media.' },
   { year: '2019', icon: 'fa-users',       color: '#22c55e', title: '200+ Members',            desc: 'Crossed 200 active members and launched the mentorship program connecting students with industry professionals.' },

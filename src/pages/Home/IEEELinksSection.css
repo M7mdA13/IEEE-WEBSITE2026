@@ -216,11 +216,33 @@
   .ieee-tile--wide {
     grid-column: span 1;
     flex-direction: column;
+    align-items: stretch; /* reset desktop align-items: center */
     min-height: 140px;
   }
 
+  /* Reset all wide-tile overrides so it looks identical to regular tiles */
   .ieee-tile--wide .ieee-tile-top {
+    flex: unset;
     flex-direction: row;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .ieee-tile--wide .ieee-tile-desc {
+    flex: 1;
+  }
+
+  .ieee-tile--wide .ieee-tile-arrow {
+    flex-shrink: unset;
+    margin-top: 0;
+    align-self: flex-end;
+  }
+
+  .ieee-tile--wide .ieee-tile-decor {
+    width: 110px;
+    height: 110px;
+    right: -30px;
+    bottom: -30px;
   }
 }

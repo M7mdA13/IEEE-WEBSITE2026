@@ -68,36 +68,60 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 56px;
+  height: 72px;
   flex-shrink: 0;
   overflow: visible; /* let scaled logos breathe outside the slot bounds */
+  border-radius: 10px;
+  padding: 10px 16px;
+  transition: background 0.28s ease, box-shadow 0.28s ease;
+}
+
+/* ── Logo pills: IEEE brand blue background for contrast in any mode ── */
+
+/* Light mode: dark IEEE navy — makes white logos pop cleanly */
+.partner-logo-slot {
+  background: #054377;
+  border-radius: 10px;
+  padding: 10px 16px;
+  transition: background 0.28s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Dark mode: lighter IEEE blue — keeps dark logos readable on dark screen */
+body.dark-mode .partner-logo-slot {
+  background: #1a6aad;
 }
 
 .partner-logo-slot img {
-  height: 100%;
+  height: 46px;
   max-width: 160px;
   width: auto;
   object-fit: contain;
-  opacity: 0.55;
-  transition: opacity 0.28s ease, filter 0.28s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
-  filter: grayscale(0.2);
+  opacity: 0.92;
+  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: none;
 }
 
 body.dark-mode .partner-logo-slot img {
-  filter: grayscale(1) brightness(2);
-  opacity: 0.45;
+  filter: none;
+  opacity: 0.95;
+}
+
+.partner-logo-slot--active {
+  background: #03305a;
+}
+
+body.dark-mode .partner-logo-slot--active {
+  background: #2480c8;
 }
 
 .partner-logo-slot--active img {
   opacity: 1;
-  filter: none;
-  transform: scale(1.18) translateY(-4px);
+  transform: scale(1.14) translateY(-3px);
 }
 
 body.dark-mode .partner-logo-slot--active img {
-  filter: grayscale(0) brightness(1.4);
-  opacity: 0.95;
-  transform: scale(1.18) translateY(-4px);
+  opacity: 1;
+  transform: scale(1.14) translateY(-3px);
 }
 
 /* ── Mobile: static scrollable row (no CSS animation = correct hit testing) ── */

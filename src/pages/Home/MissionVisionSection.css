@@ -25,92 +25,74 @@
   100% { transform: translateX(220%)  skewX(-18deg); }
 }
 
+/* ── Award — free-floating wreath, no card ── */
 .mv-award-banner {
-  position: relative;
-  overflow: hidden;
   display: inline-flex;
   align-items: center;
-  gap: 14px;
-  background: linear-gradient(135deg, rgba(255, 193, 7, 0.14) 0%, rgba(255, 152, 0, 0.08) 100%);
-  border: 1.5px solid rgba(255, 193, 7, 0.50);
-  border-radius: 18px;
-  padding: 14px 22px;
-  margin-top: 24px;
-  max-width: 520px;
-  box-shadow: 0 4px 20px rgba(255, 193, 7, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  gap: 16px;
+  margin-top: 48px;
+  max-width: 640px;
 }
 
-.mv-award-banner:hover {
-  box-shadow: 0 6px 28px rgba(255, 193, 7, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 193, 7, 0.75);
-}
+/* Shimmer no longer needed without card — keep keyframe for potential future use */
+.mv-award-shine { display: none; }
 
-body.dark-mode .mv-award-banner {
-  background: linear-gradient(135deg, rgba(255, 193, 7, 0.10) 0%, rgba(255, 152, 0, 0.05) 100%);
-  border-color: rgba(255, 193, 7, 0.38);
-  box-shadow: 0 4px 20px rgba(255, 193, 7, 0.10);
-}
-
-/* Shimmer sweep */
-.mv-award-shine {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, 0.28) 50%, transparent 65%);
-  animation: mv-award-shimmer 3.2s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.mv-award-trophy {
+/* Wreath branches flanking the text */
+.mv-award-branch {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  flex-shrink: 0;
-  filter: drop-shadow(0 2px 6px rgba(255, 193, 7, 0.45));
+  filter: drop-shadow(0 2px 8px rgba(255, 193, 7, 0.55));
   transition: filter 0.3s ease;
 }
 
-.mv-award-banner:hover .mv-award-trophy {
-  filter: drop-shadow(0 3px 10px rgba(255, 193, 7, 0.7));
+.mv-award-branch--right {
+  transform: scaleX(-1);
+}
+
+.mv-award-banner:hover .mv-award-branch {
+  filter: drop-shadow(0 3px 14px rgba(255, 193, 7, 0.85));
 }
 
 .mv-award-text {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  text-align: left;
+  gap: 5px;
+  text-align: center;
+  align-items: center;
+  flex: 1;
 }
 
 .mv-award-title {
   font-family: 'Raleway', sans-serif;
-  font-size: 0.95rem;
+  font-size: 0.90rem;
   font-weight: 800;
   color: #a36000;
-  letter-spacing: 0.02em;
-  line-height: 1.2;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
   text-transform: uppercase;
+  text-shadow: 0 1px 10px rgba(255, 193, 7, 0.25);
 }
 
 body.dark-mode .mv-award-title {
   color: #ffc107;
+  text-shadow: 0 0 16px rgba(255, 193, 7, 0.45);
 }
 
 .mv-award-sub {
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 500;
   color: var(--ieee-text-soft);
-  line-height: 1.3;
+  line-height: 1.4;
   letter-spacing: 0.01em;
 }
 
 @media (max-width: 480px) {
-  .mv-award-banner {
-    padding: 12px 16px;
-    gap: 10px;
-  }
-  .mv-award-trophy svg { width: 26px; height: 26px; }
-  .mv-award-title  { font-size: 0.82rem; }
-  .mv-award-sub    { font-size: 0.70rem; }
+  .mv-award-banner { gap: 10px; margin-top: 36px; }
+  .mv-award-branch svg { width: 34px; height: 100px; }
+  .mv-award-title  { font-size: 0.75rem; }
+  .mv-award-sub    { font-size: 0.63rem; }
 }
 
 .mv-suffix { display: inline-block; }
@@ -179,7 +161,7 @@ body.dark-mode .mv-tri__fill--vision { fill: rgba(0, 210, 255, 0.07); stroke: va
 }
 
 .mv-tri__content--mission { top: 12%; left: 32%; text-align: left; align-items: flex-start; }
-.mv-tri__content--vision { bottom: 12%; right: 32%; text-align: right; align-items: flex-end; }
+.mv-tri__content--vision { bottom: 22%; right: 32%; text-align: right; align-items: flex-end; }
 
 /* Reduced heading sizes for a cleaner look */
 .mv-tri__heading {
@@ -285,12 +267,13 @@ body.dark-mode .mv-tri__icon--vision { filter: brightness(0) invert(1); }
 
   /* Hide desktop block, show responsive mobile block */
   .mv-tri__body--desktop { display: none; }
-  .mv-tri__body--mobile { 
-    display: block; 
-    font-size: 2.8vw;
-    line-height: 1.4;
-    margin-top: 0px;
+  .mv-tri__body--mobile {
+    display: block;
+    font-size: 3vw;
+    line-height: 1.55;
+    margin-top: 2px;
     text-align: center;
+    word-break: break-word;
   }
 
   .mv-tri__content {
@@ -305,7 +288,7 @@ body.dark-mode .mv-tri__icon--vision { filter: brightness(0) invert(1); }
 
   /* Pushed headings closer to edge so text has more room */
   .mv-tri__content--mission { top: 7%; }
-  .mv-tri__content--vision  { bottom: 8%; right: auto; }
+  .mv-tri__content--vision  { bottom: 10%; right: auto; }
 
   .mv-tri__heading { font-size: 5.2vw; }
 
