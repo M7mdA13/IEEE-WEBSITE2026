@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import api from '../../api/public';
 import './PartnersSection.css';
@@ -21,36 +21,81 @@ const staticLogos = [
   '/images/logo5.png',
 ];
 
+const SPEED_PX_S = 60; // pixels per second
+
 const PartnersSection = () => {
-  const [logos, setLogos] = useState(staticLogos);
+  const [logos, setLogos]       = useState(staticLogos);
   const [activeIdx, setActiveIdx] = useState(null);
   const [dataReady, setDataReady] = useState(false);
 
-  // (hover: hover) is true on real pointer devices (mouse/trackpad).
-  // Touch-only phones return false, so we never attach mouse handlers there —
-  // this eliminates the synthetic-mouseenter-before-touchstart race that caused
-  // the wrong logo to briefly highlight on first tap.
+  // RAF state — stored in refs so the animation loop never needs re-registration
+  const trackRef    = useRef(null);
+  const xRef        = useRef(0);        // current translateX in pixels
+  const pausedRef   = useRef(false);    // true while a finger/pointer is held
+  const halfRef     = useRef(0);        // scrollWidth / 2 (width of one copy)
+  const rafRef      = useRef(null);
+
+  // (hover:hover) = real pointer device. Touch-only phones return false.
+  // We never attach mouse handlers on those, eliminating the synthetic-mouseenter
+  // race that caused the wrong logo to select on first tap.
   const supportsHover = useRef(
     typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches
   );
 
+  /* ── API fetch ── */
   useEffect(() => {
     api.get('/partners')
       .then(({ data }) => {
         const imgs = (data.data || []).map(p => p.logo).filter(Boolean);
-        if (imgs.length > 0) {
-          setActiveIdx(null);
-          setLogos(imgs);
-        }
+        if (imgs.length > 0) setLogos(imgs);
       })
       .catch(() => {})
       .finally(() => setDataReady(true));
   }, []);
 
+  /* doubled array for seamless loop */
   const doubled = useMemo(() => [...logos, ...logos], [logos]);
 
+  /* Measure the half-width after layout (= width of one copy of logos) */
+  useLayoutEffect(() => {
+    const measure = () => {
+      if (trackRef.current) halfRef.current = trackRef.current.scrollWidth / 2;
+    };
+    measure();
+    // Re-measure if window is resized (logo sizes may reflow)
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [logos]);
+
+  /* RAF animation loop — never uses CSS animation-play-state (avoids iOS Safari snap) */
+  useEffect(() => {
+    let lastTs = null;
+
+    const step = (ts) => {
+      if (lastTs !== null && !pausedRef.current && halfRef.current > 0 && trackRef.current) {
+        xRef.current -= SPEED_PX_S * (ts - lastTs) / 1000;
+        // Seamless reset: once we've scrolled one full copy, jump back by exactly
+        // that amount — the doubled track makes this invisible.
+        if (xRef.current <= -halfRef.current) xRef.current += halfRef.current;
+        trackRef.current.style.transform = `translateX(${xRef.current}px)`;
+      }
+      lastTs = ts;
+      rafRef.current = requestAnimationFrame(step);
+    };
+
+    rafRef.current = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  /* Interaction handlers */
+  const pause  = (i) => { pausedRef.current = true;  setActiveIdx(i); };
+  const resume = ()  => { pausedRef.current = false; setActiveIdx(null); };
+
   return (
-    <section className="partners-section" style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.4s ease' }}>
+    <section
+      className="partners-section"
+      style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.4s ease' }}
+    >
       <motion.div
         className="partners-header"
         initial={{ opacity: 0, y: 20 }}
@@ -71,20 +116,16 @@ const PartnersSection = () => {
         viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        <div
-          className="partners-marquee-track"
-          style={{ animationPlayState: activeIdx !== null ? 'paused' : 'running' }}
-        >
+        {/* Track: RAF drives translateX directly — no CSS animation, no play-state snap */}
+        <div ref={trackRef} className="partners-marquee-track">
           {doubled.map((src, i) => (
             <div
               key={i}
               className={`partner-logo-slot ${activeIdx === i ? 'partner-logo-slot--active' : ''}`}
-              // Mouse events: desktop/trackpad only — never fires on touch-only phones
-              onMouseEnter={supportsHover.current ? () => setActiveIdx(i) : undefined}
-              onMouseLeave={supportsHover.current ? () => setActiveIdx(null) : undefined}
-              // Touch events: tap to pause, hold to keep paused, lift to resume
-              onTouchStart={() => setActiveIdx(i)}
-              onTouchEnd={() => setActiveIdx(null)}
+              onMouseEnter={supportsHover.current ? () => pause(i)  : undefined}
+              onMouseLeave={supportsHover.current ? resume          : undefined}
+              onTouchStart={() => pause(i)}
+              onTouchEnd={resume}
               onContextMenu={(e) => e.preventDefault()}
             >
               <img src={cloudinaryUrl(src, 240)} alt="partner logo" draggable={false} />

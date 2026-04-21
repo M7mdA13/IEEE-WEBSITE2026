@@ -54,16 +54,9 @@
   gap: 56px;
   width: max-content;
   padding: 20px 0;
-  animation: marquee-scroll 32s linear infinite;
-  /* play-state controlled inline via React */
-  /* Force GPU compositing layer — eliminates CPU repaints on every animation frame */
+  /* No CSS animation — RAF drives translateX directly via style.transform.
+     This avoids iOS Safari's animation-play-state snap/restart bug entirely. */
   will-change: transform;
-  transform: translateZ(0);
-}
-
-@keyframes marquee-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
 }
 
 .partner-logo-slot {
