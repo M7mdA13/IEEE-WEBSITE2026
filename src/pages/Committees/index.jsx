@@ -40,14 +40,19 @@ const headerItemVariants = {
 /* ── Card ── */
 const CommitteeCard = ({ committee }) => {
   const cardRef = useRef(null);
+  const rafId = useRef(null);
 
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    cardRef.current.style.setProperty('--mouse-x', `${x}px`);
-    cardRef.current.style.setProperty('--mouse-y', `${y}px`);
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    cancelAnimationFrame(rafId.current);
+    rafId.current = requestAnimationFrame(() => {
+      if (!cardRef.current) return;
+      const rect = cardRef.current.getBoundingClientRect();
+      cardRef.current.style.setProperty('--mouse-x', `${clientX - rect.left}px`);
+      cardRef.current.style.setProperty('--mouse-y', `${clientY - rect.top}px`);
+    });
   };
 
   return (

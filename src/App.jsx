@@ -17,6 +17,35 @@ const Committee   = lazy(() => import('./pages/Committee'));
 const AIAssistant = lazy(() => import('./pages/AIAssistant'));
 const NotFound    = lazy(() => import('./pages/NotFound'));
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(err, info) {
+    console.error('[ErrorBoundary]', err, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', padding: '2rem', textAlign: 'center' }}>
+          <h2 style={{ fontFamily: 'Montserrat, sans-serif', color: '#054377' }}>Something went wrong.</h2>
+          <button
+            onClick={() => { this.setState({ hasError: false }); window.location.href = '/'; }}
+            style={{ padding: '10px 24px', background: '#0096ED', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontFamily: 'Montserrat, sans-serif', fontWeight: 700 }}
+          >
+            Go Home
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 const pageVariants = {
   initial: { opacity: 0, y: 12 },
   animate: { opacity: 1, y: 0 },
@@ -101,10 +130,11 @@ const App = () => {
       <ScrollToTop />
       <Navbar isDark={isDark} toggleTheme={toggleTheme} />
 
-      {/* Suspense: blank min-height div while lazy chunk loads (PageWrapper does the visual fade) */}
-      <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
-        <AnimatedRoutes isDark={isDark} />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<div style={{ minHeight: '100vh' }} />}>
+          <AnimatedRoutes isDark={isDark} />
+        </Suspense>
+      </ErrorBoundary>
 
       <AskAIFAB />
       <Footer />

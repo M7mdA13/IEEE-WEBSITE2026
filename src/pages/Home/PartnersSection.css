@@ -53,10 +53,12 @@
   align-items: center;
   gap: 56px;
   width: max-content;
-  /* vertical padding gives hovered logos room to scale up without being cut */
   padding: 20px 0;
   animation: marquee-scroll 32s linear infinite;
   /* play-state controlled inline via React */
+  /* Force GPU compositing layer — eliminates CPU repaints on every animation frame */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 @keyframes marquee-scroll {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
 import api from '../../api/public';
 import './PartnersSection.css';
@@ -25,6 +25,9 @@ const PartnersSection = () => {
   const [logos, setLogos] = useState(staticLogos);
   const [activeSrc, setActiveSrc] = useState(null);
   const [dataReady, setDataReady] = useState(false);
+  // Track last touch time to suppress the synthetic mouse events mobile browsers
+  // fire after a tap — prevents the rapid null→src→null toggle that causes flicker.
+  const lastTouchRef = useRef(0);
 
   useEffect(() => {
     api.get('/partners')
@@ -39,7 +42,23 @@ const PartnersSection = () => {
       .finally(() => setDataReady(true));
   }, []);
 
-  const doubled = [...logos, ...logos];
+  const doubled = useMemo(() => [...logos, ...logos], [logos]);
+
+  const handleMouseEnter = (src) => {
+    if (Date.now() - lastTouchRef.current < 500) return;
+    setActiveSrc(src);
+  };
+  const handleMouseLeave = () => {
+    if (Date.now() - lastTouchRef.current < 500) return;
+    setActiveSrc(null);
+  };
+  const handleTouchStart = (src) => {
+    lastTouchRef.current = Date.now();
+    setActiveSrc(src);
+  };
+  const handleTouchEnd = () => {
+    setActiveSrc(null);
+  };
 
   return (
     <section className="partners-section" style={{ opacity: dataReady ? 1 : 0, transition: 'opacity 0.4s ease' }}>
@@ -63,7 +82,6 @@ const PartnersSection = () => {
         viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
-        {/* CSS marquee — runs on all screen sizes */}
         <div
           className="partners-marquee-track"
           style={{ animationPlayState: activeSrc ? 'paused' : 'running' }}
@@ -72,8 +90,10 @@ const PartnersSection = () => {
             <div
               key={i}
               className={`partner-logo-slot ${activeSrc === src ? 'partner-logo-slot--active' : ''}`}
-              onMouseEnter={() => setActiveSrc(src)}
-              onMouseLeave={() => setActiveSrc(null)}
+              onMouseEnter={() => handleMouseEnter(src)}
+              onMouseLeave={handleMouseLeave}
+              onTouchStart={() => handleTouchStart(src)}
+              onTouchEnd={handleTouchEnd}
             >
               <img src={cloudinaryUrl(src, 240)} alt="partner logo" draggable={false} />
             </div>
