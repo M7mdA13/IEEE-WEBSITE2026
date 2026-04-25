@@ -196,7 +196,9 @@ const Committee = () => {
                     <div className="cmt-board-info">
                       <h3 className="cmt-board-name">{member.name}</h3>
                       <div className="cmt-board-role-row">
-                        <span className="cmt-board-role">{member.role}</span>
+                        <span className={`cmt-board-badge cmt-board-badge--${member.roleType}`}>
+                          {member.roleType === 'head' ? 'Head' : 'Vice Head'}
+                        </span>
                       </div>
                       {member.bio && <p className="cmt-board-bio">{member.bio}</p>}
                       <SocialLinks github={member.github} linkedin={member.linkedin} email={member.email} />

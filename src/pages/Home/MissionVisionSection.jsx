@@ -3,7 +3,7 @@ import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import './MissionVisionSection.css';
 
 const stats = [
-  { label: 'Members',  value: 100, suffix: '+' },
+  { label: 'Members',  value: 200, suffix: '+' },
   { label: 'Events',   value: 20,  suffix: '+' },
   { label: 'Partners', value: 12,  suffix: '+' },
 ];
@@ -46,15 +46,79 @@ const CountUp = ({ target, suffix }) => {
   );
 };
 
+/* ── Roman Wreath Generator ── 
+   Calculates a quadratic bezier curve for the stem and mathematically places 
+   inner/outer leaves along the tangent of the curve for a realistic wrap. */
+const WreathBranch = ({ isRight }) => {
+  const leaves = [];
+  const numPairs = 13; 
+  // P0 = Bottom crossing point, P1 = Wide belly curve, P2 = Top tip
+  const P0 = { x: 215, y: 205 }; 
+  const P1 = { x: 15, y: 160 };  
+  const P2 = { x: 85, y: 25 };   
+  
+  for (let i = 1; i <= numPairs; i++) {
+    const t = i / (numPairs + 1); 
+    
+    // Position along the curve
+    const x = Math.pow(1-t, 2) * P0.x + 2 * (1-t) * t * P1.x + Math.pow(t, 2) * P2.x;
+    const y = Math.pow(1-t, 2) * P0.y + 2 * (1-t) * t * P1.y + Math.pow(t, 2) * P2.y;
+    
+    // Derivative (Tangent) to find the angle of the curve at this point
+    const dx = 2 * (1-t) * (P1.x - P0.x) + 2 * t * (P2.x - P1.x);
+    const dy = 2 * (1-t) * (P1.y - P0.y) + 2 * t * (P2.y - P1.y);
+    const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+    
+    // Leaf vector
+    const leafPath = "M 0 0 C 12 -14 26 -10 32 0 C 26 10 12 14 0 0 Z";
+    const scale = 0.55 + (0.45 * (1 - t)); // Leaves shrink slightly as they reach the top
+    
+    // Outer and Inner leaves rotated away from the tangent
+    leaves.push(
+      <g key={`outer-${i}`} transform={`translate(${x}, ${y}) rotate(${angle - 35}) scale(${scale})`}>
+        <path d={leafPath} fill="#FFC107" />
+      </g>
+    );
+    leaves.push(
+      <g key={`inner-${i}`} transform={`translate(${x}, ${y}) rotate(${angle + 35}) scale(${scale})`}>
+        <path d={leafPath} fill="#FFC107" />
+      </g>
+    );
+  }
+  
+  // Single terminal leaf at the top tip
+  const topAngle = Math.atan2( 2 * (P2.y - P1.y), 2 * (P2.x - P1.x) ) * (180 / Math.PI);
+  leaves.push(
+     <g key="top" transform={`translate(${P2.x}, ${P2.y}) rotate(${topAngle}) scale(0.6)`}>
+        <path d="M 0 0 C 12 -14 26 -10 32 0 C 26 10 12 14 0 0 Z" fill="#FFC107" />
+     </g>
+  );
+
+  const stemPath = `M ${P0.x} ${P0.y} Q ${P1.x} ${P1.y} ${P2.x} ${P2.y}`;
+
+  // Assemble the branch
+  const content = (
+    <>
+      <path d={stemPath} fill="none" stroke="#FFC107" strokeWidth="3.5" strokeLinecap="round" />
+      {leaves}
+    </>
+  );
+
+  // If right branch, flip horizontally around the center
+  return isRight ? (
+    <g transform="translate(400, 0) scale(-1, 1)">{content}</g>
+  ) : (
+    <g>{content}</g>
+  );
+};
+
 const MissionVisionSection = () => {
-  /* Parallax: section-scoped scroll progress drives the two shapes apart */
   const sectionRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start end', 'end start'],
   });
-  /* Desktop: meet at scroll midpoint (0.5). Mobile stacked layout: meet later (~0.62)
-     so both triangles are actually in frame when they align. */
+
   const missionXDesktop = useTransform(scrollYProgress, [0, 1], [-150, 0]);
   const visionXDesktop  = useTransform(scrollYProgress, [0, 1], [150,  0]);
   const missionXMobile  = useTransform(scrollYProgress, [0, 0.62, 1],  [-150, 0, 150]);
@@ -63,6 +127,7 @@ const MissionVisionSection = () => {
   const [isMobile, setIsMobile] = useState(() =>
     typeof window !== 'undefined' && window.matchMedia('(max-width: 650px)').matches
   );
+
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 650px)');
     const handler = (e) => setIsMobile(e.matches);
@@ -97,66 +162,19 @@ const MissionVisionSection = () => {
         </div>
 
         <div className="mv-award-banner">
-          <span className="mv-award-shine" aria-hidden="true" />
+          <svg className="mv-award-wreath-svg" viewBox="0 0 400 220" fill="none" aria-hidden="true">
+            <WreathBranch isRight={false} />
+            <WreathBranch isRight={true} />
+          </svg>
 
-          {/* Left wreath branch */}
-          <span className="mv-award-branch" aria-hidden="true">
-            <svg width="48" height="140" viewBox="0 0 48 140" fill="none">
-              {[
-                { cx: 30, cy: 130, rot:  55, rx: 11, ry: 4.2 },
-                { cx: 20, cy: 115, rot:  40, rx: 11, ry: 4.2 },
-                { cx: 12, cy: 100, rot:  24, rx: 11, ry: 4.2 },
-                { cx:  8, cy:  84, rot:   8, rx: 11, ry: 4.2 },
-                { cx:  8, cy:  68, rot:  -8, rx: 11, ry: 4.2 },
-                { cx: 12, cy:  52, rot: -24, rx: 11, ry: 4.2 },
-                { cx: 19, cy:  37, rot: -40, rx: 11, ry: 4.2 },
-                { cx: 29, cy:  23, rot: -54, rx: 11, ry: 4.2 },
-                { cx: 38, cy:  10, rx: 10, ry: 3.8, rot: -65 },
-              ].map(({ cx, cy, rot, rx, ry }, i) => (
-                <ellipse key={i} cx={cx} cy={cy} rx={rx} ry={ry}
-                  transform={`rotate(${rot} ${cx} ${cy})`}
-                  fill="#FFC107" opacity={0.97 - i * 0.055} />
-              ))}
-              <path d="M26 135 C18 112, 10 88, 9 66 C8 44, 15 24, 38 8"
-                stroke="#E6A000" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.45"/>
-              <path d="M14 135 Q26 142 38 135" stroke="#FFC107" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.75"/>
-            </svg>
-          </span>
-
-          {/* Text in the centre of the wreath */}
           <div className="mv-award-text">
             <span className="mv-award-title">2025 IEEE Exemplary Branch Award</span>
             <span className="mv-award-sub">Recognized among Egypt's finest IEEE student branches</span>
           </div>
-
-          {/* Right wreath branch — CSS mirror of left */}
-          <span className="mv-award-branch mv-award-branch--right" aria-hidden="true">
-            <svg width="48" height="140" viewBox="0 0 48 140" fill="none">
-              {[
-                { cx: 30, cy: 130, rot:  55, rx: 11, ry: 4.2 },
-                { cx: 20, cy: 115, rot:  40, rx: 11, ry: 4.2 },
-                { cx: 12, cy: 100, rot:  24, rx: 11, ry: 4.2 },
-                { cx:  8, cy:  84, rot:   8, rx: 11, ry: 4.2 },
-                { cx:  8, cy:  68, rot:  -8, rx: 11, ry: 4.2 },
-                { cx: 12, cy:  52, rot: -24, rx: 11, ry: 4.2 },
-                { cx: 19, cy:  37, rot: -40, rx: 11, ry: 4.2 },
-                { cx: 29, cy:  23, rot: -54, rx: 11, ry: 4.2 },
-                { cx: 38, cy:  10, rx: 10, ry: 3.8, rot: -65 },
-              ].map(({ cx, cy, rot, rx, ry }, i) => (
-                <ellipse key={i} cx={cx} cy={cy} rx={rx} ry={ry}
-                  transform={`rotate(${rot} ${cx} ${cy})`}
-                  fill="#FFC107" opacity={0.97 - i * 0.055} />
-              ))}
-              <path d="M26 135 C18 112, 10 88, 9 66 C8 44, 15 24, 38 8"
-                stroke="#E6A000" strokeWidth="1.5" strokeLinecap="round" fill="none" opacity="0.45"/>
-              <path d="M14 135 Q26 142 38 135" stroke="#FFC107" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.75"/>
-            </svg>
-          </span>
         </div>
       </motion.div>
 
       <div className="mv-wrapper">
-
         {/* ── Mission ── */}
         <motion.div
           className="mv-tri mv-tri--mission"
@@ -172,11 +190,9 @@ const MissionVisionSection = () => {
 
           <div className="mv-tri__content mv-tri__content--mission">
             <h2 className="mv-tri__heading mv-tri__heading--light">Our Mission</h2>
-            {/* Desktop body — hidden on mobile via CSS */}
             <p className="mv-tri__body mv-tri__body--light mv-tri__body--desktop">
               To foster a supportive, connected community that bridges the gap between students and industry through hands-on workshops, meaningful events, and real opportunities that empower every member to grow, belong, and lead.
             </p>
-            {/* Mobile body — flows with downward-pointing triangle (wide top, narrow bottom) */}
             <p className="mv-tri__body mv-tri__body--light mv-tri__body--mobile">
               To foster a supportive, connected community<br/>
               that bridges the gap between students<br/>
@@ -210,19 +226,15 @@ const MissionVisionSection = () => {
 
           <div className="mv-tri__content mv-tri__content--vision">
             <h2 className="mv-tri__heading mv-tri__heading--dark">Our Vision</h2>
-            {/* Desktop body — hidden on mobile via CSS */}
             <p className="mv-tri__body mv-tri__body--dark mv-tri__body--desktop">
               A thriving, connected IEEE community where members feel valued, inspired to innovate, and empowered to lead the future of technology.
             </p>
-            {/* Mobile body — shorter lines near the peak, wider toward the base */}
             <p className="mv-tri__body mv-tri__body--dark mv-tri__body--mobile">
               A Thriving,<br/>
               connected IEEE<br/>
               community where members<br/>
               feel valued, inspired to innovate and<br/>
               empowered to lead the future of technology.<br/>
-              
-              
             </p>
           </div>
         </motion.div>

@@ -81,18 +81,34 @@ const CommitteeCard = ({ committee }) => {
   );
 };
 
+/* ── Skeleton card ── */
+const SkeletonCard = () => (
+  <div className="cmt-card-skel">
+    <div className="cmt-skel-body">
+      <span className="skeleton-block" style={{ height: '13px', width: '55%', marginBottom: '12px', borderRadius: '6px' }} />
+      <span className="skeleton-block" style={{ height: '9px', width: '90%', marginBottom: '6px', borderRadius: '4px' }} />
+      <span className="skeleton-block" style={{ height: '9px', width: '75%', marginBottom: '6px', borderRadius: '4px' }} />
+      <span className="skeleton-block" style={{ height: '9px', width: '82%', marginBottom: '20px', borderRadius: '4px' }} />
+      <span className="skeleton-block" style={{ height: '30px', width: '96px', borderRadius: '70px' }} />
+    </div>
+    <div className="cmt-skel-icon skeleton-block" />
+  </div>
+);
+
 /* ── Page ── */
 const Committees = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(
     searchParams.get('tab') === 'non-technical' ? 'non-technical' : 'technical'
   );
-  const [all, setAll] = useState(staticCommittees);
+  const [all, setAll] = useState([]);
+  const [dataReady, setDataReady] = useState(false);
 
   useEffect(() => {
     api.get('/committees')
-      .then(({ data }) => { if (data.data?.length > 0) setAll(data.data); })
-      .catch(() => {});
+      .then(({ data }) => { setAll(data.data?.length > 0 ? data.data : staticCommittees); })
+      .catch(() => { setAll(staticCommittees); })
+      .finally(() => setDataReady(true));
   }, []);
 
   const list = all.filter(c => c.category === activeTab);
@@ -188,21 +204,31 @@ const Committees = () => {
           </div>
         </motion.div>
 
-        {/* Animated card grid — static data renders instantly, API data swaps in */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            className="committees-grid"
-            variants={containerVariants}
-            initial="hidden"
-            animate="show"
-            exit="exit"
-          >
-            {list.map((committee) => (
-              <CommitteeCard key={committee._id || committee.slug} committee={committee} />
-            ))}
-          </motion.div>
-        </AnimatePresence>
+        {/* Skeleton grid shown while API is loading */}
+        {!dataReady ? (
+          <div className="committees-grid">
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+            <SkeletonCard />
+          </div>
+        ) : (
+          /* Animated card grid — shows only after API data arrives */
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              className="committees-grid"
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+              exit="exit"
+            >
+              {list.map((committee) => (
+                <CommitteeCard key={committee._id || committee.slug} committee={committee} />
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        )}
 
       </div>
     </div>

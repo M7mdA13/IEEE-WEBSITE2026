@@ -29,8 +29,6 @@
 /* Marquee */
 .partners-marquee-wrapper {
   width: 100%;
-  /* overflow: hidden removed — it was clipping logos that scale up on hover.
-     The mask-image handles horizontal edge fading without needing overflow:hidden. */
   overflow: visible;
   -webkit-mask-image: linear-gradient(
     to right,
@@ -71,24 +69,19 @@
   transition: background 0.28s ease, box-shadow 0.28s ease;
 }
 
-/* ── Logo pills: IEEE brand blue background for contrast in any mode ── */
-
-/* Light mode: dark IEEE navy — makes white logos pop cleanly */
+/* ── Logo pills: medium IEEE blue — makes both white and black logos readable ── */
 .partner-logo-slot {
-  background: #054377;
+  background: #1a6aad;
   border-radius: 10px;
   padding: 10px 16px;
   transition: background 0.28s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
-  /* Mobile: prevent long-press from showing text selection / context callout */
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
-  /* Let the marquee handle scroll; tap is enough — no double-tap zoom */
   touch-action: manipulation;
 }
 
-/* Dark mode: lighter IEEE blue — keeps dark logos readable on dark screen */
 body.dark-mode .partner-logo-slot {
   background: #1a6aad;
 }
@@ -114,7 +107,7 @@ body.dark-mode .partner-logo-slot img {
 }
 
 .partner-logo-slot--active {
-  background: #03305a;
+  background: #115090;
 }
 
 body.dark-mode .partner-logo-slot--active {

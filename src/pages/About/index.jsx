@@ -10,7 +10,7 @@ const PLANET_CONTENT = {
   story: {
     title: 'Our Story',
     body: 'IEEE MUST Student Branch was founded at Misr University for Science and Technology with one goal: bring students closer to the engineering world. From a small group of passionate students, we grew into one of Egypt\'s most active IEEE branches — hosting workshops, hackathons, and events that shape future engineers.',
-    stats: [{ label: 'Founded', value: '2011' }, { label: 'Years Active', value: '15+' }, { label: 'Members', value: '100+' }],
+    stats: [{ label: 'Founded', value: '2011' }, { label: 'Years Active', value: '15+' }, { label: 'Members', value: '200+' }],
   },
   mission: {
     title: 'Our Mission',
@@ -20,7 +20,7 @@ const PLANET_CONTENT = {
   team: {
     title: 'Our Team',
     body: 'Our leadership board is elected every year from within our member base. Each committee is led by passionate students who volunteer their time to build something meaningful — from technical content to media, marketing, and beyond. Behind every event is a team of dedicated people.',
-    stats: [{ label: 'Active Members', value: '100+' }, { label: 'Board Members', value: '16+' }, { label: 'Committees', value: '8' }],
+    stats: [{ label: 'Active Members', value: '200+' }, { label: 'Board Members', value: '16+' }, { label: 'Committees', value: '8' }],
   },
   impact: {
     title: 'Our Impact',
