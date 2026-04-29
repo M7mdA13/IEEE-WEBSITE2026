@@ -25,12 +25,14 @@
   gap: 12px;
   background: #90CAF9;
   color: #ffffff;
+  border: none;
   border-radius: 70px;
   padding: 8px 24px;
   font-family: 'Krona One', sans-serif;
   font-weight: 400;
   font-size: 0.9rem;
   text-decoration: none;
+  cursor: pointer;
   margin-bottom: 40px;
   transition: background-color 0.2s ease, transform 0.2s ease;
 }

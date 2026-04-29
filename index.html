@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <!-- Primary meta -->
     <title>IEEE MUST Student Branch</title>
@@ -90,6 +90,17 @@
     <noscript>
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     </noscript>
+    <!-- Immediately apply dark-mode html background before React mounts.
+         Prevents the white/light flash of html background on dark-mode page load,
+         and fixes the iOS browser-chrome white bar at the bottom of the screen. -->
+    <script>
+      (function () {
+        var dark = localStorage.getItem('theme') === 'dark';
+        document.documentElement.style.backgroundColor = dark ? '#0b1120' : '#E8F2FD';
+        var tc = document.querySelector('meta[name="theme-color"]');
+        if (tc) tc.setAttribute('content', dark ? '#0b1120' : '#E8F2FD');
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

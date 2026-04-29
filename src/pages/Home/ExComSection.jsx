@@ -15,17 +15,26 @@ const staticExCom = [
 /* Magnetic icon: slightly follows cursor within its bounding box */
 const MagneticIcon = ({ href, icon, ariaLabel }) => {
   const ref = useRef(null);
+  const rafId = useRef(null);
 
   const handleMouseMove = (e) => {
     const el = ref.current;
     if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const dx = (e.clientX - (rect.left + rect.width  / 2)) * 0.38;
-    const dy = (e.clientY - (rect.top  + rect.height / 2)) * 0.38;
-    el.style.transform = `translate(${dx}px, ${dy}px)`;
+    // Capture values before the rAF callback (event object is pooled in React 16)
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    cancelAnimationFrame(rafId.current);
+    rafId.current = requestAnimationFrame(() => {
+      if (!ref.current) return;
+      const rect = ref.current.getBoundingClientRect();
+      const dx = (clientX - (rect.left + rect.width  / 2)) * 0.38;
+      const dy = (clientY - (rect.top  + rect.height / 2)) * 0.38;
+      ref.current.style.transform = `translate(${dx}px, ${dy}px)`;
+    });
   };
 
   const handleMouseLeave = () => {
+    cancelAnimationFrame(rafId.current);
     if (ref.current) ref.current.style.transform = 'translate(0, 0)';
   };
 

@@ -184,6 +184,9 @@ const PhotoCatalogueSection = () => {
   };
   const handleTouchMove = (e) => {
     dragDelta.current = e.touches[0].clientX - dragStartX.current;
+    // Prevent the browser from interpreting horizontal swipes as page scroll.
+    // Only cancel when clearly swiping sideways to avoid blocking vertical scroll.
+    if (Math.abs(dragDelta.current) > 10) e.preventDefault();
   };
   const handleTouchEnd = () => {
     if (Math.abs(dragDelta.current) > 50) navigate(dragDelta.current < 0 ? 1 : -1);
@@ -237,6 +240,7 @@ const PhotoCatalogueSection = () => {
         <div
           ref={wrapRef}
           className="cat-track-wrap"
+          style={{ touchAction: 'pan-y' }}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
