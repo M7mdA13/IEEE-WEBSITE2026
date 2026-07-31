@@ -5,6 +5,7 @@ import { CalendarIcon, LocationIcon } from '../../components/Icons';
 import api from '../../api/public';
 import { upcomingEvent, pastEvents } from '../../data/events';
 import { cloudinaryUrl } from '../../utils/cloudinary';
+import { normalizeUrl } from '../../utils/url';
 
 const staticFallback = [
   { ...upcomingEvent, _id: upcomingEvent.id, status: 'upcoming' },
@@ -50,6 +51,8 @@ const cardVariants = {
 const FeaturedEventCard = ({ event }) => {
   const cardRef = useRef(null);
   const relDate = getRelativeDate(event.date);
+  const registerLink = normalizeUrl(event.registrationLink);
+  const agendaLink   = normalizeUrl(event.agendaLink);
 
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
@@ -98,16 +101,16 @@ const FeaturedEventCard = ({ event }) => {
           )}
         </div>
         <div className="featured-event-actions">
-          {event.registrationLink && event.registrationLink !== '#' && (
-            <a href={event.registrationLink} target="_blank" rel="noopener noreferrer" className="btn-primary btn-lg">
+          {registerLink && (
+            <a href={registerLink} target="_blank" rel="noopener noreferrer" className="btn-primary btn-lg">
               Register Now
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </a>
           )}
-          {event.agendaLink && event.agendaLink !== '#' && (
-            <a href={event.agendaLink} target="_blank" rel="noopener noreferrer" className="btn-outline">View Agenda</a>
+          {agendaLink && (
+            <a href={agendaLink} target="_blank" rel="noopener noreferrer" className="btn-outline">View Agenda</a>
           )}
-          {(!event.registrationLink || event.registrationLink === '#') && (!event.agendaLink || event.agendaLink === '#') && (
+          {!registerLink && !agendaLink && (
             <button className="btn-primary btn-lg" disabled>Details Coming Soon</button>
           )}
         </div>
@@ -131,6 +134,9 @@ const EventCard = ({ event, index }) => {
   const isUpcoming = event.status === 'upcoming' || event.status === 'planning';
   const isPast = event.status === 'completed';
   const badge = statusConfig[event.status];
+  const registerLink = normalizeUrl(event.registrationLink);
+  const agendaLink   = normalizeUrl(event.agendaLink);
+  const recapLink    = normalizeUrl(event.recapLink);
 
   return (
     <motion.div
@@ -186,18 +192,18 @@ const EventCard = ({ event, index }) => {
           <div className="event-card-actions">
             {isUpcoming ? (
               <>
-                {event.registrationLink && event.registrationLink !== '#' && (
-                  <a href={event.registrationLink} target="_blank" rel="noopener noreferrer" className="btn-primary">Register Now !</a>
+                {registerLink && (
+                  <a href={registerLink} target="_blank" rel="noopener noreferrer" className="btn-primary">Register Now !</a>
                 )}
-                {event.agendaLink && event.agendaLink !== '#' && (
-                  <a href={event.agendaLink} target="_blank" rel="noopener noreferrer" className="btn-primary">Agenda</a>
+                {agendaLink && (
+                  <a href={agendaLink} target="_blank" rel="noopener noreferrer" className="btn-primary">Agenda</a>
                 )}
-                {(!event.registrationLink || event.registrationLink === '#') && (!event.agendaLink || event.agendaLink === '#') && (
+                {!registerLink && !agendaLink && (
                   <button className="btn-primary" disabled>Coming Soon</button>
                 )}
               </>
-            ) : isPast && event.recapLink && event.recapLink !== '#' ? (
-              <a href={event.recapLink} target="_blank" rel="noopener noreferrer" className="btn-outline btn-sm">
+            ) : isPast && recapLink ? (
+              <a href={recapLink} target="_blank" rel="noopener noreferrer" className="btn-outline btn-sm">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                 View Recap
               </a>
