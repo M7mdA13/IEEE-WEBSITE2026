@@ -45,14 +45,94 @@ const cardVariants = {
   }),
 };
 
+/* Card thumbnails stay cropped to keep the grid tidy — a click opens the whole
+   image. Never hijack a click that landed on a link/button, or one that ended a
+   text selection. */
+const shouldOpenPoster = (e) => {
+  if (e.target.closest('a, button')) return false;
+  const selection = window.getSelection?.();
+  if (selection && selection.type === 'Range' && selection.toString().trim()) return false;
+  return true;
+};
+
+const ExpandIcon = () => (
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <polyline points="15 3 21 3 21 9" />
+    <polyline points="9 21 3 21 3 15" />
+    <line x1="21" y1="3" x2="14" y2="10" />
+    <line x1="3" y1="21" x2="10" y2="14" />
+  </svg>
+);
+
+/* ── Full-image overlay ── */
+const PosterLightbox = ({ event, onClose }) => {
+  const closeRef = useRef(null);
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    const lastFocused = document.activeElement;
+    document.body.style.overflow = 'hidden';
+    closeRef.current?.focus();
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+      // Put the keyboard user back where they were
+      if (lastFocused instanceof HTMLElement) lastFocused.focus();
+    };
+  }, [onClose]);
+
+  return (
+    <motion.div
+      className="event-lightbox"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${event.title} — full image`}
+    >
+      <button ref={closeRef} type="button" className="event-lightbox-close" onClick={onClose} aria-label="Close image">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+
+      <motion.figure
+        className="event-lightbox-figure"
+        initial={{ opacity: 0, scale: 0.94 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.94 }}
+        transition={{ duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <img
+          className="event-lightbox-img"
+          src={cloudinaryUrl(event.image, 1600)}
+          alt={`${event.title} — full poster`}
+          draggable={false}
+        />
+        <figcaption className="event-lightbox-caption">
+          <span className="event-lightbox-title">{event.title}</span>
+          <span className="event-lightbox-meta">
+            {formatDate(event.date)}{event.location ? ` · ${event.location}` : ''}
+          </span>
+        </figcaption>
+      </motion.figure>
+    </motion.div>
+  );
+};
+
 
 
 /* ── Featured Hero Card (next upcoming event) ── */
-const FeaturedEventCard = ({ event }) => {
+const FeaturedEventCard = ({ event, onOpenPoster }) => {
   const cardRef = useRef(null);
   const relDate = getRelativeDate(event.date);
   const registerLink = normalizeUrl(event.registrationLink);
   const agendaLink   = normalizeUrl(event.agendaLink);
+  const hasPoster    = Boolean(event.image);
 
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
@@ -61,11 +141,15 @@ const FeaturedEventCard = ({ event }) => {
     cardRef.current.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
   };
 
+  const openPoster = () => onOpenPoster?.(event);
+  const handleCardClick = (e) => { if (hasPoster && shouldOpenPoster(e)) openPoster(); };
+
   return (
     <motion.div
       ref={cardRef}
-      className="featured-event"
+      className={`featured-event${hasPoster ? ' event-zoomable' : ''}`}
       onMouseMove={handleMouseMove}
+      onClick={handleCardClick}
       initial={{ opacity: 0, y: 32 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
@@ -78,6 +162,17 @@ const FeaturedEventCard = ({ event }) => {
         backgroundPosition: 'center'
       } : {}}>
         {relDate && <span className="featured-countdown">{relDate}</span>}
+        {hasPoster && (
+          <button
+            type="button"
+            className="event-poster-expand event-poster-expand--featured"
+            onClick={(e) => { e.stopPropagation(); openPoster(); }}
+            aria-label={`View the full image for ${event.title}`}
+          >
+            <ExpandIcon />
+            <span>Full image</span>
+          </button>
+        )}
       </div>
       <div className="featured-event-content">
         <div className="featured-badge-row">
@@ -120,7 +215,7 @@ const FeaturedEventCard = ({ event }) => {
 };
 
 /* ── Standard Event Card ── */
-const EventCard = ({ event, index }) => {
+const EventCard = ({ event, index, onOpenPoster }) => {
   const cardRef = useRef(null);
 
   const handleMouseMove = (e) => {
@@ -137,12 +232,17 @@ const EventCard = ({ event, index }) => {
   const registerLink = normalizeUrl(event.registrationLink);
   const agendaLink   = normalizeUrl(event.agendaLink);
   const recapLink    = normalizeUrl(event.recapLink);
+  const hasPoster    = Boolean(event.image);
+
+  const openPoster = () => onOpenPoster?.(event);
+  const handleCardClick = (e) => { if (hasPoster && shouldOpenPoster(e)) openPoster(); };
 
   return (
     <motion.div
       ref={cardRef}
-      className="event-card"
+      className={`event-card${hasPoster ? ' event-zoomable' : ''}`}
       onMouseMove={handleMouseMove}
+      onClick={handleCardClick}
       custom={index}
       variants={cardVariants}
       initial="hidden"
@@ -156,7 +256,19 @@ const EventCard = ({ event, index }) => {
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         } : {}}
-      />
+      >
+        {hasPoster && (
+          <button
+            type="button"
+            className="event-poster-expand"
+            onClick={(e) => { e.stopPropagation(); openPoster(); }}
+            aria-label={`View the full image for ${event.title}`}
+          >
+            <ExpandIcon />
+            <span>Full image</span>
+          </button>
+        )}
+      </div>
       <div className="event-card-content">
         {badge && (
           <span className={`event-badge event-badge-card ${badge.className}`}>{badge.label}</span>
@@ -242,7 +354,13 @@ const Events = () => {
   const [events, setEvents] = useState([]);
   const [dataReady, setDataReady] = useState(false);
   const [mobileTab, setMobileTab] = useState('upcoming');
+  const [posterEvent, setPosterEvent] = useState(null);
   const dirRef = useRef(1);
+
+  // The overlay is rendered at page level, not inside a card: cards sit inside
+  // animated (transformed) wrappers, which would break `position: fixed`.
+  const openPoster  = useCallback((event) => setPosterEvent(event), []);
+  const closePoster = useCallback(() => setPosterEvent(null), []);
 
   const switchTab = useCallback((tab) => {
     if (tab === mobileTab) return;
@@ -319,7 +437,7 @@ const Events = () => {
           {featured && (
                 <section className="events-section">
                   <h2 className="section-title"><span>Next Up</span></h2>
-                  <FeaturedEventCard event={featured} />
+                  <FeaturedEventCard event={featured} onOpenPoster={openPoster} />
                 </section>
               )}
 
@@ -327,7 +445,7 @@ const Events = () => {
                 <section className="events-section">
                   <h2 className="section-title"><span>More Upcoming</span></h2>
                   <div className="events-list">
-                    {restUpcoming.map((event, i) => <EventCard key={event._id} event={event} index={i} />)}
+                    {restUpcoming.map((event, i) => <EventCard key={event._id} event={event} index={i} onOpenPoster={openPoster} />)}
                   </div>
                 </section>
               )}
@@ -343,7 +461,7 @@ const Events = () => {
                 <h2 className="section-title"><span>Past Events</span></h2>
                 {past.length > 0 ? (
                   <div className="events-list">
-                    {past.map((event, i) => <EventCard key={event._id} event={event} index={i} />)}
+                    {past.map((event, i) => <EventCard key={event._id} event={event} index={i} onOpenPoster={openPoster} />)}
                   </div>
                 ) : (
                   <EmptyState type="past" />
@@ -396,11 +514,11 @@ const Events = () => {
                 >
                   {mobileTab === 'upcoming' ? (
                     upcoming.length > 0
-                      ? upcoming.map((event, i) => <EventCard key={event._id} event={event} index={i} />)
+                      ? upcoming.map((event, i) => <EventCard key={event._id} event={event} index={i} onOpenPoster={openPoster} />)
                       : <EmptyState type="upcoming" />
                   ) : (
                     past.length > 0
-                      ? past.map((event, i) => <EventCard key={event._id} event={event} index={i} />)
+                      ? past.map((event, i) => <EventCard key={event._id} event={event} index={i} onOpenPoster={openPoster} />)
                       : <EmptyState type="past" />
                   )}
                 </motion.div>
@@ -410,6 +528,12 @@ const Events = () => {
         </div>
 
       </motion.div>
+
+      <AnimatePresence>
+        {posterEvent && (
+          <PosterLightbox key={posterEvent._id} event={posterEvent} onClose={closePoster} />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
