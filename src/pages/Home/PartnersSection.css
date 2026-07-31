@@ -71,6 +71,7 @@
 
 /* ── Logo pills: medium IEEE blue — makes both white and black logos readable ── */
 .partner-logo-slot {
+  position: relative;
   background: #1a6aad;
   border-radius: 10px;
   padding: 10px 16px;
@@ -80,6 +81,38 @@
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+}
+
+/* ── Partners with a website saved in the dashboard become links ── */
+.partner-logo-slot--link {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.partner-logo-slot--link:focus-visible {
+  outline: 2px solid var(--ieee-cyan, #24F0FF);
+  outline-offset: 3px;
+}
+
+/* Little "opens in a new tab" glyph — only shown while the pill is active */
+.partner-logo-visit {
+  position: absolute;
+  top: 5px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  opacity: 0;
+  transform: translate(-2px, 2px);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+  pointer-events: none;
+}
+
+.partner-logo-slot--link.partner-logo-slot--active .partner-logo-visit,
+.partner-logo-slot--link:focus-visible .partner-logo-visit {
+  opacity: 0.9;
+  transform: translate(0, 0);
 }
 
 body.dark-mode .partner-logo-slot {

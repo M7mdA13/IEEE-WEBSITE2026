@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import api from '../../api/public';
 import './PartnersSection.css';
 import { cloudinaryUrl } from '../../utils/cloudinary';
+import { normalizeUrl } from '../../utils/url';
 
 const staticLogos = [
   '/images/partner 1.webp',
@@ -19,12 +20,12 @@ const staticLogos = [
   '/images/logo3.png',
   '/images/logo4.png',
   '/images/logo5.png',
-];
+].map(logo => ({ logo, name: '', website: '' }));
 
 const SPEED_PX_S = 60; // pixels per second
 
 const PartnersSection = () => {
-  const [logos, setLogos]       = useState(staticLogos);
+  const [partners, setPartners] = useState(staticLogos);
   const [activeIdx, setActiveIdx] = useState(null);
   const [dataReady, setDataReady] = useState(false);
 
@@ -46,15 +47,22 @@ const PartnersSection = () => {
   useEffect(() => {
     api.get('/partners')
       .then(({ data }) => {
-        const imgs = (data.data || []).map(p => p.logo).filter(Boolean);
-        if (imgs.length > 0) setLogos(imgs);
+        const list = (data.data || [])
+          .filter(p => p.logo)
+          .map(p => ({
+            logo: p.logo,
+            name: p.name || '',
+            // Bare domains ("ieee.org") would otherwise navigate inside the site
+            website: normalizeUrl(p.website),
+          }));
+        if (list.length > 0) setPartners(list);
       })
       .catch(() => {})
       .finally(() => setDataReady(true));
   }, []);
 
   /* doubled array for seamless loop */
-  const doubled = useMemo(() => [...logos, ...logos], [logos]);
+  const doubled = useMemo(() => [...partners, ...partners], [partners]);
 
   /* Measure the half-width after layout (= width of one copy of logos) */
   useLayoutEffect(() => {
@@ -65,7 +73,7 @@ const PartnersSection = () => {
     // Re-measure if window is resized (logo sizes may reflow)
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
-  }, [logos]);
+  }, [partners]);
 
   /* RAF animation loop — never uses CSS animation-play-state (avoids iOS Safari snap) */
   useEffect(() => {
@@ -90,6 +98,41 @@ const PartnersSection = () => {
   /* Interaction handlers */
   const pause  = (i) => { pausedRef.current = true;  setActiveIdx(i); };
   const resume = ()  => { pausedRef.current = false; setActiveIdx(null); };
+
+  /* A touch on a logo is both "pause and look" and "open the partner site".
+     Only a quick, stationary tap counts as a click — a long press or a drag
+     leaves the visitor where they are. */
+  const touchRef = useRef({ t: 0, x: 0, y: 0, moved: false });
+
+  const handleTouchStart = (i) => (e) => {
+    const touch = e.touches[0];
+    touchRef.current = { t: e.timeStamp, x: touch.clientX, y: touch.clientY, moved: false };
+    pause(i);
+  };
+
+  const handleTouchMove = (e) => {
+    const touch = e.touches[0];
+    const { x, y } = touchRef.current;
+    if (Math.abs(touch.clientX - x) > 10 || Math.abs(touch.clientY - y) > 10) {
+      touchRef.current.moved = true;
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    const { t, moved } = touchRef.current;
+    touchRef.current.suppressClick = moved || (e.timeStamp - t) > 450;
+    // The click (if any) lands right after touchend — clear the flag afterwards
+    // so it can never leak into a later mouse click on a hybrid device.
+    setTimeout(() => { touchRef.current.suppressClick = false; }, 400);
+    resume();
+  };
+
+  const handleLinkClick = (e) => {
+    if (touchRef.current.suppressClick) {
+      touchRef.current.suppressClick = false;
+      e.preventDefault();
+    }
+  };
 
   return (
     <section
@@ -118,19 +161,58 @@ const PartnersSection = () => {
       >
         {/* Track: RAF drives translateX directly — no CSS animation, no play-state snap */}
         <div ref={trackRef} className="partners-marquee-track">
-          {doubled.map((src, i) => (
-            <div
-              key={i}
-              className={`partner-logo-slot ${activeIdx === i ? 'partner-logo-slot--active' : ''}`}
-              onMouseEnter={supportsHover.current ? () => pause(i)  : undefined}
-              onMouseLeave={supportsHover.current ? resume          : undefined}
-              onTouchStart={() => pause(i)}
-              onTouchEnd={resume}
-              onContextMenu={(e) => e.preventDefault()}
-            >
-              <img src={cloudinaryUrl(src, 240)} alt="partner logo" draggable={false} />
-            </div>
-          ))}
+          {doubled.map((partner, i) => {
+            // Second half of the doubled array is the seamless-loop clone:
+            // hide it from screen readers and keyboard tabbing.
+            const isClone = i >= partners.length;
+            const linked  = Boolean(partner.website);
+
+            const slotProps = {
+              className: `partner-logo-slot${activeIdx === i ? ' partner-logo-slot--active' : ''}${linked ? ' partner-logo-slot--link' : ''}`,
+              onMouseEnter: supportsHover.current ? () => pause(i) : undefined,
+              onMouseLeave: supportsHover.current ? resume         : undefined,
+              onTouchStart: handleTouchStart(i),
+              onTouchMove:  handleTouchMove,
+              onTouchEnd:   handleTouchEnd,
+              onContextMenu: (e) => e.preventDefault(),
+            };
+
+            const logo = (
+              <img
+                src={cloudinaryUrl(partner.logo, 240)}
+                alt={partner.name ? `${partner.name} logo` : 'partner logo'}
+                draggable={false}
+              />
+            );
+
+            if (!linked) return <div key={i} {...slotProps}>{logo}</div>;
+
+            return (
+              <a
+                key={i}
+                {...slotProps}
+                href={partner.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={partner.name ? `Visit ${partner.name}` : 'Visit partner website'}
+                aria-label={partner.name ? `Visit ${partner.name} (opens in a new tab)` : 'Visit partner website (opens in a new tab)'}
+                aria-hidden={isClone || undefined}
+                tabIndex={isClone ? -1 : undefined}
+                onClick={handleLinkClick}
+                onFocus={() => pause(i)}
+                onBlur={resume}
+              >
+                {logo}
+                <span className="partner-logo-visit" aria-hidden="true">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    <polyline points="15 3 21 3 21 9" />
+                    <line x1="10" y1="14" x2="21" y2="3" />
+                  </svg>
+                </span>
+              </a>
+            );
+          })}
         </div>
       </motion.div>
     </section>
