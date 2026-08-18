@@ -15,6 +15,11 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
+// Railway terminates TLS at its edge proxy, so req.ip is the proxy's address
+// unless we trust one hop. Without this every visitor shares a single rate-limit
+// bucket. Keep at 1 — trusting all hops lets clients spoof X-Forwarded-For.
+app.set('trust proxy', 1);
+
 // Security headers
 app.use(helmet());
 
