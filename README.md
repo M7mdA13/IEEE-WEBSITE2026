@@ -1,102 +1,95 @@
-# IEEE MUST Student Branch - Admin Dashboard
+# IEEE MUST Student Branch — Admin Dashboard
 
-A modern React admin dashboard for IEEE MUST Student Branch management.
+The content management dashboard for the [IEEE MUST Student Branch website](https://github.com/M7mdA13/IEEE-WEBSITE2026). Board members sign in here to update what the public site shows — executive committee, committees, events, partners, gallery, website team, recruitment status, and the mailing list — without touching code or redeploying.
 
-## Project Structure
+> This is the `dashboard` branch of the project repo. The public site lives on `main` and the API on `backend`.
 
-```
-ieee_dashboard/
-├── public/
-│   └── images/              # Logo and image assets
-├── src/
-│   ├── components/
-│   │   ├── auth/            # Authentication components (future use)
-│   │   ├── dashboard/       # Dashboard section components
-│   │   │   ├── DashboardOverview.jsx   # Main dashboard with stats & recent events
-│   │   │   ├── EventsSection.jsx       # Events management section
-│   │   │   ├── MembersSection.jsx      # Members management section
-│   │   │   ├── PartnersSection.jsx     # Partners management section
-│   │   │   ├── AnalyticsSection.jsx    # Analytics & charts section
-│   │   │   └── SettingsSection.jsx     # User settings section
-│   │   └── layout/          # Layout components
-│   │       ├── Sidebar.jsx              # Navigation sidebar
-│   │       └── Navbar.jsx               # Top navigation bar
-│   ├── pages/
-│   │   ├── Login.jsx         # Login page
-│   │   ├── Signup.jsx        # Signup page
-│   │   └── Dashboard.jsx     # Main dashboard layout
-│   ├── styles/
-│   │   ├── styles.css        # Main dashboard styles
-│   │   ├── auth.css          # Authentication pages styles
-│   │   └── AnalyticsSection.css # Standalone analytics styling
-│   ├── App.jsx               # Main app with routing
-│   └── main.jsx              # React entry point
-├── index.html               # Vite entry HTML
-├── package.json             # Dependencies and scripts
-└── vite.config.js           # Vite configuration
-```
+## Stack
 
-## Features
+React 19 · Vite · React Router 7 · Axios · Recharts · Cloudinary · vanilla CSS with custom properties · Font Awesome. Deployed on Vercel.
 
-- **Dashboard Overview** - Real-time stats cards and recent activity tracking
-- **Events Management** - Full CRUD with local poster uploads, date/location tracking, and status management
-- **Members Management** - Full CRUD member directory with local profile photo uploads and role/chapter separation
-- **Partners Management** - Full CRUD for partner organizations with local logo upload support
-- **Interactive Analytics** - Dynamic charts powered by Recharts (Member Growth, Event Participation, Chapter Distribution)
-- **Local Upload System** - Seamless client-side image processing using FileReader (no backend storage required for demo)
-- **Theme Engine** - Advanced light/dark mode with OKLCH color space for accessibility and visual excellence
-- **Responsive Layout** - Collapsible sidebar and fluid grid system for all device sizes
+## Getting started
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js (v18 or higher)
-- npm or yarn
-
-### Installation
+Requires **Node 18+** and a running instance of the project's API (see the `backend` branch).
 
 ```bash
-# Install dependencies (includes Recharts)
+git clone -b dashboard https://github.com/M7mdA13/IEEE-WEBSITE2026.git
+cd IEEE-WEBSITE2026
 npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
 ```
 
-## Tech Stack
+Create a `.env` in the project root with the variables below, then:
 
-- **React 18** - Core UI library
-- **React Router DOM** - Application routing
-- **Recharts** - Modern charting library for data visualization
-- **Vite** - High-speed build tool
-- **Vanilla CSS** - Theme-aware styling with custom properties (CSS Variables)
-- **Font Awesome** - Comprehensive icon system
+```bash
+npm run dev       # Vite dev server
+npm run build     # production build
+npm run preview   # serve the build locally
+npm run lint      # ESLint
+```
 
-## Design System
+Sign in with an admin account from the API's database. If you're starting from an empty database, the backend's `npm run seed` creates the first superadmin.
 
-- **Color Palette** - OKLCH color space for perceptually uniform colors
-- **Typography Scale** - Fluid sizing with `clamp()` for responsive text
-- **Spacing Scale** - Consistent spacing using CSS custom properties
-- **Shadow System** - Layered shadows for realistic depth
-- **Animations** - Purposeful transitions with spring easing
+### Environment variables
 
-## Routes
+| Variable                        | Required | Notes                                            |
+| ------------------------------- | -------- | ------------------------------------------------ |
+| `VITE_API_URL`                  | yes      | Base URL of the API, no trailing slash            |
+| `VITE_CLOUDINARY_CLOUD_NAME`    | yes      | Cloudinary account that receives image uploads    |
+| `VITE_CLOUDINARY_UPLOAD_PRESET` | yes      | An **unsigned** upload preset                     |
 
-| Route | Description |
-|-------|-------------|
-| `/login` | Login page |
-| `/signup` | Signup page |
-| `/dashboard` | Dashboard overview (default) |
-| `/dashboard/events` | Events management |
-| `/dashboard/members` | Members management |
-| `/dashboard/partners` | Partners section |
-| `/dashboard/analytics` | Analytics section |
-| `/dashboard/settings` | Settings section |
+`VITE_*` values are inlined into the client bundle at build time and are therefore public. Never put a private key — a Cloudinary API secret, a database URI — behind a `VITE_` prefix; unsigned presets exist precisely so the browser can upload without one.
 
-## License
+Both the local dev origin and the deployed dashboard URL have to be listed in the API's `ALLOWED_ORIGINS`, or every request fails CORS.
 
-MIT License - IEEE MUST Student Branch
+## Sections
+
+| Route                     | What it manages                                        |
+| ------------------------- | ------------------------------------------------------ |
+| `/login`                  | Sign in                                                 |
+| `/signup`                 | Create an account                                       |
+| `/dashboard/overview`     | Stats and recent activity                               |
+| `/dashboard/committees`   | Committees and their heads                              |
+| `/dashboard/events`       | Events                                                  |
+| `/dashboard/members`      | Executive committee                                     |
+| `/dashboard/partners`     | Partner organizations                                   |
+| `/dashboard/website-team` | Website team credits                                    |
+| `/dashboard/recruitment`  | Open or close recruitment and set the message shown     |
+| `/dashboard/mailing-list` | Subscribers collected by the public site                |
+| `/dashboard/gallery`      | Gallery images                                          |
+| `/dashboard/analytics`    | Recharts visualizations                                 |
+| `/dashboard/settings`     | Your own profile and password                           |
+| `/dashboard/users`        | Admin accounts — **superadmin only**                    |
+
+## How it works
+
+**Auth.** Logging in calls the API, which sets an httpOnly session cookie. Axios is configured with `withCredentials: true` so that cookie rides along on every request — no token is stored in JavaScript. A `localStorage` flag only drives the client-side redirect; the real check is server-side on every call. A response interceptor in [`src/api/index.js`](src/api/index.js) catches any `401`, clears the flag, and bounces you to `/login`, so an expired session can't leave you on a half-broken screen.
+
+**Images.** Uploads go from the browser straight to Cloudinary using an unsigned preset ([`src/utils/cloudinary.js`](src/utils/cloudinary.js)), into the `ieee-must` folder; only the resulting URL is saved through the API. Files are compressed client-side first ([`src/utils/imageCompressor.js`](src/utils/imageCompressor.js)). Image bytes never pass through the API or the database.
+
+**Roles.** Accounts are `admin` or `superadmin`. The Users section is hidden from the sidebar for non-superadmins and the API enforces the same rule server-side.
+
+## Project structure
+
+```text
+src/
+├── api/index.js          # Axios instance, credentials, 401 interceptor
+├── components/
+│   ├── dashboard/        # One component per section
+│   └── layout/           # Sidebar, Navbar, Toast
+├── pages/
+│   ├── Login.jsx
+│   ├── Signup.jsx
+│   └── Dashboard.jsx     # Layout + nested section routes
+├── styles/
+├── utils/                # Cloudinary upload, image compression, toasts, URLs
+├── App.jsx               # Routing and route guards
+└── main.jsx              # Entry point
+```
+
+`vercel.json` rewrites all paths to `index.html` so client-side routing survives a hard refresh on any URL.
+
+## Contributing
+
+Branch off `dashboard` and open pull requests against it. New sections follow the existing shape: a component in `src/components/dashboard/`, a nested route in `Dashboard.jsx`, and an entry in the sidebar's nav list.
+
+Never commit a `.env` or paste a key, connection string, or password into source.

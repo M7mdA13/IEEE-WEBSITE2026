@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import api from '../api/index'
+import api, { TOKEN_KEY } from '../api/index'
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({ email: '', password: '', remember: false })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [showForgot, setShowForgot] = useState(false)
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -18,8 +19,9 @@ function Login() {
         email: formData.email,
         password: formData.password,
       })
-      // Token is stored in httpOnly cookie by the server — we never touch it
-      // Only store non-sensitive user info for display purposes
+      // The server also sets an httpOnly cookie, but phones block it as
+      // third-party — keep the token so requests can send it as a header
+      if (data.token) localStorage.setItem(TOKEN_KEY, data.token)
       localStorage.setItem('isLoggedIn', 'true')
       localStorage.setItem('user', JSON.stringify(data.user))
       // Drop any legacy standalone pfp cache — avatar now lives on the user object
@@ -72,8 +74,17 @@ function Login() {
                 <input type="checkbox" id="remember" name="remember" checked={formData.remember} onChange={handleChange} />
                 <label htmlFor="remember">Remember me</label>
               </div>
-              <a href="#" className="forgot-password">Forgot Password?</a>
+              <button type="button" className="forgot-password" onClick={() => setShowForgot(v => !v)} aria-expanded={showForgot}>
+                Forgot Password?
+              </button>
             </div>
+
+            {showForgot && (
+              <div className="forgot-note" role="note">
+                <i className="fas fa-user-shield"></i>
+                <p>Ask a <strong>superadmin</strong> to reset it from the <strong>Users</strong> page. They'll give you a temporary password — change it afterwards in <strong>Settings → Security</strong>.</p>
+              </div>
+            )}
 
             <button type="submit" className="auth-button" disabled={loading}>
               {loading ? 'Logging in...' : 'Login'}

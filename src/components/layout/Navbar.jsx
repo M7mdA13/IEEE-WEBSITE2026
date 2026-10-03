@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import api from '../../api/index'
+import api, { clearSession } from '../../api/index'
 
 const notifications = [
   { id: 1, text: 'New member joined: John Doe', time: '5m ago', icon: 'fa-user-plus', color: 'blue' },
@@ -46,8 +46,7 @@ function Navbar({ toggleTheme, theme, setIsSidebarOpen }) {
     try {
       await api.post('/admin/auth/logout')
     } finally {
-      localStorage.removeItem('isLoggedIn')
-      localStorage.removeItem('user')
+      clearSession()
       // Clean up any legacy standalone pfp cache from old builds
       localStorage.removeItem('profileImage')
       navigate('/login')

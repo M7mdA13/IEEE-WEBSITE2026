@@ -14,6 +14,14 @@ function UsersSection() {
   const [saving, setSaving] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
+  // Password reset — the "forgot password" path (no email service)
+  const [resetTarget, setResetTarget] = useState(null)
+  const [resetPassword, setResetPassword] = useState('')
+  const [showResetPassword, setShowResetPassword] = useState(false)
+  const [resetting, setResetting] = useState(false)
+  const [resetError, setResetError] = useState('')
+  const [resetDone, setResetDone] = useState('')
+
   const fetchUsers = async () => {
     try {
       setLoading(true)
@@ -59,6 +67,29 @@ function UsersSection() {
       setUsers(prev => prev.filter(u => u._id !== id))
     } catch (err) {
       setError(err.response?.data?.message || 'Delete failed.')
+    }
+  }
+
+  const openReset = (user) => {
+    setResetTarget(user)
+    setResetPassword('')
+    setShowResetPassword(true)
+    setResetError('')
+    setResetDone('')
+  }
+  const closeReset = () => setResetTarget(null)
+
+  const handleResetSubmit = async (e) => {
+    e.preventDefault()
+    setResetting(true)
+    setResetError('')
+    try {
+      await api.put(`/admin/auth/users/${resetTarget._id}/password`, { password: resetPassword })
+      setResetDone(resetPassword)
+    } catch (err) {
+      setResetError(err.response?.data?.message || 'Reset failed.')
+    } finally {
+      setResetting(false)
     }
   }
 
@@ -131,9 +162,14 @@ function UsersSection() {
                   <td style={{ color: 'var(--text-light)', fontSize: '0.85rem' }}>{formatDate(user.createdAt)}</td>
                   <td>
                     {user._id !== currentUser._id ? (
-                      <button type="button" className="action-btn mini danger" onClick={() => handleDelete(user._id, user.name)}>
-                        <i className="fas fa-trash"></i>
-                      </button>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <button type="button" className="action-btn mini" onClick={() => openReset(user)} title={`Reset ${user.name}'s password`} aria-label={`Reset ${user.name}'s password`}>
+                          <i className="fas fa-key"></i>
+                        </button>
+                        <button type="button" className="action-btn mini danger" onClick={() => handleDelete(user._id, user.name)} title={`Delete ${user.name}`} aria-label={`Delete ${user.name}`}>
+                          <i className="fas fa-trash"></i>
+                        </button>
+                      </div>
                     ) : (
                       <span style={{ color: 'var(--text-light)', fontSize: '0.8rem' }}>—</span>
                     )}
@@ -188,6 +224,51 @@ function UsersSection() {
                 {saving ? 'Creating...' : 'Create Account'}
               </button>
             </form>
+          </div>
+        </div>
+      )}
+      {resetTarget && (
+        <div className="modal" style={{ display: 'flex' }}>
+          <div className="modal-content">
+            <span className="close-modal" onClick={closeReset}>&times;</span>
+            <div className="auth-header">
+              <h2>Reset Password</h2>
+              <p style={{ color: 'var(--text-light)', fontSize: '0.9rem' }}>{resetTarget.name} · {resetTarget.email}</p>
+            </div>
+            {resetDone ? (
+              <>
+                <div style={{ background: 'var(--success-color)', color: '#fff', padding: '12px 14px', borderRadius: '8px', fontSize: '0.9rem', marginBottom: '16px' }}>
+                  Password reset. Send {resetTarget.name} this temporary password:
+                </div>
+                <code style={{ display: 'block', padding: '12px 14px', borderRadius: '8px', background: 'var(--bg-secondary)', fontSize: '1rem', wordBreak: 'break-all', userSelect: 'all' }}>
+                  {resetDone}
+                </code>
+                <p style={{ fontSize: '0.8rem', color: 'var(--text-light)', marginTop: '8px' }}>They should change it from Settings → Security after logging in.</p>
+                <button type="button" className="auth-button" style={{ marginTop: '20px' }} onClick={closeReset}>Done</button>
+              </>
+            ) : (
+              <form className="auth-form" onSubmit={handleResetSubmit}>
+                {resetError && <p style={{ color: 'var(--danger-color)', marginBottom: '12px', fontSize: '0.9rem' }}>{resetError}</p>}
+                <div className="form-group">
+                  <label><i className="fas fa-lock"></i> New Temporary Password</label>
+                  <div style={{ position: 'relative' }}>
+                    <input
+                      type={showResetPassword ? 'text' : 'password'}
+                      value={resetPassword} onChange={e => setResetPassword(e.target.value)}
+                      placeholder="At least 8 characters" required minLength={8} autoFocus
+                      style={{ paddingRight: '40px', width: '100%' }}
+                    />
+                    <span onClick={() => setShowResetPassword(p => !p)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', color: 'var(--text-light)' }}>
+                      <i className={`fas ${showResetPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-light)', marginTop: '4px' }}>Their old password stops working immediately.</p>
+                </div>
+                <button type="submit" className="auth-button" style={{ marginTop: '20px' }} disabled={resetting}>
+                  {resetting ? 'Resetting...' : 'Reset Password'}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       )}
