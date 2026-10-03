@@ -11,6 +11,7 @@ const suggestions = [
 ];
 
 const TYPING_SPEED_MS = 12; // ms per character
+const MAX_INPUT_CHARS = 1000; // must match MAX_MESSAGE_CHARS on the backend
 
 /* ── Typewriter hook — reveals text character by character ── */
 const useTypewriter = (fullText, active) => {
@@ -42,35 +43,51 @@ const useTypewriter = (fullText, active) => {
   return { displayed, done };
 };
 
-/* ── Markdown parser for **bold** and [links](urls) ── */
+/* ── Inline markdown: **bold** and [links](urls) ── */
+const formatInline = (line) =>
+  line.split(/(\*\*.*?\*\*|\[.*?\]\(.*?\))/g).map((part, j) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={j} style={{ color: '#0096ED' }}>{part.slice(2, -2)}</strong>;
+    }
+
+    const linkMatch = part.match(/\[(.*?)\]\((.*?)\)/);
+    if (linkMatch) {
+      return (
+        <a
+          key={j}
+          href={linkMatch[2]}
+          target={linkMatch[2].startsWith('http') ? '_blank' : '_self'}
+          rel="noopener noreferrer"
+          style={{ color: '#24F0FF', textDecoration: 'underline', fontWeight: 'bold' }}
+        >
+          {linkMatch[1]}
+        </a>
+      );
+    }
+
+    return part;
+  });
+
+/* ── Block markdown — bullets get a real marker instead of a stray "- " ── */
 const formatText = (text) => {
   return text.split('\n').map((line, i) => {
-    const parts = line.split(/(\*\*.*?\*\*|\[.*?\]\(.*?\))/g).map((part, j) => {
-      if (part.startsWith('**') && part.endsWith('**')) {
-        return <strong key={j} style={{ color: '#0096ED' }}>{part.slice(2, -2)}</strong>;
-      }
+    const bullet = line.match(/^\s*[-*]\s+(.*)$/);
 
-      const linkMatch = part.match(/\[(.*?)\]\((.*?)\)/);
-      if (linkMatch) {
-        return (
-          <a
-            key={j}
-            href={linkMatch[2]}
-            target={linkMatch[2].startsWith('http') ? '_blank' : '_self'}
-            rel="noopener noreferrer"
-            style={{ color: '#24F0FF', textDecoration: 'underline', fontWeight: 'bold' }}
-          >
-            {linkMatch[1]}
-          </a>
-        );
-      }
-
-      return part;
-    });
+    if (bullet) {
+      return (
+        <span
+          key={i}
+          style={{ display: 'flex', gap: '8px', minHeight: '1.2em', paddingLeft: '4px' }}
+        >
+          <span style={{ color: '#0096ED', flexShrink: 0 }}>•</span>
+          <span>{formatInline(bullet[1])}</span>
+        </span>
+      );
+    }
 
     return (
       <span key={i} style={{ display: 'block', minHeight: '1.2em' }}>
-        {parts}
+        {formatInline(line)}
       </span>
     );
   });
@@ -98,17 +115,23 @@ const ChatBubble = ({ msg, isLatestAssistant, onTypingProgress }) => {
   );
 };
 
-const AIAssistant = () => {
-  const initialMessages = [
-    { role: 'assistant', text: "Hello! I'm the IEEE MUST digital assistant. How can I help you today?" },
-    { role: 'assistant', text: "**Quick Links**:\n[Home](/) | [About](/about) | [Membership](/membership) | [Events](/events) | [Committees](/committees)\n\n**Socials**:\n[Facebook](https://www.facebook.com/IEEEMUST.egy) | [Instagram](https://www.instagram.com/ieeemust/) | [LinkedIn](https://www.linkedin.com/company/mustieeesb/) | [TikTok](https://www.tiktok.com/@ieee.must.sb)" }
-  ];
+/* Scripted welcome bubbles — always the first entries in `messages`, and never
+   sent to the model as conversation history. */
+const initialMessages = [
+  { role: 'assistant', text: "Hello! I'm the IEEE MUST digital assistant. How can I help you today?" },
+  { role: 'assistant', text: "**Quick Links**:\n[Home](/) | [About](/about) | [Membership](/membership) | [Events](/events) | [Committees](/committees)\n\n**Socials**:\n[Facebook](https://www.facebook.com/IEEEMUST.egy) | [Instagram](https://www.instagram.com/ieeemust/) | [LinkedIn](https://www.linkedin.com/company/mustieeesb/) | [TikTok](https://www.tiktok.com/@ieee.must.sb)" }
+];
 
+const AIAssistant = () => {
   const [messages, setMessages] = useState(initialMessages);
   const [inputStr, setInputStr] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [hasStartedChat, setHasStartedChat] = useState(false);
   const chatLogRef = useRef(null);
+  const abortRef = useRef(null);
+
+  // Drop any in-flight request if the user navigates away mid-answer
+  useEffect(() => () => abortRef.current?.abort(), []);
 
   const scrollToBottom = useCallback(() => {
     if (chatLogRef.current) {
@@ -121,9 +144,10 @@ const AIAssistant = () => {
   }, [messages, isLoading, scrollToBottom]);
 
   const handleSend = async (text) => {
-    if (!text.trim()) return;
+    const trimmed = text.trim().slice(0, MAX_INPUT_CHARS);
+    if (!trimmed || isLoading) return; // ignore empty sends and double-fires
 
-    const userMsg = { role: 'user', text: text.trim() };
+    const userMsg = { role: 'user', text: trimmed };
     const newHistory = [...messages, userMsg];
 
     setMessages(newHistory);
@@ -131,33 +155,51 @@ const AIAssistant = () => {
     setIsLoading(true);
     setHasStartedChat(true);
 
-    try {
-      const response = await api.post('/ai/chat', {
-        message: text.trim(),
-        history: messages
-      });
+    const controller = new AbortController();
+    abortRef.current = controller;
 
-      const { data } = response;
-      if (data.success) {
-        setMessages([...newHistory, { role: 'assistant', text: data.reply, _animate: true }]);
-      } else {
-        setMessages([...newHistory, { role: 'assistant', text: data.message || "I'm having trouble connecting right now.", _animate: true }]);
-      }
+    try {
+      const { data } = await api.post(
+        '/ai/chat',
+        {
+          message: trimmed,
+          // `messages` always opens with the scripted welcome bubbles. They
+          // aren't real turns — the backend strips them too, but there's no
+          // point paying to send them.
+          history: messages.slice(initialMessages.length),
+        },
+        { signal: controller.signal }
+      );
+
+      const reply = data.success
+        ? data.reply
+        : data.message || "I'm having trouble connecting right now.";
+
+      setMessages([...newHistory, { role: 'assistant', text: reply, _animate: true }]);
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "I'm having trouble thinking right now. Please check my AI circuits!";
+      if (err.name === 'AbortError') return; // user reset or left the page
+      const errorMsg =
+        err.response?.data?.message ||
+        "I'm having trouble thinking right now. Please check my AI circuits!";
       setMessages([...newHistory, { role: 'assistant', text: errorMsg, _animate: true }]);
     } finally {
+      if (abortRef.current === controller) abortRef.current = null;
       setIsLoading(false);
     }
   };
 
   const onKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    // Shift+Enter inserts a newline; plain Enter sends
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
       handleSend(inputStr);
     }
   };
 
   const handleResetChat = () => {
+    abortRef.current?.abort();
+    abortRef.current = null;
+    setIsLoading(false);
     setMessages(initialMessages);
     setHasStartedChat(false);
   };
@@ -190,6 +232,7 @@ const AIAssistant = () => {
                 type="text"
                 placeholder="Ask anything..."
                 className="search-input"
+                maxLength={MAX_INPUT_CHARS}
                 value={inputStr}
                 onChange={(e) => setInputStr(e.target.value)}
                 onKeyDown={onKeyDown}
@@ -285,6 +328,7 @@ const AIAssistant = () => {
                   type="text"
                   placeholder="Ask anything..."
                   className="search-input"
+                  maxLength={MAX_INPUT_CHARS}
                   value={inputStr}
                   onChange={(e) => setInputStr(e.target.value)}
                   onKeyDown={onKeyDown}
