@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const auth = require('../../middleware/auth');
-const { login, logout, register, me, updateMe, listUsers, deleteUser } = require('../../controllers/auth.controller');
+const { login, logout, register, me, updateMe, listUsers, deleteUser, resetUserPassword } = require('../../controllers/auth.controller');
 
 // Public — no auth guard
 router.post('/login', login);
@@ -14,5 +14,6 @@ router.patch('/me', auth, updateMe);
 // User management — superadmin only (role check enforced in controller)
 router.get('/users', auth, listUsers);
 router.delete('/users/:id', auth, deleteUser);
+router.put('/users/:id/password', auth, resetUserPassword);
 
 module.exports = router;

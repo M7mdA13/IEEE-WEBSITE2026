@@ -466,7 +466,7 @@ async function seed() {
   console.log('Seeded CMS pages');
 
   // Seed recruitment status
-  await RecruitmentStatus.create({ isOpen: false, message: 'Recruitment is currently closed. Stay tuned for announcements.' });
+  await RecruitmentStatus.create({ isOpen: false });
   console.log('Seeded recruitment status');
 
   // Create default admin user (only if none exists)

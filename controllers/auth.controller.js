@@ -39,7 +39,11 @@ exports.login = async (req, res, next) => {
     // Set token as httpOnly cookie — JS can never read it
     res.cookie('token', token, COOKIE_OPTIONS);
 
-    res.json({ success: true, user: user.toJSON() });
+    // Also return it in the body. The dashboard and API live on different
+    // sites (vercel.app / railway.app), so the cookie is third-party there and
+    // Safari / every iOS browser drops it. The dashboard falls back to sending
+    // this as an Authorization: Bearer header, which middleware/auth.js accepts.
+    res.json({ success: true, token, user: user.toJSON() });
   } catch (err) {
     next(err);
   }
@@ -99,6 +103,29 @@ exports.deleteUser = async (req, res, next) => {
   }
 };
 
+// PUT /api/admin/auth/users/:id/password  (superadmin only)
+// The "forgot password" path — there's no email service, so a superadmin sets
+// a temporary password and the user changes it from Settings.
+exports.resetUserPassword = async (req, res, next) => {
+  try {
+    if (req.user.role !== 'superadmin') {
+      return res.status(403).json({ success: false, message: 'Forbidden' });
+    }
+    const { password } = req.body;
+    if (!password || password.length < 8) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
+    }
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    user.passwordHash = await User.hashPassword(password);
+    await user.save();
+    res.json({ success: true, message: `Password reset for ${user.name}` });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // GET /api/admin/auth/me
 exports.me = async (req, res, next) => {
   try {
@@ -132,7 +159,11 @@ exports.updateMe = async (req, res, next) => {
       }
       const isMatch = await user.matchPassword(currentPassword);
       if (!isMatch) {
-        return res.status(401).json({ success: false, message: 'Current password is incorrect' });
+        // 400, not 401 — the session is fine, and the dashboard logs out on any 401
+        return res.status(400).json({ success: false, message: 'Current password is incorrect' });
+      }
+      if (newPassword.length < 8) {
+        return res.status(400).json({ success: false, message: 'New password must be at least 8 characters' });
       }
       user.passwordHash = await User.hashPassword(newPassword);
     }
